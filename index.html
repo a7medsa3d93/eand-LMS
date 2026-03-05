@@ -323,7 +323,7 @@ const MASCOT_MSGS = {
   exam: ['حظاً موفقاً في الامتحان!', 'ثق بقدراتك، أنت قادر على النجاح.'],
 };
 
-const ROLE_LABELS = { employee: 'موظف', tracker: 'مدير متابعة', content: 'مدير محتوى' };
+const ROLE_LABELS = { employee: 'Trainee', tracker: 'Trainer', content: 'Admin' };
 
 // ============================================================
 // AUTH
@@ -516,7 +516,7 @@ function renderNav() {
 }
 
 function updateSidebarUser() {
-  const ROLE_LABELS = { employee: 'موظف', tracker: 'مدير متابعة', content: 'مدير محتوى' };
+  const ROLE_LABELS = { employee: 'Trainee', tracker: 'Trainer', content: 'Admin' };
   const nameEl = document.getElementById('uName');
   const avEl = document.getElementById('uAvChar');
   const roleEl = document.getElementById('uRole');
@@ -1015,10 +1015,10 @@ async function renderLeaderboard() {
   const medals = ['🥇', '🥈', '🥉'];
   const html = `<div class="fu">
   <div class="topbar">
-    <div><div class="pg-title">🏆 لوحة الشرف</div><div class="pg-sub">أفضل الموظفين أداءً</div></div>
+    <div><div class="pg-title">🏆 لوحة الشرف</div><div class="pg-sub">أفضل الTraineeين أداءً</div></div>
   </div>
   <div style="display:grid;gap:10px">
-    ${emps.length === 0 ? `<div style="padding:40px;text-align:center;color:var(--muted2)">لا يوجد موظفون بعد.</div>` :
+    ${emps.length === 0 ? `<div style="padding:40px;text-align:center;color:var(--muted2)">لا يوجد Traineeون بعد.</div>` :
     emps.map(([key, u], i) => {
       const isMe = key === S.ukey;
       return `<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:${isMe ? 'var(--reddim)' : i === 0 ? 'rgba(255,215,0,.07)' : 'var(--card)'};border:1px solid ${isMe ? 'rgba(228,0,43,.25)' : i === 0 ? 'rgba(255,215,0,.2)' : 'var(--border)'};border-radius:16px;animation:fadeUp .4s ease ${i * .05}s both">
@@ -1064,13 +1064,13 @@ async function renderTracking() {
 
   const html = `<div class="fu">
   <div class="topbar">
-    <div><div class="pg-title">📊 لوحة المتابعة</div><div class="pg-sub">تقدم الموظفين في الوقت الحقيقي</div></div>
+    <div><div class="pg-title">📊 لوحة المتابعة</div><div class="pg-sub">تقدم الTraineeين في الوقت الحقيقي</div></div>
     <button class="btn btn-red btn-sm" onclick="exportExcel()">📥 Excel</button>
   </div>
 
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
     ${[
-      ['var(--red)', emps.length, '👥 الموظفون'],
+      ['var(--red)', emps.length, '👥 الTraineeون'],
       ['var(--green)', emps.filter(([, u]) => getProgPct(u) >= 100).length, '✅ أتموا الكل'],
       ['var(--xp)', emps.length > 0 ? Math.round(emps.reduce((a, [, u]) => a + (u.xp || 0), 0) / emps.length) : 0, '⭐ متوسط XP'],
       ['var(--red)', lateCount, '⚠️ متأخرون'],
@@ -1081,7 +1081,7 @@ async function renderTracking() {
   </div>
 
   <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-    <input type="text" placeholder="🔍 ابحث باسم الموظف..." value="${filter}"
+    <input type="text" placeholder="🔍 ابحث باسم الTrainee..." value="${filter}"
       oninput="S.trackFilter=this.value;renderTracking()"
       style="flex:1;min-width:180px;padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none"/>
     <select onchange="S.trackStatus=this.value;renderTracking()"
@@ -1096,7 +1096,7 @@ async function renderTracking() {
 
   <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden">
     <div style="display:grid;grid-template-columns:1fr 70px 70px 90px 80px;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);font-weight:700;color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
-      <div>الموظف</div><div style="text-align:center">XP</div><div style="text-align:center">النتيجة</div><div style="text-align:center">التقدم</div><div style="text-align:center">عرض</div>
+      <div>الTrainee</div><div style="text-align:center">XP</div><div style="text-align:center">النتيجة</div><div style="text-align:center">التقدم</div><div style="text-align:center">عرض</div>
     </div>
     ${filtered.length === 0 ? `<div style="padding:30px;text-align:center;color:var(--muted2)">لا توجد نتائج</div>` :
     filtered.map(([key, u]) => {
@@ -1428,9 +1428,9 @@ document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick
 <div class="fgroup"><label>اسم الدخول (فريد)</label><input class="inp" id="nu_u" placeholder="مثال: ahmed123"/></div>
 <div class="fgroup"><label>كلمة المرور</label><input class="inp" id="nu_p" type="password" placeholder="6 أحرف على الأقل"/></div>
 <div class="fgroup"><label>الدور</label><select class="inp" id="nu_r">
-<option value="employee">موظف</option>
-<option value="tracker">مدير متابعة</option>
-<option value="content">مدير محتوى</option>
+<option value="employee">Trainee</option>
+<option value="tracker">Trainer</option>
+<option value="content">Admin</option>
 </select></div>
 <div id="nu_err" style="color:var(--red);font-size:12px;display:none;margin-bottom:8px"></div>
 <div style="display:flex;gap:8px">
@@ -1624,7 +1624,7 @@ const allUsers = await fbGet(users) || {};
 const emps = Object.entries(allUsers).filter(([, v]) => v.role === employee);
 const late = emps.filter(([, u]) => COURSES.length > 0 && COURSES.reduce((a, c) => a + ((u.progress || {})[c.id] || 0), 0) / COURSES.length < 30);
 
-if (late.length === 0) { showToast("✅", "لا يوجد موظفين متأخرين!"); return; }
+if (late.length === 0) { showToast("✅", "لا يوجد Traineeين متأخرين!"); return; }
 
 const now = new Date().toLocaleDateString(ar-EG);
 await Promise.all(late.map(([key]) =>
@@ -1632,7 +1632,7 @@ fbUpdate(users/ + key, {
 notification: { msg: "⚠️ تنبيه: لم تكمل الكورسات المطلوبة بعد. يرجى الاستمرار في التعلم.", from: S.name, date: now, read: false }
 })
 ));
-showToast("🔔", "تم إرسال تنبيه لـ"  + late.length +  موظف);
+showToast("🔔", "تم إرسال تنبيه لـ"  + late.length +  Trainee);
 }
 
 // ============================================================
@@ -1663,34 +1663,38 @@ showToast("📥", "تم التصدير بنجاح!");
 // MOBILE
 // ============================================================
 function toggleMob() {
-document.getElementById(sidebar)?.classList.toggle(mob-open);
+  const sb = document.getElementById("sidebar"); // إضافة ""
+  if(sb) sb.classList.toggle("mob-open"); // إضافة ""
 }
-document.addEventListener(click, (e) => {
-const sb = document.getElementById(sidebar);
-if (sb?.classList.contains(mob-open) && !sb.contains(e.target) && !e.target.classList.contains(mob-burger)) {
-sb.classList.remove(mob-open);
-}
+
+document.addEventListener("click", (e) => { // إضافة ""
+  const sb = document.getElementById("sidebar"); // إضافة ""
+  if (sb?.classList.contains("mob-open") && !sb.contains(e.target) && !e.target.classList.contains("mob-burger")) {
+    sb.classList.remove("mob-open"); // إضافة ""
+  }
 });
 
 // ============================================================
 // INIT - Firebase Auth State Listener
 // ============================================================
 auth.onAuthStateChanged(async (firebaseUser) => {
-if (firebaseUser) {
-// User is signed in - load their data
-if (!S.user) {
-const username = firebaseUser.email.split("@")[0];
-const userData = await fbGet(users/ + username);
-if (userData) {
-await afterLogin(username, userData);
-return;
-}
-}
-}
-// No user or data not found - show login
-if (!S.user) {
-setState({ screen: login });
-}
+  // إخفاء شاشة التحميل فوراً عند استجابة Firebase
+  const loadingEl = document.getElementById('loadingScreen');
+  if (loadingEl) loadingEl.style.display = 'none'; 
+
+  if (firebaseUser) {
+    if (!S.user) {
+      const username = firebaseUser.email.split("@")[0]; // تصحيح @
+      const userData = await fbGet('users/' + username);
+      if (userData) {
+        await afterLogin(username, userData);
+      } else {
+        renderApp();
+      }
+    }
+  } else {
+    renderApp();
+  }
 });
 </script>
 
