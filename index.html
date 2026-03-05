@@ -347,11 +347,9 @@ async function doLogin() {
   loginBtn.textContent = 'جاري الدخول...';
 
   try {
-    // Sign in with Firebase Auth
     const email = username + '@lms.internal';
     await auth.signInWithEmailAndPassword(email, password);
 
-    // Load user data from Realtime Database
     const userData = await fbGet('users/' + username);
     if (!userData) {
       await auth.signOut();
@@ -392,19 +390,14 @@ async function afterLogin(username, userData) {
     scores: userData.scores || {},
   };
 
-  // Load courses from Firebase (if exist), fallback to defaults
   const fbCourses = await fbGet('courses');
   if (fbCourses) {
     COURSES = Object.values(fbCourses);
   }
 
-  // Log login & update streak
   await logLogin(username, userData);
-
-  // Load notification
   await loadNotification(username);
 
-  // Add first_login badge
   if (!S.user.badges.includes('first_login')) {
     S.user.badges.push('first_login');
     await fbUpdate('users/' + username, { badges: S.user.badges });
@@ -516,7 +509,6 @@ function renderNav() {
 }
 
 function updateSidebarUser() {
-  const ROLE_LABELS = { employee: 'Trainee', tracker: 'Trainer', content: 'Admin' };
   const nameEl = document.getElementById('uName');
   const avEl = document.getElementById('uAvChar');
   const roleEl = document.getElementById('uRole');
@@ -605,7 +597,6 @@ async function gainXP(amount, srcEl) {
   const newLv = Math.floor(S.user.xp / 200) + 1;
   S.user.level = newLv;
   showXpPopup(amount, srcEl);
-  // Save to Firebase
   await fbUpdate('users/' + S.ukey, { xp: S.user.xp, level: newLv });
   if (newLv > oldLv) {
     setTimeout(() => { launchConfetti(); showLevelUp(newLv); }, 300);
@@ -856,7 +847,6 @@ async function completeLesson(courseId, lessonId, el) {
   if (!S.user.progress[courseId]) S.user.progress[courseId] = {};
   S.user.progress[courseId][lessonId] = 100;
 
-  // Calculate overall course progress
   const total = (course.lessons || []).length;
   const done = Object.values(S.user.progress[courseId]).filter(v => v === 100).length;
   const pct = Math.round((done / total) * 100);
@@ -865,7 +855,6 @@ async function completeLesson(courseId, lessonId, el) {
   await gainXP(lesson.xp || 0, el);
   await fbUpdate('users/' + S.ukey, { progress: S.user.progress });
 
-  // Check course completion badge
   if (pct >= 100 && !S.user.badges.includes('course_master')) {
     S.user.badges.push('course_master');
     await fbUpdate('users/' + S.ukey, { badges: S.user.badges });
@@ -901,7 +890,6 @@ function renderExam() {
   </div>
 
   <div class="exam-wrap">
-    <!-- Progress dots -->
     <div style="display:flex;gap:6px;justify-content:center;margin-bottom:20px;flex-wrap:wrap">
       ${ex.questions.map((_, i) => `
         <div style="width:34px;height:34px;border-radius:50%;border:2px solid ${i === ex.currentQ ? 'var(--red)' : ex.answers[i] !== undefined ? 'var(--green)' : 'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer;color:${i === ex.currentQ ? 'var(--red)' : ex.answers[i] !== undefined ? 'var(--green)' : 'var(--muted2)'};background:${i === ex.currentQ ? 'var(--reddim)' : ex.answers[i] !== undefined ? 'rgba(0,214,143,.1)' : 'transparent'}" onclick="S.currentExam.currentQ=${i};renderApp()">${i + 1}</div>
@@ -946,7 +934,6 @@ async function submitExam() {
   S.user.scores[ex.courseId] = ex.score;
 
   if (ex.score >= ex.passScore) {
-    // Mark exam lesson complete
     if (!S.user.progress[ex.courseId]) S.user.progress[ex.courseId] = {};
     S.user.progress[ex.courseId][ex.lessonId] = 100;
 
@@ -955,7 +942,6 @@ async function submitExam() {
     await gainXP(lesson?.xp || 20);
     launchConfetti();
 
-    // exam_ace badge
     if (ex.score === 100 && !S.user.badges.includes('exam_ace')) {
       S.user.badges.push('exam_ace');
       setTimeout(() => showToast('🎯', 'شارة جديدة: "متفوق في الامتحانات"!', 'var(--xp)'), 800);
@@ -981,7 +967,6 @@ function renderResult() {
     <div style="font-size:13px;color:var(--muted2)">${correct} إجابة صحيحة من ${res.questions.length} · حد النجاح ${res.passScore || 0}%</div>
   </div>
 
-  <!-- Review answers -->
   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:20px">
     <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:800">مراجعة الإجابات</div>
     ${res.questions.map((q, i) => {
@@ -1177,7 +1162,7 @@ function renderContent() {
       <div style="display:flex;gap:8px">
         <button class="btn btn-ghost btn-sm" onclick="S.addingLesson=S.addingLesson==='${c.id}'?null:'${c.id}';renderApp()">➕ درس</button>
         <button class="btn btn-ghost btn-sm" onclick="editCourseModal('${c.id}')">✏️</button>
-        <button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteCourse('${c.id}')">'🗑️'</button>
+        <button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteCourse('${c.id}')">🗑️</button>
       </div>
     </div>
     ${S.addingLesson === c.id ? renderAddLessonForm(c.id) : ''}
@@ -1191,7 +1176,7 @@ function renderContent() {
           </div>
           <div style="display:flex;gap:6px">
             <button class="btn btn-ghost btn-sm" onclick="editLessonModal('${c.id}','${l.id}')">✏️</button>
-            <button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteLesson('${c.id}','${l.id}')">'🗑️'</button>
+            <button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteLesson('${c.id}','${l.id}')">🗑️</button>
           </div>
         </div>
       `).join('')}
@@ -1211,7 +1196,6 @@ function renderAddLessonForm(cid) {
     <div class="fgroup"><label>📄 رابط PDF</label><input class="inp" id="nl_pdf" placeholder="https://drive.google.com/file/d/.../preview"/></div>
     <div class="fgroup"><label>الشرح</label><textarea class="inp" id="nl_d" placeholder="وصف الدرس..."></textarea></div>
 
-
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
   <div class="fgroup"><label>المدة *</label><input class="inp" id="nl_dur" placeholder="15 د"/></div>
   <div class="fgroup"><label>XP</label><input class="inp" id="nl_xp" type="number" placeholder="10"/></div>
@@ -1220,31 +1204,28 @@ function renderAddLessonForm(cid) {
   <button class="btn btn-red btn-sm" onclick="saveNewLesson('${cid}')">💾 حفظ</button>
   <button class="btn btn-ghost btn-sm" onclick="S.addingLesson=null;renderApp()">إلغاء</button>
 </div>
-
-
   </div>`;
 }
 
 async function saveNewLesson(courseId) {
 const course = COURSES.find(c => c.id === courseId);
 if (!course) return;
-const title = document.getElementById(nl_t)?.value.trim();
-const type = document.getElementById(nl_type)?.value;
-const yt = document.getElementById(nl_yt)?.value.trim();
-const pdf = document.getElementById(nl_pdf)?.value.trim();
-const desc = document.getElementById(nl_d)?.value.trim();
-const duration = document.getElementById(nl_dur)?.value.trim();
-const xp = parseInt(document.getElementById(nl_xp)?.value, 10) || 10;
+const title = document.getElementById('nl_t')?.value.trim();
+const type = document.getElementById('nl_type')?.value;
+const yt = document.getElementById('nl_yt')?.value.trim();
+const pdf = document.getElementById('nl_pdf')?.value.trim();
+const desc = document.getElementById('nl_d')?.value.trim();
+const duration = document.getElementById('nl_dur')?.value.trim();
+const xp = parseInt(document.getElementById('nl_xp')?.value, 10) || 10;
 
-if (!title || !duration) { showToast('⚠️', "اكتب عنوان الدرس والمدة", "var(--amber)"); return; }
+if (!title || !duration) { showToast('⚠️', 'اكتب عنوان الدرس والمدة', 'var(–amber)'); return; }
 
-const newLesson = { id: l + Date.now(), title, type, yt, pdf, desc, duration, xp };
+const newLesson = { id: 'l' + Date.now(), title, type, yt, pdf, desc, duration, xp };
 if (!course.lessons) course.lessons = [];
 course.lessons.push(newLesson);
 
-// Save to Firebase
-await fbSet(courses/ + courseId, course);
-showToast("✅", "تم إضافة الدرس!");
+await fbSet('courses/' + courseId, course);
+showToast('✅', 'تم إضافة الدرس!');
 S.addingLesson = null;
 renderApp();
 }
@@ -1255,11 +1236,11 @@ const lesson = (course?.lessons || []).find(l => l.id === lessonId);
 if (!lesson) return;
 S.editingLesson = { courseId, lessonId };
 
-document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()"> <div class="modal-box"> <div style="font-weight:800;font-size:15px;margin-bottom:16px">✏️ تعديل: ${lesson.title}</div> <div class="fgroup"><label>عنوان الدرس</label><input class="inp" id="el_t" value="${lesson.title || ''}"/></div> <div class="fgroup"><label>النوع</label><select class="inp" id="el_type"> ${['فيديو','نص','امتحان'].map(t => `<option ${lesson.type === t ? selected : ""}>${t}</option>`).join()}
+document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()"> <div class="modal-box"> <div style="font-weight:800;font-size:15px;margin-bottom:16px">✏️ تعديل: ${lesson.title}</div> <div class="fgroup"><label>عنوان الدرس</label><input class="inp" id="el_t" value="${lesson.title || ''}"/></div> <div class="fgroup"><label>النوع</label><select class="inp" id="el_type"> ${['فيديو', 'نص', 'امتحان'].map(t => `<option ${lesson.type === t ? 'selected' : ''}>${t}</option>`).join('')}
 </select></div>
 <div class="fgroup"><label>🎬 يوتيوب Embed</label><input class="inp" id="el_yt" value="${lesson.yt || ''}"/></div>
 <div class="fgroup"><label>📄 رابط PDF</label><input class="inp" id="el_pdf" value="${lesson.pdf || ''}"/></div>
-<div class="fgroup"><label>الشرح</label><textarea class="inp" id="el_d">${lesson.desc || ""}</textarea></div>
+<div class="fgroup"><label>الشرح</label><textarea class="inp" id="el_d">${lesson.desc || ''}</textarea></div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
 <div class="fgroup"><label>المدة</label><input class="inp" id="el_dur" value="${lesson.duration || ''}"/></div>
 <div class="fgroup"><label>XP</label><input class="inp" id="el_xp" type="number" value="${lesson.xp || 0}"/></div>
@@ -1279,40 +1260,40 @@ const course = COURSES.find(c => c.id === courseId);
 const idx = (course?.lessons || []).findIndex(l => l.id === lessonId);
 if (idx === -1) return;
 
-const title = document.getElementById(el_t)?.value.trim();
-const duration = document.getElementById(el_dur)?.value.trim();
-if (!title || !duration) { showToast("⚠️", "اكتب العنوان والمدة", "var(-–amber)"); return; }
+const title = document.getElementById('el_t')?.value.trim();
+const duration = document.getElementById('el_dur')?.value.trim();
+if (!title || !duration) { showToast('⚠️', 'اكتب العنوان والمدة', 'var(–amber)'); return; }
 
 course.lessons[idx] = {
 ...course.lessons[idx],
 title,
-type: document.getElementById(el_type)?.value,
-yt: document.getElementById(el_yt)?.value.trim(),
-pdf: document.getElementById(el_pdf)?.value.trim(),
-desc: document.getElementById(el_d)?.value.trim(),
+type: document.getElementById('el_type')?.value,
+yt: document.getElementById('el_yt')?.value.trim(),
+pdf: document.getElementById('el_pdf')?.value.trim(),
+desc: document.getElementById('el_d')?.value.trim(),
 duration,
-xp: parseInt(document.getElementById(el_xp)?.value, 10) || 0,
+xp: parseInt(document.getElementById('el_xp')?.value, 10) || 0,
 };
 
-await fbSet(courses/ + courseId, course);
-showToast("✅", "تم حفظ التعديلات!");
+await fbSet('courses/' + courseId, course);
+showToast('✅', 'تم حفظ التعديلات!');
 closeModal();
 S.editingLesson = null;
 renderApp();
 }
 
 async function deleteLesson(courseId, lessonId) {
-if (!confirm("هل أنت متأكد من حذف هذا الدرس؟")) return;
+if (!confirm('هل أنت متأكد من حذف هذا الدرس؟')) return;
 const course = COURSES.find(c => c.id === courseId);
 if (!course) return;
 course.lessons = (course.lessons || []).filter(l => l.id !== lessonId);
-await fbSet(courses/ + courseId, course);
-showToast("'🗑️'", "تم حذف الدرس");
+await fbSet('courses/' + courseId, course);
+showToast('🗑️', 'تم حذف الدرس');
 renderApp();
 }
 
 function addCourseModal() {
-document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
 <div class="modal-box">
 <div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ كورس جديد</div>
 <div class="fgroup"><label>عنوان الكورس *</label><input class="inp" id="nc_t" placeholder="مثال: مقدمة في البيانات"/></div>
@@ -1328,15 +1309,15 @@ document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick
 }
 
 async function saveNewCourse() {
-const title = document.getElementById(nc_t)?.value.trim();
-const icon = document.getElementById(nc_icon)?.value.trim();
-const color = document.getElementById(nc_color)?.value.trim();
-if (!title || !icon) { showToast("⚠️", "اكتب العنوان والأيقونة", "var(-–amber)"); return; }
+const title = document.getElementById('nc_t')?.value.trim();
+const icon = document.getElementById('nc_icon')?.value.trim();
+const color = document.getElementById('nc_color')?.value.trim();
+if (!title || !icon) { showToast('⚠️', 'اكتب العنوان والأيقونة', 'var(–amber)'); return; }
 
-const newCourse = { id: course_ + Date.now(), title, icon, color: color || null, lessons: [] };
+const newCourse = { id: 'course_' + Date.now(), title, icon, color: color || null, lessons: [] };
 COURSES.push(newCourse);
-await fbSet(courses/ + newCourse.id, newCourse);
-showToast("✅", "تم إضافة الكورس!");
+await fbSet('courses/' + newCourse.id, newCourse);
+showToast('✅', 'تم إضافة الكورس!');
 closeModal();
 renderApp();
 }
@@ -1344,7 +1325,7 @@ renderApp();
 function editCourseModal(courseId) {
 const c = COURSES.find(x => x.id === courseId);
 if (!c) return;
-document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
 <div class="modal-box">
 <div style="font-weight:800;font-size:15px;margin-bottom:16px">✏️ تعديل: ${c.title}</div>
 <div class="fgroup"><label>عنوان الكورس</label><input class="inp" id="ec_t" value="${c.title}"/></div>
@@ -1362,22 +1343,22 @@ document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick
 async function saveEditCourse(courseId) {
 const c = COURSES.find(x => x.id === courseId);
 if (!c) return;
-const title = document.getElementById(ec_t)?.value.trim();
-const icon = document.getElementById(ec_icon)?.value.trim();
-if (!title || !icon) { showToast("⚠️", "اكتب العنوان والأيقونة", "var(–-amber)"); return; }
+const title = document.getElementById('ec_t')?.value.trim();
+const icon = document.getElementById('ec_icon')?.value.trim();
+if (!title || !icon) { showToast('⚠️', 'اكتب العنوان والأيقونة', 'var(–amber)'); return; }
 c.title = title;
 c.icon = icon;
-c.color = document.getElementById(ec_color)?.value.trim() || null;
-await fbSet(courses/ + courseId, c);
-showToast("✅", "تم حفظ التعديلات!");
+c.color = document.getElementById('ec_color')?.value.trim() || null;
+await fbSet('courses/' + courseId, c);
+showToast('✅', 'تم حفظ التعديلات!');
 closeModal();
 renderApp();
 }
 
 async function deleteCourse(courseId) {
-if (!confirm("هل أنت متأكد من حذف هذا الكورس بالكامل؟")) return;
+if (!confirm('هل أنت متأكد من حذف هذا الكورس بالكامل؟')) return;
 COURSES = COURSES.filter(c => c.id !== courseId);
-await db.ref(courses/ + courseId).remove();
+await db.ref('courses/' + courseId).remove();
 showToast('🗑️', 'تم حذف الكورس');
 renderApp();
 }
@@ -1386,7 +1367,7 @@ renderApp();
 // MANAGE USERS
 // ============================================================
 async function renderManageUsers() {
-const allUsers = await fbGet(users) || {};
+const allUsers = await fbGet('users') || {};
 const users = Object.entries(allUsers).map(([key, val]) => ({ ...val, ukey: key }));
 
 const html = `<div class="fu">
@@ -1411,7 +1392,7 @@ const html = `<div class="fu">
         <div style="font-size:12px;color:var(--muted2)">${u.ukey}</div>
         <div style="display:flex;gap:4px">
           <button class="btn btn-ghost btn-sm" title="تغيير كلمة السر" onclick="resetPassModal('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🔑</button>
-          ${u.ukey !== S.ukey ? `<button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteUser('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">'🗑️'</button>` : ''}
+          ${u.ukey !== S.ukey ? `<button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteUser('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🗑️</button>` : ''}
         </div>
       </div>
     `).join('')}
@@ -1421,7 +1402,7 @@ const html = `<div class="fu">
 }
 
 function showAddUserModal() {
-document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
 <div class="modal-box">
 <div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ مستخدم جديد</div>
 <div class="fgroup"><label>الاسم الكامل</label><input class="inp" id="nu_n" placeholder="اسم المستخدم"/></div>
@@ -1443,45 +1424,42 @@ document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick
 }
 
 async function saveNewUser() {
-const name = document.getElementById(nu_n)?.value.trim();
-const uname = document.getElementById(nu_u)?.value.trim().toLowerCase().replace(/\s/g, );
-const pass = document.getElementById(nu_p)?.value.trim();
-const role = document.getElementById(nu_r)?.value || employee;
-const errEl = document.getElementById(nu_err);
-errEl.style.display = none;
+const name = document.getElementById('nu_n')?.value.trim();
+const uname = document.getElementById('nu_u')?.value.trim().toLowerCase().replace(/\s/g, '');
+const pass = document.getElementById('nu_p')?.value.trim();
+const role = document.getElementById('nu_r')?.value || 'employee';
+const errEl = document.getElementById('nu_err');
+errEl.style.display = 'none';
 
-if (!name || !uname || !pass) { errEl.textContent = "⚠️ أكمل كل البيانات"; errEl.style.display = block; return; }
-if (pass.length < 6) { errEl.textContent = '⚠️ كلمة السر 6 أحرف على الأقل'; errEl.style.display = block; return; }
+if (!name || !uname || !pass) { errEl.textContent = '⚠️ أكمل كل البيانات'; errEl.style.display = 'block'; return; }
+if (pass.length < 6) { errEl.textContent = '⚠️ كلمة السر 6 أحرف على الأقل'; errEl.style.display = 'block'; return; }
 
-const existing = await fbGet(users/ + uname);
-if (existing) { errEl.textContent = '❌ اسم المستخدم موجود بالفعل'; errEl.style.display = block; return; }
+const existing = await fbGet('users/' + uname);
+if (existing) { errEl.textContent = '❌ اسم المستخدم موجود بالفعل'; errEl.style.display = 'block'; return; }
 
 try {
-const email = uname + "@lms.internal";
-// Create Firebase Auth user
+const email = uname + '@lms.internal';
 await auth.createUserWithEmailAndPassword(email, pass);
-// Save profile in DB
-await fbSet(users/ + uname, { name, role, email, xp: 0, level: 1, streak: 0, badges: [], progress: {}, scores: {} });
+await fbSet('users/' + uname, { name, role, email, xp: 0, level: 1, streak: 0, badges: [], progress: {}, scores: {} });
 closeModal();
-showToast("✅"," تم إضافة  + name");
+showToast('✅', 'تم إضافة ' + name);
 await renderManageUsers();
 } catch (e) {
 console.error(e);
-if (e.code === "auth/email-already-in-use") {
-// User exists in Auth but not DB - just create DB record
-await fbSet(users/ + uname, { name, role, email: uname + "@lms.internal", xp: 0, level: 1, streak: 0, badges: [], progress: {}, scores: {} });
+if (e.code === 'auth/email-already-in-use') {
+await fbSet('users/' + uname, { name, role, email: uname + '@lms.internal', xp: 0, level: 1, streak: 0, badges: [], progress: {}, scores: {} });
 closeModal();
-showToast("✅", "تم إضافة  + name");
+showToast('✅', 'تم إضافة ' + name);
 await renderManageUsers();
 } else {
-errEl.textContent = "❌ خطأ:"  + (e.message || e.code);
-errEl.style.display = block;
+errEl.textContent = '❌ خطأ: ' + (e.message || e.code);
+errEl.style.display = 'block';
 }
 }
 }
 
 function resetPassModal(ukey, uname) {
-document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
 <div class="modal-box" style="max-width:380px">
 <div style="font-weight:800;font-size:15px;margin-bottom:16px">🔑 تغيير سر: ${uname}</div>
 <div class="fgroup"><label>كلمة السر الجديدة</label><input class="inp" id="rp_pass" type="password" placeholder="6 أحرف على الأقل"/></div>
@@ -1496,30 +1474,28 @@ document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick
 }
 
 async function doResetPass(ukey) {
-const newpass = document.getElementById(rp_pass)?.value.trim();
-const errEl = document.getElementById(rp_err);
-if (!newpass || newpass.length < 6) { errEl.textContent = "⚠️ 6 أحرف على الأقل"; errEl.style.display = block; return; }
+const newpass = document.getElementById('rp_pass')?.value.trim();
+const errEl = document.getElementById('rp_err');
+if (!newpass || newpass.length < 6) { errEl.textContent = '⚠️ 6 أحرف على الأقل'; errEl.style.display = 'block'; return; }
 
 try {
-// Update password in DB (note: Firebase Auth password update requires re-auth for other users - simplified here)
-await fbUpdate(users/ + ukey, { _passNote: "Password updated by admin" -  + new Date().toISOString() });
-// In production: use Firebase Admin SDK server-side to update Auth password
+await fbUpdate('users/' + ukey, { _passNote: 'Password updated by admin - ' + new Date().toISOString() });
 closeModal();
-showToast("✅", "تم تحديث كلمة السر في قاعدة البيانات");
+showToast('✅', 'تم تحديث كلمة السر في قاعدة البيانات');
 } catch (e) {
-errEl.textContent = "❌ خطأ:  "+ e.message;
-errEl.style.display = block;
+errEl.textContent = '❌ خطأ: ' + e.message;
+errEl.style.display = 'block';
 }
 }
 
 async function deleteUser(ukey, uname) {
-if (!confirm("هل أنت متأكد من حذف " + uname + "؟ لا يمكن التراجع.")) return;
+if (!confirm('هل أنت متأكد من حذف ' + uname + '؟ لا يمكن التراجع.')) return;
 try {
-await db.ref(users/ + ukey).remove();
-showToast('🗑️', "تم حذف  + uname");
+await db.ref('users/' + ukey).remove();
+showToast('🗑️', 'تم حذف ' + uname);
 await renderManageUsers();
 } catch (e) {
-alert("❌ خطأ:  "+ e.message);
+alert('❌ خطأ: ' + e.message);
 }
 }
 
@@ -1527,7 +1503,7 @@ alert("❌ خطأ:  "+ e.message);
 // CHANGE OWN PASSWORD
 // ============================================================
 function showChangePassModal() {
-document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
 <div class="modal-box" style="max-width:380px">
 <div style="font-weight:800;font-size:15px;margin-bottom:16px">🔑 تغيير كلمة السر</div>
 <div class="fgroup"><label>كلمة السر الحالية</label><input class="inp" id="cp_old" type="password" placeholder="كلمة السر الحالية"/></div>
@@ -1544,29 +1520,28 @@ document.getElementById(overlay).innerHTML = `<div class="modal-overlay" onclick
 }
 
 async function saveChangePass() {
-const oldP = document.getElementById(cp_old)?.value;
-const newP = document.getElementById(cp_new)?.value;
-const conP = document.getElementById(cp_con)?.value;
-const errEl = document.getElementById(cp_err);
-errEl.style.display = none;
+const oldP = document.getElementById('cp_old')?.value;
+const newP = document.getElementById('cp_new')?.value;
+const conP = document.getElementById('cp_con')?.value;
+const errEl = document.getElementById('cp_err');
+errEl.style.display = 'none';
 
-if (!oldP || !newP || !conP) { errEl.textContent = "⚠️ أكمل كل الحقول"; errEl.style.display = block; return; }
-if (newP.length < 6) { errEl.textContent = '⚠️ كلمة السر 6 أحرف على الأقل'; errEl.style.display = block; return; }
-if (newP !== conP) { errEl.textContent = "⚠️ كلمة السر مش متطابقة"; errEl.style.display = block; return; }
+if (!oldP || !newP || !conP) { errEl.textContent = '⚠️ أكمل كل الحقول'; errEl.style.display = 'block'; return; }
+if (newP.length < 6) { errEl.textContent = '⚠️ كلمة السر 6 أحرف على الأقل'; errEl.style.display = 'block'; return; }
+if (newP !== conP) { errEl.textContent = '⚠️ كلمة السر مش متطابقة'; errEl.style.display = 'block'; return; }
 
 try {
 const user = auth.currentUser;
 const email = user.email;
-// Re-authenticate then update password
 const cred = firebase.auth.EmailAuthProvider.credential(email, oldP);
 await user.reauthenticateWithCredential(cred);
 await user.updatePassword(newP);
 closeModal();
-showToast("✅", "تم تغيير كلمة السر بنجاح");
+showToast('✅', 'تم تغيير كلمة السر بنجاح');
 } catch (e) {
-const msgs = { "auth/wrong-password": "❌ كلمة السر الحالية غلط", "auth/weak-password": "❌ كلمة السر ضعيفة" };
-errEl.textContent = msgs[e.code] || "❌ خطأ:  "+ e.message;
-errEl.style.display = block;
+const msgs = { 'auth/wrong-password': '❌ كلمة السر الحالية غلط', 'auth/weak-password': '❌ كلمة السر ضعيفة' };
+errEl.textContent = msgs[e.code] || '❌ خطأ: ' + e.message;
+errEl.style.display = 'block';
 }
 }
 
@@ -1574,22 +1549,20 @@ errEl.style.display = block;
 // NOTIFICATIONS & LOGGING
 // ============================================================
 async function logLogin(username, prevData) {
-const today = new Date().toLocaleDateString(ar-EG);
+const today = new Date().toLocaleDateString('ar-EG');
 const updates = { lastLogin: today };
 
-// Streak logic
 const lastDate = prevData?.lastLogin;
 if (lastDate) {
-const last = new Date(lastDate.split("/").reverse().join("-"));
+const last = new Date(lastDate.split('/').reverse().join('-'));
 const diff = Math.floor((new Date() - last) / 86400000);
 if (diff === 1) {
 updates.streak = (prevData.streak || 0) + 1;
 S.user.streak = updates.streak;
-// streak_7 badge
-if (updates.streak >= 7 && !S.user.badges.includes(streak_7)) {
-S.user.badges.push(streak_7);
+if (updates.streak >= 7 && !S.user.badges.includes('streak_7')) {
+S.user.badges.push('streak_7');
 updates.badges = S.user.badges;
-setTimeout(() => showToast("🔥", "حصلت على شارة “سلسلة 7 أيام”!", "var(-–xp))", 1200));
+setTimeout(() => showToast('🔥', 'حصلت على شارة “سلسلة 7 أيام”!', 'var(–xp)'), 1200);
 }
 } else if (diff > 1) {
 updates.streak = 1;
@@ -1600,101 +1573,96 @@ updates.streak = 1;
 S.user.streak = 1;
 }
 
-await fbUpdate(users/ + username, updates);
-// Log entry
-await fbSet(loginLogs/ + username + _ + Date.now(), { user: username, time: new Date().toISOString() });
+await fbUpdate('users/' + username, updates);
+await fbSet('loginLogs/' + username + '_' + Date.now(), { user: username, time: new Date().toISOString() });
 }
 
 async function loadNotification(username) {
-const userData = await fbGet(users/ + username);
+const userData = await fbGet('users/' + username);
 S.notification = (userData?.notification && !userData.notification.read) ? userData.notification : null;
 }
 
 async function dismissNotification() {
 S.notification = null;
-await fbUpdate(`users/${S.ukey}`, { 
-    "notification/read": true 
-});
-
+await fbUpdate('users/' + S.ukey, { 'notification/read': true });
 renderApp();
 }
 
 async function notifyLate() {
-const allUsers = await fbGet(users) || {};
-const emps = Object.entries(allUsers).filter(([, v]) => v.role === employee);
+const allUsers = await fbGet('users') || {};
+const emps = Object.entries(allUsers).filter(([, v]) => v.role === 'employee');
 const late = emps.filter(([, u]) => COURSES.length > 0 && COURSES.reduce((a, c) => a + ((u.progress || {})[c.id] || 0), 0) / COURSES.length < 30);
 
-if (late.length === 0) { showToast("✅", "لا يوجد Traineeين متأخرين!"); return; }
+if (late.length === 0) { showToast('✅', 'لا يوجد Traineeين متأخرين!'); return; }
 
-const now = new Date().toLocaleDateString(ar-EG);
+const now = new Date().toLocaleDateString('ar-EG');
 await Promise.all(late.map(([key]) =>
-fbUpdate(users/ + key, {
-notification: { msg: "⚠️ تنبيه: لم تكمل الكورسات المطلوبة بعد. يرجى الاستمرار في التعلم.", from: S.name, date: now, read: false }
+fbUpdate('users/' + key, {
+notification: { msg: '⚠️ تنبيه: لم تكمل الكورسات المطلوبة بعد. يرجى الاستمرار في التعلم.', from: S.name, date: now, read: false }
 })
 ));
-showToast("🔔", "تم إرسال تنبيه لـ"  + late.length +  Trainee);
+showToast('🔔', 'تم إرسال تنبيه لـ ' + late.length + ' Trainee');
 }
 
 // ============================================================
 // EXPORT EXCEL
 // ============================================================
 async function exportExcel() {
-const allUsers = await fbGet(users) || {};
-const emps = Object.entries(allUsers).filter(([, v]) => v.role === employee);
-const BOM = "\uFEFF";
-const NL = "\n";
-const headers = [الاسم, "اسم الدخول", الدور, المستوى, XP, "متوسط النتيجة", "التقدم %", الشارات, السلسلة, "آخر دخول"];
+const allUsers = await fbGet('users') || {};
+const emps = Object.entries(allUsers).filter(([, v]) => v.role === 'employee');
+const BOM = '\uFEFF';
+const NL = '\n';
+const headers = ['الاسم', 'اسم الدخول', 'الدور', 'المستوى', 'XP', 'متوسط النتيجة', 'التقدم %', 'الشارات', 'السلسلة', 'آخر دخول'];
 const rows = emps.map(([key, u]) => {
 const scores = Object.values(u.scores || {});
 const avg = scores.length > 0 ? Math.round(scores.reduce((a, v) => a + v, 0) / scores.length) : 0;
 const pct = COURSES.length > 0 ? Math.round(COURSES.reduce((a, c) => a + ((u.progress || {})[c.id] || 0), 0) / COURSES.length) : 0;
-return [u.name || "—", key, ROLE_LABELS[u.role] || u.role, u.level || 1, u.xp || 0, "avg + %", "pct + %", (u.badges || []).length, u.streak || 0, u.lastLogin || "—"];
+return [u.name || '—', key, ROLE_LABELS[u.role] || u.role, u.level || 1, u.xp || 0, avg + '%', pct + '%', (u.badges || []).length, u.streak || 0, u.lastLogin || '—'];
 });
-let csv = BOM + headers.join(",") + NL + rows.map(r => r.map(v => `"${v}"`).join(",")).join(NL);
-const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+let csv = BOM + headers.join(',') + NL + rows.map(r => r.map(v => `"${v}"`).join(',')).join(NL);
+const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
 const url = URL.createObjectURL(blob);
-const a = document.createElement(a);
-a.href = url; a.download = eand_report_ + Date.now() + ".csv"; a.click();
+const a = document.createElement('a');
+a.href = url; a.download = 'eand_report_' + Date.now() + '.csv'; a.click();
 URL.revokeObjectURL(url);
-showToast("📥", "تم التصدير بنجاح!");
+showToast('📥', 'تم التصدير بنجاح!');
 }
 
 // ============================================================
 // MOBILE
 // ============================================================
 function toggleMob() {
-  const sb = document.getElementById("sidebar"); // إضافة ""
-  if(sb) sb.classList.toggle("mob-open"); // إضافة ""
+const sb = document.getElementById('sidebar');
+if (sb) sb.classList.toggle('mob-open');
 }
 
-document.addEventListener("click", (e) => { // إضافة ""
-  const sb = document.getElementById("sidebar"); // إضافة ""
-  if (sb?.classList.contains("mob-open") && !sb.contains(e.target) && !e.target.classList.contains("mob-burger")) {
-    sb.classList.remove("mob-open"); // إضافة ""
-  }
+document.addEventListener('click', (e) => {
+const sb = document.getElementById('sidebar');
+if (sb?.classList.contains('mob-open') && !sb.contains(e.target) && !e.target.classList.contains('mob-burger')) {
+sb.classList.remove('mob-open');
+}
 });
 
 // ============================================================
 // INIT - Firebase Auth State Listener
 // ============================================================
 auth.onAuthStateChanged(async (firebaseUser) => {
-  // إخفاء شاشة التحميل فوراً عند استجابة Firebase
-  const loadingEl = document.getElementById('loadingScreen');
-  if (loadingEl) loadingEl.style.display = 'none'; 
+const loadingEl = document.getElementById('loadingScreen');
+if (loadingEl) loadingEl.style.display = 'none';
 
-  if (firebaseUser) {
-    if (!S.user) {
-      const username = firebaseUser.email.split("@")[0]; // تصحيح @
-      const userData = await fbGet('users/' + username);
-      if (userData) {
-        await afterLogin(username, userData);
-      } else {
-        renderApp();
-      }
-    }
-  } else {
-    renderApp();
-  }
+if (firebaseUser) {
+if (!S.user) {
+const username = firebaseUser.email.split('@')[0];
+const userData = await fbGet('users/' + username);
+if (userData) {
+await afterLogin(username, userData);
+} else {
+renderApp();
+}
+}
+} else {
+renderApp();
+}
 });
 </script>
 
