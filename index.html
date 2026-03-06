@@ -154,7 +154,6 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
 .streak-day.today{border-color:var(--red);color:var(--red);background:var(--reddim)}
 .streak-day.miss{opacity:.5}
 
-/* Mob burger */
 /* UPLOAD */
 .upload-area{border:2px dashed var(--border);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.02)}
 .upload-area:hover,.upload-area.drag{border-color:var(--red);background:var(--reddim)}
@@ -207,32 +206,29 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
    <div class="nav-lbl">القائمة</div>
    <div id="navItems"></div>
 
-
-<div class="sb-footer">
- <div class="user-chip">
-   <div class="u-av" id="uAvTxt">
-     <span id="uAvChar">?</span>
-     <div class="u-level-badge" id="uLvlBadge">1</div>
+   <div class="sb-footer">
+     <div class="user-chip">
+       <div class="u-av" id="uAvTxt">
+         <span id="uAvChar">?</span>
+         <div class="u-level-badge" id="uLvlBadge">1</div>
+       </div>
+       <div style="flex:1;min-width:0">
+         <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="uName"></div>
+         <div style="font-size:10px;color:var(--muted2)" id="uRole"></div>
+       </div>
+     </div>
+     <div style="height:10px"></div>
+     <div class="xp-bar-wrap">
+       <div class="xp-bar-fill" id="sbXpFill" style="width:0%"></div>
+     </div>
+     <div style="display:flex;justify-content:space-between;margin-top:6px">
+       <div style="font-size:9px;color:var(--muted2)" id="sbXpTxt">0/200 XP</div>
+       <div style="font-size:9px;color:var(--muted2)" id="sbLvlTxt">المستوى 1</div>
+     </div>
+     <div style="height:14px"></div>
+     <button class="btn btn-ghost" style="width:100%;margin-bottom:6px" onclick="showChangePassModal()">🔑 تغيير كلمة السر</button>
+     <button class="btn btn-ghost" style="width:100%" onclick="logout()">تسجيل الخروج</button>
    </div>
-   <div style="flex:1;min-width:0">
-     <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="uName"></div>
-     <div style="font-size:10px;color:var(--muted2)" id="uRole"></div>
-   </div>
- </div>
- <div style="height:10px"></div>
- <div class="xp-bar-wrap">
-   <div class="xp-bar-fill" id="sbXpFill" style="width:0%"></div>
- </div>
- <div style="display:flex;justify-content:space-between;margin-top:6px">
-   <div style="font-size:9px;color:var(--muted2)" id="sbXpTxt">0/200 XP</div>
-   <div style="font-size:9px;color:var(--muted2)" id="sbLvlTxt">المستوى 1</div>
- </div>
- <div style="height:14px"></div>
- <button class="btn btn-ghost" style="width:100%;margin-bottom:6px" onclick="showChangePassModal()">🔑 تغيير كلمة السر</button>
- <button class="btn btn-ghost" style="width:100%" onclick="logout()">تسجيل الخروج</button>
-</div>
-
-
  </div>
 
  <div class="main" id="mainArea"></div>
@@ -243,8 +239,6 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
 <div id="loginScreen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;max-width:420px;margin:0 auto;text-align:center">
  <div style="font-size:32px;font-weight:900;color:var(--red);letter-spacing:-1px;margin-bottom:4px">e& <span style="color:var(--text)">Academy</span> 🚀</div>
  <div style="font-size:12px;color:var(--muted2);margin-bottom:24px">منصة تدريب خدمة العملاء</div>
-
- <!-- STEP 1: اختيار الدور -->
 
  <div id="roleStep" style="width:100%">
    <div style="font-size:11px;font-weight:800;color:var(--muted2);margin-bottom:12px;text-align:right">اختر نوع حسابك أولاً</div>
@@ -266,8 +260,6 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
      </div>
    </div>
  </div>
-
- <!-- STEP 2: فورم الدخول -->
 
  <div id="loginFormStep" style="width:100%;display:none">
    <div id="roleHeader" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:16px;text-align:right">
@@ -323,13 +315,35 @@ async function fbGet(path) {
  const snap = await db.ref(path).once('value');
  return snap.val();
 }
-
 async function fbSet(path, value) {
  await db.ref(path).set(value);
 }
-
 async function fbUpdate(path, value) {
  await db.ref(path).update(value);
+}
+
+// ============================================================
+// FIX #3 — YouTube URL normalizer
+// يحوّل أي رابط يوتيوب (watch/share/shorts) لرابط embed
+// ============================================================
+function normalizeYouTubeUrl(url) {
+ if (!url) return '';
+ url = url.trim();
+ // لو هو بالفعل embed رابط، رجّعه كما هو
+ if (url.includes('youtube.com/embed/')) return url;
+ // استخرج الـ video ID من أي صيغة
+ let videoId = null;
+ // صيغة watch?v=
+ let m = url.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+ if (m) videoId = m[1];
+ // صيغة youtu.be/
+ if (!videoId) { m = url.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/); if (m) videoId = m[1]; }
+ // صيغة /shorts/
+ if (!videoId) { m = url.match(/\/shorts\/([a-zA-Z0-9_-]{11})/); if (m) videoId = m[1]; }
+ // صيغة /embed/ بدون youtube.com كامل
+ if (!videoId) { m = url.match(/\/embed\/([a-zA-Z0-9_-]{11})/); if (m) videoId = m[1]; }
+ if (videoId) return 'https://www.youtube.com/embed/' + videoId;
+ return url; // رجّع الرابط الأصلي لو مش عارف يحوّله
 }
 
 // رفع ملف على Firebase Storage مع شريط تقدم
@@ -339,7 +353,6 @@ function uploadFile(file, folder, progressBarId) {
    const filename = folder + '/' + Date.now() + '_' + Math.random().toString(36).slice(2) + '.' + ext;
    const ref = storage.ref(filename);
    const task = ref.put(file);
-
    task.on('state_changed',
      snap => {
        const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
@@ -375,11 +388,14 @@ const S = {
  currentLessonId: null,
  currentExam: null,
  examResult: null,
- selectedLoginRole: null, // 'trainee' | 'trainer' | 'admin'
+ selectedLoginRole: null,
+ // FIX #1 — flag لمنع double-login من onAuthStateChanged
+ _loginInProgress: false,
+ _loggedIn: false,
 };
 
 // ============================================================
-// STATIC DATA - برامج تدريب خدمة العملاء
+// STATIC DATA
 // ============================================================
 const COURSES_DEFAULT = [
  { id: 'cs1', title: 'أساسيات خدمة العملاء', icon: '🌟', color: '#00b4d8', lessons: [
@@ -451,20 +467,14 @@ const ROLE_INFO = {
 function selectLoginRole(role) {
  S.selectedLoginRole = role;
  const info = ROLE_INFO[role];
-
- // تظليل الكرت المختار
  ['trainee','trainer','admin'].forEach(r => {
    const el = document.getElementById('rc_' + r);
    if (el) { el.style.opacity = r === role ? '1' : '0.35'; el.style.transform = r === role ? 'scale(1.06)' : 'scale(1)'; }
  });
-
- // تحديث header الفورم
  document.getElementById('roleHeaderIcon').textContent = info.icon;
  document.getElementById('roleHeaderLabel').textContent = info.sub;
  document.getElementById('roleHeaderLabel').style.color = info.color;
  document.getElementById('roleHeaderSub').textContent = info.label;
-
- // إظهار فورم الدخول
  const form = document.getElementById('loginFormStep');
  form.style.display = 'block';
  form.style.animation = 'fadeUp .3s ease';
@@ -485,44 +495,52 @@ function resetLoginRole() {
 }
 
 // ============================================================
-// AUTH
+// FIX #1 — doLogin: يمنع race condition مع onAuthStateChanged
 // ============================================================
 async function doLogin() {
  if (!S.selectedLoginRole) { showErr('اختر نوع حسابك أولاً.'); return; }
-
  const usernameEl = document.getElementById('username');
  const passwordEl = document.getElementById('password');
  const loginBtn   = document.getElementById('loginBtn');
  const errEl      = document.getElementById('loginErr');
-
- const username = usernameEl.value.trim();
- const password = passwordEl.value.trim();
+ const username   = usernameEl.value.trim();
+ const password   = passwordEl.value.trim();
  errEl.style.display = 'none';
 
  if (!username || !password) { showErr('أكمل اسم المستخدم وكلمة المرور.', errEl); return; }
 
  loginBtn.disabled = true;
  loginBtn.textContent = 'جاري الدخول...';
+ S._loginInProgress = true; // منع onAuthStateChanged يتدخل
 
  try {
+   // تسجيل الخروج الأول لو في جلسة قديمة معلّقة
+   await auth.signOut().catch(() => {});
+
    const email = username + '@lms.internal';
    await auth.signInWithEmailAndPassword(email, password);
+
    const userData = await fbGet('users/' + username);
 
    if (!userData) {
      await auth.signOut();
-     showErr('المستخدم غير موجود في النظام.', errEl);
-     loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀'; return;
+     showErr('المستخدم غير موجود في النظام. تأكد من اسم المستخدم.', errEl);
+     loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀';
+     S._loginInProgress = false;
+     return;
    }
 
-   // التحقق أن الدور المختور يطابق الحساب
+   // التحقق أن الدور المختار يطابق الحساب
    const expectedRole = ROLE_INFO[S.selectedLoginRole].dbRole;
    if (userData.role !== expectedRole) {
      await auth.signOut();
-     showErr('هذا الحساب مسجل كـ "' + (ROLE_LABELS[userData.role]||userData.role) + '" وليس ' + ROLE_INFO[S.selectedLoginRole].label + '.', errEl);
-     loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀'; return;
+     showErr('هذا الحساب مسجل كـ "' + (ROLE_LABELS[userData.role] || userData.role) + '" وليس ' + ROLE_INFO[S.selectedLoginRole].label + '.', errEl);
+     loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀';
+     S._loginInProgress = false;
+     return;
    }
 
+   S._loggedIn = true;
    await afterLogin(username, userData);
 
  } catch (e) {
@@ -535,6 +553,7 @@ async function doLogin() {
    };
    showErr(msgs[e.code] || 'اسم المستخدم أو كلمة المرور غير صحيحة.', errEl);
    loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀';
+   S._loginInProgress = false;
  }
 }
 
@@ -555,6 +574,12 @@ async function afterLogin(username, userData) {
  const fbCourses = await fbGet('courses');
  if (fbCourses) {
    COURSES = Object.values(fbCourses);
+ } else {
+   // لو مافيش كورسات في Firebase، ارفع الافتراضية
+   COURSES = JSON.parse(JSON.stringify(COURSES_DEFAULT));
+   for (const c of COURSES) {
+     await fbSet('courses/' + c.id, c);
+   }
  }
 
  await logLogin(username, userData);
@@ -566,12 +591,18 @@ async function afterLogin(username, userData) {
    setTimeout(() => showToast('👋', 'حصلت على شارة "أول تسجيل دخول"!', 'var(--xp)'), 1000);
  }
 
+ S._loginInProgress = false;
  setState({ screen: 'home' });
 }
 
 async function logout() {
  try { await auth.signOut(); } catch (e) {}
- Object.assign(S, { screen: 'login', user: null, ukey: null, role: null, name: null, notification: null, courseId: null, currentLessonId: null, currentExam: null, examResult: null, selectedLoginRole: null });
+ Object.assign(S, {
+   screen: 'login', user: null, ukey: null, role: null, name: null,
+   notification: null, courseId: null, currentLessonId: null,
+   currentExam: null, examResult: null, selectedLoginRole: null,
+   _loggedIn: false, _loginInProgress: false,
+ });
  resetLoginRole();
  renderApp();
 }
@@ -589,8 +620,8 @@ function setState(newState) {
 // ============================================================
 async function renderApp() {
  const loadingEl = document.getElementById('loadingScreen');
- const loginEl = document.getElementById('loginScreen');
- const appEl = document.getElementById('appShell');
+ const loginEl   = document.getElementById('loginScreen');
+ const appEl     = document.getElementById('appShell');
 
  if (loadingEl) loadingEl.style.display = 'none';
 
@@ -598,7 +629,7 @@ async function renderApp() {
    loginEl.style.display = 'flex';
    appEl.style.display = 'none';
    const lb = document.getElementById('loginBtn');
-   if (lb) { lb.disabled = false; lb.textContent = 'دخول'; }
+   if (lb) { lb.disabled = false; lb.textContent = 'دخول 🚀'; }
    return;
  }
 
@@ -643,20 +674,17 @@ function renderNav() {
  const role = S.user?.role;
  let items = [];
  if (role === 'employee') {
-   // متدرب: يشوف كورساته وإنجازاته وترتيبه فقط
    items = [
      { icon: '🏠', label: 'الرئيسية',   screen: 'home' },
      { icon: '🏆', label: 'إنجازاتي',   screen: 'achievements' },
      { icon: '📊', label: 'لوحة الشرف', screen: 'leaderboard' },
    ];
  } else if (role === 'tracker') {
-   // مدرب: يشوف تقدم المتدربين + يضيف/يحذف متدربين فقط
    items = [
      { icon: '📊', label: 'تقدم المتدربين',  screen: 'tracking'    },
      { icon: '🧑‍💼', label: 'إدارة المتدربين', screen: 'manageusers' },
    ];
  } else if (role === 'content') {
-   // مدير: كل الصلاحيات
    items = [
      { icon: '📊', label: 'لوحة المتابعة',   screen: 'tracking'    },
      { icon: '📚', label: 'إدارة المحتوى',   screen: 'content'     },
@@ -665,7 +693,6 @@ function renderNav() {
  } else {
    items = [{ icon: '🏠', label: 'الرئيسية', screen: 'home' }];
  }
-
  const nav = document.getElementById('navItems');
  if (nav) {
    nav.innerHTML = items.map(it => `
@@ -677,7 +704,7 @@ function renderNav() {
 
 function updateSidebarUser() {
  const nameEl = document.getElementById('uName');
- const avEl = document.getElementById('uAvChar');
+ const avEl   = document.getElementById('uAvChar');
  const roleEl = document.getElementById('uRole');
  if (nameEl && S.user) nameEl.textContent = S.user.name || '';
  if (avEl && S.user) avEl.textContent = (S.user.name || '?').charAt(0);
@@ -710,17 +737,17 @@ function showXpPopup(amount, el) {
  div.textContent = '+' + amount + ' XP ⭐';
  const r = el?.getBoundingClientRect?.();
  div.style.left = (r ? r.left + r.width / 2 : window.innerWidth / 2) + 'px';
- div.style.top = (r ? r.top : window.innerHeight / 2) + 'px';
+ div.style.top  = (r ? r.top : window.innerHeight / 2) + 'px';
  document.getElementById('xpArea').appendChild(div);
  setTimeout(() => div.remove(), 1200);
 }
 
 function launchConfetti() {
- const colors = ['#e4002b', '#ffd700', '#00d68f', '#00b4d8', '#a78bfa', '#ff6b6b'];
+ const colors = ['#e4002b','#ffd700','#00d68f','#00b4d8','#a78bfa','#ff6b6b'];
  for (let i = 0; i < 60; i++) {
    const el = document.createElement('div');
    el.className = 'confetti-piece';
-   el.style.cssText = `left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};border-radius:${Math.random() > .5 ? '50%' : '3px'};width:${6 + Math.random() * 8}px;height:${6 + Math.random() * 8}px;animation-duration:${1.5 + Math.random() * 2}s;animation-delay:${Math.random() * .8}s`;
+   el.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.5?'50%':'3px'};width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.8}s`;
    document.body.appendChild(el);
    setTimeout(() => el.remove(), 4000);
  }
@@ -732,19 +759,15 @@ function showToast(icon, msg, clr = 'var(--green)') {
  t.innerHTML = `<span style="font-size:20px">${icon}</span><span>${msg}</span>`;
  t.style.borderColor = clr;
  document.getElementById('toastArea').appendChild(t);
- setTimeout(() => {
-   t.style.opacity = '0';
-   t.style.transition = 'opacity .4s';
-   setTimeout(() => t.remove(), 400);
- }, 3500);
+ setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .4s'; setTimeout(() => t.remove(), 400); }, 3500);
 }
 
 function showLevelUp(lv) {
- const icons = ['🌱', '⭐', '🔥', '💎', '👑', '🚀', '🌟', '🏆', '💯', '🎖️'];
+ const icons = ['🌱','⭐','🔥','💎','👑','🚀','🌟','🏆','💯','🎖️'];
  document.getElementById('overlay').innerHTML = `
    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
      <div class="modal-box" style="max-width:380px;text-align:center;animation:levelUp .6s cubic-bezier(.34,1.56,.64,1)">
-       <div style="font-size:64px;animation:pop .6s ease">${icons[(lv - 1) % icons.length]}</div>
+       <div style="font-size:64px;animation:pop .6s ease">${icons[(lv-1)%icons.length]}</div>
        <div style="font-size:22px;font-weight:900;margin:12px 0 6px;color:var(--purple)">مستوى جديد! 🎉</div>
        <div style="font-size:32px;font-weight:900;color:var(--xp)">المستوى ${lv}</div>
        <div style="color:var(--muted2);font-size:13px;margin:10px 0 20px">رائع! أنت تتقدم بسرعة 🚀</div>
@@ -775,11 +798,7 @@ function getRandMsg(k) {
  const a = MASCOT_MSGS[k] || MASCOT_MSGS.home;
  return a[Math.floor(Math.random() * a.length)];
 }
-
-function getFirstName(n) {
- return n ? n.split(' ')[0] : '';
-}
-
+function getFirstName(n) { return n ? n.split(' ')[0] : ''; }
 function showErr(msg, el) {
  const target = el || document.getElementById('loginErr');
  if (target) { target.textContent = msg; target.style.display = 'block'; }
@@ -791,19 +810,19 @@ function showErr(msg, el) {
 function renderHome() {
  const u = S.user;
  const prog = u.progress || {};
- const totalProg = COURSES.length > 0 ? Math.round(COURSES.reduce((a, c) => a + (prog[c.id] || 0), 0) / COURSES.length) : 0;
- const done = COURSES.filter(c => (prog[c.id] || 0) >= 100).length;
+ const totalProg = COURSES.length > 0 ? Math.round(COURSES.reduce((a,c) => a+(prog[c.id]||0), 0)/COURSES.length) : 0;
+ const done = COURSES.filter(c => (prog[c.id]||0) >= 100).length;
  const xp = u.xp || 0;
  const level = u.level || 1;
  const xpInLevel = xp % 200;
- const xpPct = Math.min((xpInLevel / 200) * 100, 100);
- const lvIcons = ['🌱', '⭐', '🔥', '💎', '👑', '🚀', '🌟', '🏆', '💯', '🎖️'];
+ const xpPct = Math.min((xpInLevel/200)*100, 100);
+ const lvIcons = ['🌱','⭐','🔥','💎','👑','🚀','🌟','🏆','💯','🎖️'];
 
  return `<div class="fu">
  ${S.notification ? `<div style="background:linear-gradient(135deg,#ff4444,#c8001f);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;animation:fadeUp .3s ease">
    <span style="font-size:20px">🔔</span>
    <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#fff">${S.notification.msg}</div>
-   <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px">من: ${S.notification.from || 'الإدارة'} · ${S.notification.date || ''}</div></div>
+   <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px">من: ${S.notification.from||'الإدارة'} · ${S.notification.date||''}</div></div>
    <span onclick="dismissNotification()" style="cursor:pointer;color:rgba(255,255,255,.7);font-size:18px">✕</span>
  </div>` : ''}
 
@@ -812,19 +831,19 @@ function renderHome() {
    <div style="display:flex;align-items:center;gap:10px">
      <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--xp)">${xp}</div><div style="font-size:9px;color:#7a8aaa">⭐ XP</div></div>
      <div style="width:1px;height:28px;background:var(--border)"></div>
-     <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--red)">${u.streak || 0}</div><div style="font-size:9px;color:#7a8aaa">🔥 يوم</div></div>
+     <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--red)">${u.streak||0}</div><div style="font-size:9px;color:#7a8aaa">🔥 يوم</div></div>
    </div>
  </div>
 
  <div class="hero-card fu" style="animation-delay:.04s;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
    <div style="flex:1;min-width:200px">
      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-       <div style="font-size:28px">${lvIcons[(level - 1) % lvIcons.length]}</div>
+       <div style="font-size:28px">${lvIcons[(level-1)%lvIcons.length]}</div>
        <div><div style="font-size:13px;font-weight:900">المستوى ${level}</div><div style="font-size:10px;color:var(--muted2)">${xpInLevel}/200 XP للمستوى التالي</div></div>
      </div>
      <div class="xp-bar-wrap" style="margin-bottom:14px"><div class="xp-bar-fill" style="width:${xpPct}%"></div></div>
      <div style="display:flex;gap:20px;flex-wrap:wrap">
-       ${[['✅', 'مكتمل', done + '/' + COURSES.length, 'var(--green)'], ['🎯', 'التقدم', totalProg + '%', 'var(--red)'], ['🏅', 'شارات', (u.badges || []).length, 'var(--xp)']].map(s =>
+       ${[['✅','مكتمل',done+'/'+COURSES.length,'var(--green)'],['🎯','التقدم',totalProg+'%','var(--red)'],['🏅','شارات',(u.badges||[]).length,'var(--xp)']].map(s=>
          `<div><div style="font-size:20px;font-weight:900;color:${s[3]}">${s[2]}</div><div style="font-size:9px;color:#7a8aaa;font-weight:600">${s[0]} ${s[1]}</div></div>`
        ).join('')}
      </div>
@@ -838,14 +857,14 @@ function renderHome() {
  <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:18px">
    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
      <div style="font-size:13px;font-weight:900">🔥 السلسلة اليومية</div>
-     <span class="tag" style="background:rgba(255,179,0,.15);color:var(--amber)">${u.streak || 0} يوم</span>
+     <span class="tag" style="background:rgba(255,179,0,.15);color:var(--amber)">${u.streak||0} يوم</span>
    </div>
    <div style="display:flex;gap:6px;justify-content:center">
-     ${['س', 'ح', 'ث', 'أ', 'خ', 'ج', 'ش'].map((d, i) => {
+     ${['س','ح','ث','أ','خ','ج','ش'].map((d,i) => {
        const streak = u.streak || 0;
        const isDone = i < streak % 7 || (streak >= 7 && i < 7);
-       const isToday = i === streak % 7 && streak % 7 !== 0 || (streak === 0 && i === 0);
-       return `<div style="text-align:center"><div class="streak-day ${isDone ? 'done' : isToday ? 'today' : 'miss'}">${isDone ? '✓' : d}</div><div style="font-size:8px;color:#7a8aaa;margin-top:3px">${d}</div></div>`;
+       const isToday = (i === streak % 7 && streak % 7 !== 0) || (streak === 0 && i === 0);
+       return `<div style="text-align:center"><div class="streak-day ${isDone?'done':isToday?'today':'miss'}">${isDone?'✓':d}</div><div style="font-size:8px;color:#7a8aaa;margin-top:3px">${d}</div></div>`;
      }).join('')}
    </div>
  </div>
@@ -855,12 +874,12 @@ function renderHome() {
    <span style="font-size:11px;color:var(--muted2)">${COURSES.length} برامج تدريبية</span>
  </div>
  <div class="courses-grid">
-   ${COURSES.map((c, i) => {
+   ${COURSES.map((c,i) => {
      const p = prog[c.id] || 0;
      const stars = p >= 100 ? 3 : p >= 70 ? 2 : p > 0 ? 1 : 0;
-     return `<div class="c-card fu" style="animation-delay:${i * .05}s" onclick="setState({screen:'course',courseId:'${c.id}',currentLessonId:null})">
-       <div class="c-thumb" style="background:${c.color ? c.color + '22' : 'var(--reddim)'}">
-         <div class="c-thumb-glow" style="background:${c.color || 'var(--red)'}"></div>
+     return `<div class="c-card fu" style="animation-delay:${i*.05}s" onclick="setState({screen:'course',courseId:'${c.id}',currentLessonId:null})">
+       <div class="c-thumb" style="background:${c.color?c.color+'22':'var(--reddim)'}">
+         <div class="c-thumb-glow" style="background:${c.color||'var(--red)'}"></div>
          ${c.icon}
        </div>
        <div class="c-body">
@@ -869,7 +888,7 @@ function renderHome() {
          <div class="pbar"><div class="pfill" style="width:${p}%"></div></div>
          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
            <div style="font-size:9px;color:var(--muted2)">${Math.round(p)}% مكتمل</div>
-           <div>${Array(3).fill(0).map((_, idx) => `<span style="color:${idx < stars ? 'var(--xp)' : 'var(--muted)'};font-size:12px">⭐</span>`).join('')}</div>
+           <div>${Array(3).fill(0).map((_,idx)=>`<span style="color:${idx<stars?'var(--xp)':'var(--muted)'};font-size:12px">⭐</span>`).join('')}</div>
          </div>
        </div>
      </div>`;
@@ -888,18 +907,18 @@ function renderAchievements() {
    <div><div class="pg-title">🏆 إنجازاتي</div><div class="pg-sub">الشارات التي حصلت عليها</div></div>
  </div>
  <div class="courses-grid">
-   ${BADGES.map((b, i) => {
+   ${BADGES.map((b,i) => {
      const has = userBadges.includes(b.id);
-     return `<div class="c-card fu" style="animation-delay:${i * .05}s;${!has ? 'opacity:.4;filter:grayscale(1)' : ''}">
+     return `<div class="c-card fu" style="animation-delay:${i*.05}s;${!has?'opacity:.4;filter:grayscale(1)':''}">
        <div class="c-thumb" style="background:rgba(255,215,0,.1)">
          <div class="c-thumb-glow" style="background:var(--xp)"></div>
          <span style="font-size:54px">${b.icon}</span>
        </div>
        <div class="c-body">
          <div style="font-size:14px;font-weight:800;margin-bottom:6px">${b.name}</div>
-         <div style="font-size:10px;color:var(--muted2);min-height:30px">${b.desc || ''}</div>
-         ${has ? `<span class="tag" style="background:rgba(0,214,143,.15);color:var(--green);margin-top:10px">✅ مكتمل</span>` :
-                 `<span class="tag" style="background:rgba(255,255,255,.05);color:var(--muted);margin-top:10px">🔒 لم يكتمل</span>`}
+         <div style="font-size:10px;color:var(--muted2);min-height:30px">${b.desc||''}</div>
+         ${has?`<span class="tag" style="background:rgba(0,214,143,.15);color:var(--green);margin-top:10px">✅ مكتمل</span>`:
+               `<span class="tag" style="background:rgba(255,255,255,.05);color:var(--muted);margin-top:10px">🔒 لم يكتمل</span>`}
        </div>
      </div>`;
    }).join('')}
@@ -913,7 +932,6 @@ function renderAchievements() {
 function renderCourse() {
  const course = COURSES.find(c => c.id === S.courseId);
  if (!course) return `<div style="padding:30px;text-align:center;color:var(--muted2)">الكورس غير موجود.</div>`;
-
  const u = S.user;
  const lessons = course.lessons || [];
  const firstLesson = lessons[0];
@@ -941,16 +959,16 @@ function renderCourse() {
        <div style="font-size:10px;color:var(--muted2);margin-top:2px">${lessons.length} دروس</div>
      </div>
      ${lessons.map(lesson => {
-       const lessonProg = (u.progress[course.id] || {})[lesson.id];
+       const lessonProg = ((u.progress[course.id] || {})[lesson.id]);
        const isDone = lessonProg === 100;
        const isCurrent = S.currentLessonId === lesson.id;
-       return `<div class="lesson-row ${isCurrent ? 'active' : ''}" onclick="setState({currentLessonId:'${lesson.id}'})">
-         <div class="l-check ${isDone ? 'done' : isCurrent ? 'cur' : ''}">
-           ${isDone ? '✓' : isCurrent ? '▶' : ''}
+       return `<div class="lesson-row ${isCurrent?'active':''}" onclick="setState({currentLessonId:'${lesson.id}'})">
+         <div class="l-check ${isDone?'done':isCurrent?'cur':''}">
+           ${isDone?'✓':isCurrent?'▶':''}
          </div>
          <div style="flex:1;min-width:0">
            <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lesson.title}</div>
-           <div style="font-size:10px;color:var(--muted2);margin-top:2px">${lesson.duration || ''} · ${lesson.xp || 0} XP · <span style="color:${lesson.type === 'امتحان' ? 'var(--amber)' : 'var(--blue)'}">${lesson.type}</span></div>
+           <div style="font-size:10px;color:var(--muted2);margin-top:2px">${lesson.duration||''} · ${lesson.xp||0} XP · <span style="color:${lesson.type==='امتحان'?'var(--amber)':lesson.type==='بوربوينت'?'var(--purple)':lesson.type==='صوت'?'var(--green)':lesson.type==='ملف'?'var(--muted2)':'var(--blue)'}">${lesson.type==='فيديو'?'🎬':lesson.type==='نص'?'📄':lesson.type==='صورة'?'🖼️':lesson.type==='بوربوينت'?'📊':lesson.type==='صوت'?'🎧':lesson.type==='ملف'?'📎':lesson.type==='امتحان'?'📝':'📌'} ${lesson.type}</span></div>
          </div>
        </div>`;
      }).join('')}
@@ -962,8 +980,7 @@ function renderCourse() {
 function renderLessonContent(course, lessonId) {
  const lesson = (course.lessons || []).find(l => l.id === lessonId);
  if (!lesson) return `<div style="padding:30px;text-align:center;color:var(--muted2)">الدرس غير موجود.</div>`;
-
- const lessonProg = (S.user.progress[course.id] || {})[lessonId];
+ const lessonProg = ((S.user.progress[course.id] || {})[lessonId]);
  const isDone = lessonProg === 100;
 
  let mediaHtml = '';
@@ -972,17 +989,56 @@ function renderLessonContent(course, lessonId) {
      <div style="font-size:48px;margin-bottom:14px">📝</div>
      <div style="font-size:18px;font-weight:900;margin-bottom:8px">${lesson.title}</div>
      <div style="font-size:12px;color:var(--muted2);margin-bottom:20px">${lesson.exam.questions.length} أسئلة · حد النجاح ${lesson.exam.passScore}%</div>
-     ${isDone ? `<div class="tag" style="background:rgba(0,214,143,.15);color:var(--green);font-size:12px;padding:8px 16px;margin-bottom:14px">✅ اجتزت هذا الاختبار</div><br>` : ''}
+     ${isDone?`<div class="tag" style="background:rgba(0,214,143,.15);color:var(--green);font-size:12px;padding:8px 16px;margin-bottom:14px">✅ اجتزت هذا الاختبار</div><br>`:''}
      <button class="btn btn-red" onclick="startExam('${course.id}','${lessonId}')">
-       ${isDone ? '🔄 إعادة الاختبار' : '🚀 ابدأ الاختبار'}
+       ${isDone?'🔄 إعادة الاختبار':'🚀 ابدأ الاختبار'}
      </button>
    </div>`;
  } else if (lesson.yt) {
-   mediaHtml = `<div class="video-wrap"><iframe src="${lesson.yt}" allowfullscreen></iframe></div>`;
+   // FIX #3 — تطبيع رابط يوتيوب
+   const ytEmbed = normalizeYouTubeUrl(lesson.yt);
+   mediaHtml = `<div class="video-wrap"><iframe src="${ytEmbed}" allowfullscreen allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"></iframe></div>`;
  } else if (lesson.pdf) {
    mediaHtml = `<div style="border-radius:18px;overflow:hidden;height:480px;border:1px solid var(--border)"><iframe src="${lesson.pdf}" style="width:100%;height:100%;border:none"></iframe></div>`;
  } else if (lesson.img) {
    mediaHtml = `<div style="border-radius:18px;overflow:hidden;border:1px solid var(--border);text-align:center;background:var(--card)"><img src="${lesson.img}" style="max-width:100%;max-height:500px;object-fit:contain;display:block;margin:0 auto"/></div>`;
+ } else if (lesson.ppt) {
+   // PowerPoint عبر Microsoft Office Online
+   const encodedUrl = encodeURIComponent(lesson.ppt);
+   mediaHtml = `<div style="border-radius:18px;overflow:hidden;height:500px;border:1px solid var(--border);background:var(--card)">
+     <iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}" style="width:100%;height:100%;border:none"></iframe>
+   </div>
+   <div style="margin-top:8px;text-align:left">
+     <a href="${lesson.ppt}" target="_blank" download class="btn btn-ghost btn-sm" style="text-decoration:none">📥 تحميل الملف</a>
+   </div>`;
+ } else if (lesson.audio) {
+   mediaHtml = `<div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:30px;text-align:center">
+     <div style="font-size:56px;margin-bottom:16px;animation:float 3s ease-in-out infinite">🎧</div>
+     <div style="font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text)">${lesson.fileName || lesson.title}</div>
+     <audio controls style="width:100%;max-width:480px;border-radius:10px;outline:none">
+       <source src="${lesson.audio}">
+       متصفحك لا يدعم تشغيل الصوت.
+     </audio>
+     <div style="margin-top:12px">
+       <a href="${lesson.audio}" target="_blank" download class="btn btn-ghost btn-sm" style="text-decoration:none">📥 تحميل</a>
+     </div>
+   </div>`;
+ } else if (lesson.file) {
+   const ext = (lesson.fileName||'').split('.').pop().toUpperCase();
+   const fileIcons = {PDF:'📄',DOC:'📝',DOCX:'📝',XLS:'📊',XLSX:'📊',ZIP:'🗜️',RAR:'🗜️',TXT:'📃',PPT:'📊',PPTX:'📊'};
+   const fileIcon = fileIcons[ext] || '📎';
+   const fileColors = {DOC:'#2b579a',DOCX:'#2b579a',XLS:'#217346',XLSX:'#217346',ZIP:'#f5a623',RAR:'#f5a623',PDF:'#e4002b'};
+   const fileColor = fileColors[ext] || 'var(--muted2)';
+   mediaHtml = `<div style="background:var(--card);border:1px solid var(--border);border-radius:18px;padding:40px;text-align:center">
+     <div style="font-size:64px;margin-bottom:16px">${fileIcon}</div>
+     <div style="font-size:16px;font-weight:800;margin-bottom:6px">${lesson.fileName || lesson.title}</div>
+     <div style="display:inline-block;background:${fileColor}22;color:${fileColor};border:1px solid ${fileColor}44;border-radius:6px;padding:3px 10px;font-size:11px;font-weight:800;margin-bottom:20px">${ext || 'FILE'}</div>
+     <div>
+       <a href="${lesson.file}" target="_blank" download="${lesson.fileName||''}" class="btn btn-red" style="text-decoration:none;display:inline-flex">
+         📥 تحميل الملف
+       </a>
+     </div>
+   </div>`;
  } else {
    mediaHtml = `<div style="background:var(--card);border-radius:18px;padding:30px;text-align:center;border:1px solid var(--border);color:var(--muted2)">لا يوجد محتوى مرفق</div>`;
  }
@@ -992,13 +1048,13 @@ function renderLessonContent(course, lessonId) {
    <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px">
      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
        <div style="font-size:16px;font-weight:800;flex:1">${lesson.title}</div>
-       ${isDone ? `<span class="tag" style="background:rgba(0,214,143,.15);color:var(--green)">✅ مكتمل</span>` : ''}
+       ${isDone?`<span class="tag" style="background:rgba(0,214,143,.15);color:var(--green)">✅ مكتمل</span>`:''}
      </div>
-     <div style="font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:14px">${lesson.desc || ''}</div>
+     <div style="font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:14px">${lesson.desc||''}</div>
      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--border)">
-       <div style="font-size:11px;color:var(--muted2)">⏱ ${lesson.duration || ''} &nbsp;·&nbsp; ⭐ ${lesson.xp || 0} XP</div>
-       ${lesson.type !== 'امتحان' ? `<button class="btn ${isDone ? 'btn-ghost' : 'btn-red'} btn-sm" onclick="completeLesson('${course.id}','${lessonId}',this)">
-         ${isDone ? '✓ مكتمل' : 'أكمل الدرس ✓'}
+       <div style="font-size:11px;color:var(--muted2)">⏱ ${lesson.duration||''} &nbsp;·&nbsp; ⭐ ${lesson.xp||0} XP</div>
+       ${lesson.type !== 'امتحان' ? `<button class="btn ${isDone?'btn-ghost':'btn-red'} btn-sm" onclick="completeLesson('${course.id}','${lessonId}',this)">
+         ${isDone?'✓ مكتمل':'أكمل الدرس ✓'}
        </button>` : ''}
      </div>
    </div>`;
@@ -1007,30 +1063,24 @@ function renderLessonContent(course, lessonId) {
 async function completeLesson(courseId, lessonId, el) {
  if (!S.user) return;
  const course = COURSES.find(c => c.id === courseId);
- const lesson = (course?.lessons || []).find(l => l.id === lessonId);
+ const lesson = (course?.lessons||[]).find(l => l.id === lessonId);
  if (!course || !lesson) return;
-
- const already = (S.user.progress[courseId] || {})[lessonId] === 100;
- if (already) { showToast('ℹ️', 'هذا الدرس مكتمل بالفعل!', 'var(--blue)'); return; }
-
+ const already = ((S.user.progress[courseId]||{})[lessonId]) === 100;
+ if (already) { showToast('ℹ️','هذا الدرس مكتمل بالفعل!','var(--blue)'); return; }
  if (!S.user.progress[courseId]) S.user.progress[courseId] = {};
  S.user.progress[courseId][lessonId] = 100;
-
- const total = (course.lessons || []).length;
- const done = Object.values(S.user.progress[courseId]).filter(v => v === 100).length;
- const pct = Math.round((done / total) * 100);
+ const total = (course.lessons||[]).length;
+ const done = Object.values(S.user.progress[courseId]).filter(v => v===100).length;
+ const pct = Math.round((done/total)*100);
  S.user.progress[courseId]._overall = pct;
-
- await gainXP(lesson.xp || 0, el);
- await fbUpdate('users/' + S.ukey, { progress: S.user.progress });
-
+ await gainXP(lesson.xp||0, el);
+ await fbUpdate('users/'+S.ukey, { progress: S.user.progress });
  if (pct >= 100 && !S.user.badges.includes('course_master')) {
    S.user.badges.push('course_master');
-   await fbUpdate('users/' + S.ukey, { badges: S.user.badges });
-   setTimeout(() => { launchConfetti(); showToast('🏆', 'حصلت على شارة "خبير كورس"!', 'var(--xp)'); }, 500);
+   await fbUpdate('users/'+S.ukey, { badges: S.user.badges });
+   setTimeout(() => { launchConfetti(); showToast('🏆','حصلت على شارة "خبير كورس"!','var(--xp)'); }, 500);
  }
-
- showToast('✅', 'تم إكمال الدرس! +' + (lesson.xp || 0) + ' XP');
+ showToast('✅','تم إكمال الدرس! +'+(lesson.xp||0)+' XP');
  renderApp();
 }
 
@@ -1039,7 +1089,7 @@ async function completeLesson(courseId, lessonId, el) {
 // ============================================================
 function startExam(courseId, lessonId) {
  const course = COURSES.find(c => c.id === courseId);
- const lesson = (course?.lessons || []).find(l => l.id === lessonId);
+ const lesson = (course?.lessons||[]).find(l => l.id === lessonId);
  if (!lesson?.exam) return;
  S.currentExam = { courseId, lessonId, questions: lesson.exam.questions, passScore: lesson.exam.passScore, currentQ: 0, answers: [] };
  setState({ screen: 'exam' });
@@ -1050,109 +1100,91 @@ function renderExam() {
  const ex = S.currentExam;
  const q = ex.questions[ex.currentQ];
  const course = COURSES.find(c => c.id === ex.courseId);
-
  return `<div class="fu">
  <div class="topbar">
-   <div><div class="pg-title">📝 اختبار: ${course?.title || ''}</div>
-   <div class="pg-sub">السؤال ${ex.currentQ + 1} من ${ex.questions.length}</div></div>
+   <div><div class="pg-title">📝 اختبار: ${course?.title||''}</div>
+   <div class="pg-sub">السؤال ${ex.currentQ+1} من ${ex.questions.length}</div></div>
    <button class="btn btn-ghost btn-sm" onclick="setState({screen:'course',courseId:'${ex.courseId}'})">❌ إلغاء</button>
  </div>
-
  <div class="exam-wrap">
    <div style="display:flex;gap:6px;justify-content:center;margin-bottom:20px;flex-wrap:wrap">
-     ${ex.questions.map((_, i) => `
-       <div style="width:34px;height:34px;border-radius:50%;border:2px solid ${i === ex.currentQ ? 'var(--red)' : ex.answers[i] !== undefined ? 'var(--green)' : 'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer;color:${i === ex.currentQ ? 'var(--red)' : ex.answers[i] !== undefined ? 'var(--green)' : 'var(--muted2)'};background:${i === ex.currentQ ? 'var(--reddim)' : ex.answers[i] !== undefined ? 'rgba(0,214,143,.1)' : 'transparent'}" onclick="S.currentExam.currentQ=${i};renderApp()">${i + 1}</div>
+     ${ex.questions.map((_,i) => `
+       <div style="width:34px;height:34px;border-radius:50%;border:2px solid ${i===ex.currentQ?'var(--red)':ex.answers[i]!==undefined?'var(--green)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer;color:${i===ex.currentQ?'var(--red)':ex.answers[i]!==undefined?'var(--green)':'var(--muted2)'};background:${i===ex.currentQ?'var(--reddim)':ex.answers[i]!==undefined?'rgba(0,214,143,.1)':'transparent'}" onclick="S.currentExam.currentQ=${i};renderApp()">${i+1}</div>
      `).join('')}
    </div>
-
    <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:16px">
-     <div style="font-size:16px;font-weight:800;margin-bottom:18px;line-height:1.5">${ex.currentQ + 1}. ${q.q}</div>
-     ${q.options.map((opt, i) => `
-       <button class="e-opt ${ex.answers[ex.currentQ] === i ? 'selected' : ''}" onclick="pickOpt(${i})">
-         <span style="width:24px;height:24px;border-radius:50%;border:2px solid ${ex.answers[ex.currentQ] === i ? 'var(--red)' : 'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0;background:${ex.answers[ex.currentQ] === i ? 'var(--red)' : 'transparent'};color:${ex.answers[ex.currentQ] === i ? '#fff' : 'var(--muted2)'}">${String.fromCharCode(65 + i)}</span>
+     <div style="font-size:16px;font-weight:800;margin-bottom:18px;line-height:1.5">${ex.currentQ+1}. ${q.q}</div>
+     ${q.options.map((opt,i) => `
+       <button class="e-opt ${ex.answers[ex.currentQ]===i?'selected':''}" onclick="pickOpt(${i})">
+         <span style="width:24px;height:24px;border-radius:50%;border:2px solid ${ex.answers[ex.currentQ]===i?'var(--red)':'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0;background:${ex.answers[ex.currentQ]===i?'var(--red)':'transparent'};color:${ex.answers[ex.currentQ]===i?'#fff':'var(--muted2)'}">${String.fromCharCode(65+i)}</span>
          ${opt}
        </button>
      `).join('')}
    </div>
-
    <div style="display:flex;justify-content:space-between;gap:10px">
-     <button class="btn btn-ghost" ${ex.currentQ === 0 ? 'disabled' : ''} onclick="prevQuestion()">← السابق</button>
-     ${ex.currentQ < ex.questions.length - 1
-       ? `<button class="btn btn-red" ${ex.answers[ex.currentQ] === undefined ? 'disabled' : ''} onclick="nextQuestion()">التالي ←</button>`
-       : `<button class="btn btn-green" ${ex.answers[ex.currentQ] === undefined ? 'disabled' : ''} onclick="submitExam()">✅ إنهاء الاختبار</button>`}
+     <button class="btn btn-ghost" ${ex.currentQ===0?'disabled':''} onclick="prevQuestion()">← السابق</button>
+     ${ex.currentQ < ex.questions.length-1
+       ? `<button class="btn btn-red" ${ex.answers[ex.currentQ]===undefined?'disabled':''} onclick="nextQuestion()">التالي ←</button>`
+       : `<button class="btn btn-green" ${ex.answers[ex.currentQ]===undefined?'disabled':''} onclick="submitExam()">✅ إنهاء الاختبار</button>`}
    </div>
  </div>
  </div>`;
 }
 
-function pickOpt(i) {
- S.currentExam.answers[S.currentExam.currentQ] = i;
- renderApp();
-}
+function pickOpt(i) { S.currentExam.answers[S.currentExam.currentQ]=i; renderApp(); }
 function nextQuestion() { S.currentExam.currentQ++; renderApp(); }
 function prevQuestion() { S.currentExam.currentQ--; renderApp(); }
 
 async function submitExam() {
- const ex = S.currentExam;
- if (!ex) return;
+ const ex = S.currentExam; if (!ex) return;
  let correct = 0;
- ex.questions.forEach((q, i) => { if (ex.answers[i] === q.ans) correct++; });
- ex.score = Math.round((correct / ex.questions.length) * 100);
-
+ ex.questions.forEach((q,i) => { if (ex.answers[i]===q.ans) correct++; });
+ ex.score = Math.round((correct/ex.questions.length)*100);
  if (!S.user.scores) S.user.scores = {};
  S.user.scores[ex.courseId] = ex.score;
-
  if (ex.score >= ex.passScore) {
    if (!S.user.progress[ex.courseId]) S.user.progress[ex.courseId] = {};
    S.user.progress[ex.courseId][ex.lessonId] = 100;
-
-   const course = COURSES.find(c => c.id === ex.courseId);
-   const lesson = (course?.lessons || []).find(l => l.id === ex.lessonId);
-   await gainXP(lesson?.xp || 20);
+   const course = COURSES.find(c => c.id===ex.courseId);
+   const lesson = (course?.lessons||[]).find(l => l.id===ex.lessonId);
+   await gainXP(lesson?.xp||20);
    launchConfetti();
-
-   if (ex.score === 100 && !S.user.badges.includes('exam_ace')) {
+   if (ex.score===100 && !S.user.badges.includes('exam_ace')) {
      S.user.badges.push('exam_ace');
-     setTimeout(() => showToast('🎯', 'شارة جديدة: "متفوق في الامتحانات"!', 'var(--xp)'), 800);
+     setTimeout(() => showToast('🎯','شارة جديدة: "متفوق في الامتحانات"!','var(--xp)'), 800);
    }
  }
-
- await fbUpdate('users/' + S.ukey, { scores: S.user.scores, progress: S.user.progress, badges: S.user.badges });
+ await fbUpdate('users/'+S.ukey, { scores: S.user.scores, progress: S.user.progress, badges: S.user.badges });
  setState({ screen: 'result', examResult: { ...ex } });
 }
 
 function renderResult() {
- const res = S.examResult;
- if (!res) return `<div>لا توجد نتائج.</div>`;
- const course = COURSES.find(c => c.id === res.courseId);
- const passed = res.score >= (res.passScore || 0);
- const correct = res.questions.filter((q, i) => res.answers[i] === q.ans).length;
-
+ const res = S.examResult; if (!res) return `<div>لا توجد نتائج.</div>`;
+ const passed = res.score >= (res.passScore||0);
+ const correct = res.questions.filter((q,i) => res.answers[i]===q.ans).length;
  return `<div class="fu" style="max-width:600px;margin:0 auto">
  <div style="text-align:center;margin-bottom:24px">
-   <div style="font-size:64px;margin-bottom:12px;animation:pop .5s ease">${passed ? '🎉' : '😔'}</div>
-   <div style="font-size:24px;font-weight:900;margin-bottom:6px">${passed ? 'تهانينا! لقد نجحت!' : 'لم تنجح هذه المرة'}</div>
-   <div style="font-size:48px;font-weight:900;color:${passed ? 'var(--green)' : 'var(--red)'};margin:10px 0">${res.score}%</div>
-   <div style="font-size:13px;color:var(--muted2)">${correct} إجابة صحيحة من ${res.questions.length} · حد النجاح ${res.passScore || 0}%</div>
+   <div style="font-size:64px;margin-bottom:12px;animation:pop .5s ease">${passed?'🎉':'😔'}</div>
+   <div style="font-size:24px;font-weight:900;margin-bottom:6px">${passed?'تهانينا! لقد نجحت!':'لم تنجح هذه المرة'}</div>
+   <div style="font-size:48px;font-weight:900;color:${passed?'var(--green)':'var(--red)'};margin:10px 0">${res.score}%</div>
+   <div style="font-size:13px;color:var(--muted2)">${correct} إجابة صحيحة من ${res.questions.length} · حد النجاح ${res.passScore||0}%</div>
  </div>
-
  <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:20px">
    <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:800">مراجعة الإجابات</div>
-   ${res.questions.map((q, i) => {
-     const isCorrect = res.answers[i] === q.ans;
+   ${res.questions.map((q,i) => {
+     const isCorrect = res.answers[i]===q.ans;
      return `<div style="padding:14px 16px;border-bottom:1px solid var(--border)">
-       <div style="font-size:12px;font-weight:700;margin-bottom:8px">${i + 1}. ${q.q}</div>
-       ${q.options.map((opt, oi) => `
-         <div style="font-size:11px;padding:6px 10px;border-radius:8px;margin-bottom:4px;background:${oi === q.ans ? 'rgba(0,214,143,.12)' : oi === res.answers[i] && !isCorrect ? 'rgba(228,0,43,.1)' : 'transparent'};color:${oi === q.ans ? 'var(--green)' : oi === res.answers[i] && !isCorrect ? 'var(--red)' : 'var(--muted2)'}">
-           ${oi === q.ans ? '✅' : oi === res.answers[i] ? '❌' : '○'} ${opt}
+       <div style="font-size:12px;font-weight:700;margin-bottom:8px">${i+1}. ${q.q}</div>
+       ${q.options.map((opt,oi) => `
+         <div style="font-size:11px;padding:6px 10px;border-radius:8px;margin-bottom:4px;background:${oi===q.ans?'rgba(0,214,143,.12)':oi===res.answers[i]&&!isCorrect?'rgba(228,0,43,.1)':'transparent'};color:${oi===q.ans?'var(--green)':oi===res.answers[i]&&!isCorrect?'var(--red)':'var(--muted2)'}">
+           ${oi===q.ans?'✅':oi===res.answers[i]?'❌':'○'} ${opt}
          </div>`).join('')}
      </div>`;
    }).join('')}
  </div>
-
  <div style="display:flex;gap:10px">
    <button class="btn btn-red" style="flex:1" onclick="setState({screen:'course',courseId:'${res.courseId}'})">العودة للكورس</button>
-   ${!passed ? `<button class="btn btn-ghost" style="flex:1" onclick="startExam('${res.courseId}','${res.lessonId}')">🔄 إعادة المحاولة</button>` : ''}
+   ${!passed?`<button class="btn btn-ghost" style="flex:1" onclick="startExam('${res.courseId}','${res.lessonId}')">🔄 إعادة المحاولة</button>`:''}
  </div>
  </div>`;
 }
@@ -1163,27 +1195,26 @@ function renderResult() {
 async function renderLeaderboard() {
  const allUsers = await fbGet('users') || {};
  const emps = Object.entries(allUsers)
-   .filter(([, v]) => v.role === 'employee')
-   .sort(([, a], [, b]) => (b.xp || 0) - (a.xp || 0));
-
- const medals = ['🥇', '🥈', '🥉'];
+   .filter(([,v]) => v.role==='employee')
+   .sort(([,a],[,b]) => (b.xp||0)-(a.xp||0));
+ const medals = ['🥇','🥈','🥉'];
  const html = `<div class="fu">
  <div class="topbar">
-   <div><div class="pg-title">🏆 لوحة الشرف</div><div class="pg-sub">أفضل الTraineeين أداءً</div></div>
+   <div><div class="pg-title">🏆 لوحة الشرف</div><div class="pg-sub">أفضل المتدربين أداءً</div></div>
  </div>
  <div style="display:grid;gap:10px">
-   ${emps.length === 0 ? `<div style="padding:40px;text-align:center;color:var(--muted2)">لا يوجد Traineeون بعد.</div>` :
-   emps.map(([key, u], i) => {
-     const isMe = key === S.ukey;
-     return `<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:${isMe ? 'var(--reddim)' : i === 0 ? 'rgba(255,215,0,.07)' : 'var(--card)'};border:1px solid ${isMe ? 'rgba(228,0,43,.25)' : i === 0 ? 'rgba(255,215,0,.2)' : 'var(--border)'};border-radius:16px;animation:fadeUp .4s ease ${i * .05}s both">
-       <div style="font-size:${i < 3 ? 24 : 16}px;width:32px;text-align:center;flex-shrink:0">${i < 3 ? medals[i] : '#' + (i + 1)}</div>
-       <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0">${(u.name || '?').charAt(0)}</div>
+   ${emps.length===0?`<div style="padding:40px;text-align:center;color:var(--muted2)">لا يوجد متدربون بعد.</div>`:
+   emps.map(([key,u],i) => {
+     const isMe = key===S.ukey;
+     return `<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:${isMe?'var(--reddim)':i===0?'rgba(255,215,0,.07)':'var(--card)'};border:1px solid ${isMe?'rgba(228,0,43,.25)':i===0?'rgba(255,215,0,.2)':'var(--border)'};border-radius:16px;animation:fadeUp .4s ease ${i*.05}s both">
+       <div style="font-size:${i<3?24:16}px;width:32px;text-align:center;flex-shrink:0">${i<3?medals[i]:'#'+(i+1)}</div>
+       <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0">${(u.name||'?').charAt(0)}</div>
        <div style="flex:1">
-         <div style="font-size:13px;font-weight:800">${u.name || 'غير معروف'}${isMe ? ' <span style="color:var(--red);font-size:11px">(أنت)</span>' : ''}</div>
-         <div style="font-size:10px;color:#7a8aaa">المستوى ${u.level || 1} · ${(u.badges || []).length} شارات · 🔥 ${u.streak || 0}</div>
+         <div style="font-size:13px;font-weight:800">${u.name||'غير معروف'}${isMe?' <span style="color:var(--red);font-size:11px">(أنت)</span>':''}</div>
+         <div style="font-size:10px;color:#7a8aaa">المستوى ${u.level||1} · ${(u.badges||[]).length} شارات · 🔥 ${u.streak||0}</div>
        </div>
        <div style="text-align:center">
-         <div style="font-size:18px;font-weight:900;color:var(--xp)">${u.xp || 0}</div>
+         <div style="font-size:18px;font-weight:900;color:var(--xp)">${u.xp||0}</div>
          <div style="font-size:9px;color:#7a8aaa">XP</div>
        </div>
      </div>`;
@@ -1193,87 +1224,64 @@ async function renderLeaderboard() {
 }
 
 // ============================================================
-// TRACKING (manager)
+// TRACKING
 // ============================================================
 async function renderTracking() {
  const allUsers = await fbGet('users') || {};
- const emps = Object.entries(allUsers).filter(([, v]) => v.role === 'employee');
+ const emps = Object.entries(allUsers).filter(([,v]) => v.role==='employee');
  const filter = S.trackFilter || '';
  const status = S.trackStatus || 'all';
-
- const getProgPct = (u) => COURSES.length > 0 ? Math.round(COURSES.reduce((a, c) => a + ((u.progress || {})[c.id] || 0), 0) / COURSES.length) : 0;
- const getAvgScore = (u) => {
-   const vals = Object.values(u.scores || {});
-   return vals.length > 0 ? Math.round(vals.reduce((a, v) => a + v, 0) / vals.length) : 0;
- };
-
- let filtered = emps.filter(([key, u]) => {
-   const matchText = !filter || (u.name || '').toLowerCase().includes(filter.toLowerCase()) || key.includes(filter.toLowerCase());
+ const getProgPct = (u) => COURSES.length>0 ? Math.round(COURSES.reduce((a,c) => a+((u.progress||{})[c.id]||0),0)/COURSES.length) : 0;
+ const getAvgScore = (u) => { const vals = Object.values(u.scores||{}); return vals.length>0 ? Math.round(vals.reduce((a,v)=>a+v,0)/vals.length) : 0; };
+ let filtered = emps.filter(([key,u]) => {
+   const matchText = !filter || (u.name||'').toLowerCase().includes(filter.toLowerCase()) || key.includes(filter.toLowerCase());
    const pct = getProgPct(u);
-   const matchStatus = status === 'all' ? true : status === 'done' ? pct >= 100 : status === 'late' ? pct < 30 : status === 'active' ? pct >= 30 && pct < 100 : true;
+   const matchStatus = status==='all'?true:status==='done'?pct>=100:status==='late'?pct<30:status==='active'?pct>=30&&pct<100:true;
    return matchText && matchStatus;
  });
-
- const lateCount = emps.filter(([, u]) => getProgPct(u) < 30).length;
-
+ const lateCount = emps.filter(([,u]) => getProgPct(u)<30).length;
  const html = `<div class="fu">
  <div class="topbar">
-   <div><div class="pg-title">📊 لوحة المتابعة</div><div class="pg-sub">تقدم الTraineeين في الوقت الحقيقي</div></div>
-   ${S.role === 'content' ? `<button class="btn btn-red btn-sm" onclick="exportExcel()">📥 Excel</button>` : ''}
+   <div><div class="pg-title">📊 لوحة المتابعة</div><div class="pg-sub">تقدم المتدربين في الوقت الحقيقي</div></div>
+   ${S.role==='content'?`<button class="btn btn-red btn-sm" onclick="exportExcel()">📥 Excel</button>`:''}
  </div>
-
  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
-   ${[
-     ['var(--red)', emps.length, '👥 الTraineeون'],
-     ['var(--green)', emps.filter(([, u]) => getProgPct(u) >= 100).length, '✅ أتموا الكل'],
-     ['var(--xp)', emps.length > 0 ? Math.round(emps.reduce((a, [, u]) => a + (u.xp || 0), 0) / emps.length) : 0, '⭐ متوسط XP'],
-     ['var(--red)', lateCount, '⚠️ متأخرون'],
-   ].map(s => `<div class="stat-card" style="border-color:${s[0]}33;background:${s[0]}0d">
-     <div style="font-size:26px;font-weight:900;color:${s[0]}">${s[1]}</div>
-     <div style="font-size:10px;color:#7a8aaa;margin-top:4px">${s[2]}</div>
-   </div>`).join('')}
+   ${[['var(--red)',emps.length,'👥 المتدربون'],['var(--green)',emps.filter(([,u])=>getProgPct(u)>=100).length,'✅ أتموا الكل'],['var(--xp)',emps.length>0?Math.round(emps.reduce((a,[,u])=>a+(u.xp||0),0)/emps.length):0,'⭐ متوسط XP'],['var(--red)',lateCount,'⚠️ متأخرون']].map(s=>`<div class="stat-card" style="border-color:${s[0]}33;background:${s[0]}0d"><div style="font-size:26px;font-weight:900;color:${s[0]}">${s[1]}</div><div style="font-size:10px;color:#7a8aaa;margin-top:4px">${s[2]}</div></div>`).join('')}
  </div>
-
  <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-   <input type="text" placeholder="🔍 ابحث باسم الTrainee..." value="${filter}"
+   <input type="text" placeholder="🔍 ابحث باسم المتدرب..." value="${filter}"
      oninput="S.trackFilter=this.value;renderTracking()"
      style="flex:1;min-width:180px;padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none"/>
    <select onchange="S.trackStatus=this.value;renderTracking()"
      style="padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px">
-     <option value="all" ${status === 'all' ? 'selected' : ''}>الكل</option>
-     <option value="done" ${status === 'done' ? 'selected' : ''}>✅ أتموا الكل</option>
-     <option value="active" ${status === 'active' ? 'selected' : ''}>🔥 نشطون</option>
-     <option value="late" ${status === 'late' ? 'selected' : ''}>⚠️ متأخرون</option>
+     <option value="all" ${status==='all'?'selected':''}>الكل</option>
+     <option value="done" ${status==='done'?'selected':''}>✅ أتموا الكل</option>
+     <option value="active" ${status==='active'?'selected':''}>🔥 نشطون</option>
+     <option value="late" ${status==='late'?'selected':''}>⚠️ متأخرون</option>
    </select>
-   ${lateCount > 0 ? `<button class="btn btn-sm" style="background:#ff444422;color:#ff4444;border:1px solid #ff444433;white-space:nowrap" onclick="notifyLate()">🔔 تنبيه المتأخرين (${lateCount})</button>` : ''}
+   ${lateCount>0?`<button class="btn btn-sm" style="background:#ff444422;color:#ff4444;border:1px solid #ff444433;white-space:nowrap" onclick="notifyLate()">🔔 تنبيه المتأخرين (${lateCount})</button>`:''}
  </div>
-
  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden">
    <div style="display:grid;grid-template-columns:1fr 70px 70px 90px 80px;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);font-weight:700;color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
-     <div>الTrainee</div><div style="text-align:center">XP</div><div style="text-align:center">النتيجة</div><div style="text-align:center">التقدم</div><div style="text-align:center">عرض</div>
+     <div>المتدرب</div><div style="text-align:center">XP</div><div style="text-align:center">النتيجة</div><div style="text-align:center">التقدم</div><div style="text-align:center">عرض</div>
    </div>
-   ${filtered.length === 0 ? `<div style="padding:30px;text-align:center;color:var(--muted2)">لا توجد نتائج</div>` :
-   filtered.map(([key, u]) => {
+   ${filtered.length===0?`<div style="padding:30px;text-align:center;color:var(--muted2)">لا توجد نتائج</div>`:
+   filtered.map(([key,u]) => {
      const pct = getProgPct(u);
      const avg = getAvgScore(u);
-     const isLate = pct < 30;
-     return `<div style="display:grid;grid-template-columns:1fr 70px 70px 90px 80px;gap:10px;padding:12px 16px;border-top:1px solid var(--border);align-items:center;${isLate ? 'border-right:3px solid #ff4444' : ''}">
+     const isLate = pct<30;
+     return `<div style="display:grid;grid-template-columns:1fr 70px 70px 90px 80px;gap:10px;padding:12px 16px;border-top:1px solid var(--border);align-items:center;${isLate?'border-right:3px solid #ff4444':''}">
        <div style="display:flex;align-items:center;gap:9px">
-         <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0">${(u.name || '?').charAt(0)}</div>
+         <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0">${(u.name||'?').charAt(0)}</div>
          <div>
-           <div style="font-weight:700;font-size:13px">${u.name || 'غير معروف'}</div>
-           <div style="font-size:9px;color:#7a8aaa">Lv${u.level || 1} 🔥${u.streak || 0}${isLate ? ' · <span style="color:#ff4444">متأخر ⚠️</span>' : ''}</div>
+           <div style="font-weight:700;font-size:13px">${u.name||'غير معروف'}</div>
+           <div style="font-size:9px;color:#7a8aaa">Lv${u.level||1} 🔥${u.streak||0}${isLate?' · <span style="color:#ff4444">متأخر ⚠️</span>':''}</div>
          </div>
        </div>
-       <div style="text-align:center;color:var(--xp);font-weight:800;font-size:13px">${u.xp || 0}</div>
-       <div style="text-align:center;font-weight:800;font-size:13px;color:${avg >= 80 ? 'var(--green)' : avg > 0 ? 'var(--amber)' : 'var(--muted)'}">${avg || '—'}${avg ? '%' : ''}</div>
-       <div>
-         <div class="pbar"><div class="pfill" style="width:${pct}%"></div></div>
-         <div style="font-size:9px;color:var(--muted2);margin-top:2px">${pct}%</div>
-       </div>
-       <div style="text-align:center">
-         <button class="btn btn-ghost btn-sm" onclick='showUserModal(${JSON.stringify(u).replace(/'/g, "&#39;")})'>عرض</button>
-       </div>
+       <div style="text-align:center;color:var(--xp);font-weight:800;font-size:13px">${u.xp||0}</div>
+       <div style="text-align:center;font-weight:800;font-size:13px;color:${avg>=80?'var(--green)':avg>0?'var(--amber)':'var(--muted)'}">${avg||'—'}${avg?'%':''}</div>
+       <div><div class="pbar"><div class="pfill" style="width:${pct}%"></div></div><div style="font-size:9px;color:var(--muted2);margin-top:2px">${pct}%</div></div>
+       <div style="text-align:center"><button class="btn btn-ghost btn-sm" onclick='showUserModal(${JSON.stringify(u).replace(/'/g,"&#39;")})'>عرض</button></div>
      </div>`;
    }).join('')}
  </div>
@@ -1285,20 +1293,20 @@ function showUserModal(u) {
  document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
    <div class="modal-box">
      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)">
-       <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff">${(u.name || '?').charAt(0)}</div>
+       <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff">${(u.name||'?').charAt(0)}</div>
        <div style="flex:1">
-         <div style="font-size:15px;font-weight:900">${u.name || 'غير معروف'}</div>
-         <div style="font-size:11px;color:var(--muted2)">Lv${u.level || 1} · ${u.xp || 0} XP · 🔥 ${u.streak || 0} يوم · آخر دخول: ${u.lastLogin || '—'}</div>
+         <div style="font-size:15px;font-weight:900">${u.name||'غير معروف'}</div>
+         <div style="font-size:11px;color:var(--muted2)">Lv${u.level||1} · ${u.xp||0} XP · 🔥 ${u.streak||0} يوم · آخر دخول: ${u.lastLogin||'—'}</div>
        </div>
        <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
      </div>
      ${COURSES.map(c => {
-       const p = (u.progress || {})[c.id] || 0;
-       const sc = (u.scores || {})[c.id];
+       const p = (u.progress||{})[c.id]||0;
+       const sc = (u.scores||{})[c.id];
        return `<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
            <span style="font-size:12px;font-weight:700">${c.icon} ${c.title}</span>
-           ${sc !== undefined ? `<span class="tag" style="background:${sc >= 80 ? 'rgba(0,214,143,.12)' : 'rgba(255,179,0,.12)'};color:${sc >= 80 ? 'var(--green)' : 'var(--amber)'}">${sc}%</span>` :
+           ${sc!==undefined?`<span class="tag" style="background:${sc>=80?'rgba(0,214,143,.12)':'rgba(255,179,0,.12)'};color:${sc>=80?'var(--green)':'var(--amber)'}">${sc}%</span>`:
            `<span class="tag" style="background:rgba(255,255,255,.05);color:var(--muted)">لم يختبر</span>`}
          </div>
          <div class="pbar"><div class="pfill" style="width:${p}%"></div></div>
@@ -1306,9 +1314,9 @@ function showUserModal(u) {
        </div>`;
      }).join('')}
      <div style="display:flex;flex-wrap:wrap;gap:6px">
-       ${(u.badges || []).map(bid => {
-         const bd = BADGES.find(x => x.id === bid);
-         return bd ? `<span class="tag" style="background:rgba(255,215,0,.1);color:var(--xp)">${bd.icon} ${bd.name}</span>` : '';
+       ${(u.badges||[]).map(bid => {
+         const bd = BADGES.find(x=>x.id===bid);
+         return bd?`<span class="tag" style="background:rgba(255,215,0,.1);color:var(--xp)">${bd.icon} ${bd.name}</span>`:'';
        }).join('')}
      </div>
    </div>
@@ -1321,11 +1329,11 @@ function showUserModal(u) {
 function renderContent() {
  return `<div class="fu">
  <div class="topbar">
-   <div><div class="pg-title">📚 إدارة المحتوى</div><div class="pg-sub">أضف وعدّل البرامج تدريبية والدروس</div></div>
+   <div><div class="pg-title">📚 إدارة المحتوى</div><div class="pg-sub">أضف وعدّل البرامج التدريبية والدروس</div></div>
    <button class="btn btn-red btn-sm" onclick="addCourseModal()">➕ كورس جديد</button>
  </div>
- ${COURSES.map((c, ci) => `
- <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:10px;animation:fadeUp .4s ease ${ci * .06}s both">
+ ${COURSES.map((c,ci) => `
+ <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:10px;animation:fadeUp .4s ease ${ci*.06}s both">
    <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
      <div style="font-size:14px;font-weight:800">${c.icon} ${c.title}</div>
      <div style="display:flex;gap:8px">
@@ -1334,14 +1342,14 @@ function renderContent() {
        <button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteCourse('${c.id}')">🗑️</button>
      </div>
    </div>
-   ${S.addingLesson === c.id ? renderAddLessonForm(c.id) : ''}
+   ${S.addingLesson===c.id ? renderAddLessonForm(c.id) : ''}
    <div>
-     ${(c.lessons || []).length === 0 ? `<div style="padding:20px;text-align:center;color:var(--muted2);font-size:12px">لا توجد دروس بعد.</div>` :
-     (c.lessons || []).map((l, li) => `
+     ${(c.lessons||[]).length===0?`<div style="padding:20px;text-align:center;color:var(--muted2);font-size:12px">لا توجد دروس بعد.</div>`:
+     (c.lessons||[]).map((l,li) => `
        <div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:1px solid var(--border)">
          <div style="flex:1">
            <div style="font-weight:700;font-size:13px">${l.title}</div>
-           <div style="font-size:10px;color:var(--muted2)">${l.type} · ${l.duration || '—'} · ${l.xp || 0} XP</div>
+           <div style="font-size:10px;color:var(--muted2)">${l.type} · ${l.duration||'—'} · ${l.xp||0} XP</div>
          </div>
          <div style="display:flex;gap:6px">
            <button class="btn btn-ghost btn-sm" onclick="editLessonModal('${c.id}','${l.id}')">✏️</button>
@@ -1364,13 +1372,16 @@ function renderAddLessonForm(cid) {
          <option value="فيديو">🎬 فيديو</option>
          <option value="نص">📄 ملف PDF</option>
          <option value="صورة">🖼️ صورة</option>
+         <option value="بوربوينت">📊 PowerPoint</option>
+         <option value="صوت">🎧 صوت</option>
+         <option value="ملف">📎 ملف آخر</option>
          <option value="امتحان">📝 امتحان</option>
        </select>
      </div>
    </div>
-   <div id="nl_yt_section" class="fgroup" style="display:none">
-     <label>🎬 رابط يوتيوب <span style="color:var(--muted2);font-size:10px">(أو ارفع فيديو)</span></label>
-     <input class="inp" id="nl_yt" placeholder="https://www.youtube.com/embed/..." style="margin-bottom:8px"/>
+   <div id="nl_yt_section" class="fgroup">
+     <label>🎬 رابط يوتيوب <span style="color:var(--muted2);font-size:10px">(أي رابط: watch, share, embed)</span></label>
+     <input class="inp" id="nl_yt" placeholder="مثال: https://www.youtube.com/watch?v=xxxxx أو https://youtu.be/xxxxx" style="margin-bottom:8px"/>
      <div style="text-align:center;color:var(--muted2);font-size:11px;font-weight:700;margin-bottom:8px">— أو ارفع مباشرة —</div>
      <div class="upload-area" onclick="document.getElementById('nl_vid_file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleFileDrop(event,'nl_vid_file','nl_vid_preview','video')">
        <input type="file" id="nl_vid_file" accept="video/*" onchange="previewFile(this,'nl_vid_preview','video')"/>
@@ -1402,53 +1413,113 @@ function renderAddLessonForm(cid) {
        <input type="file" id="nl_img_file" accept="image/*" onchange="previewFile(this,'nl_img_prev','image')"/>
        <div style="font-size:24px;margin-bottom:6px">🖼️</div>
        <div style="font-size:12px;font-weight:700">اسحب صورة هنا أو اضغط للاختيار</div>
-       <div style="font-size:10px;color:var(--muted2);margin-top:4px">JPG, PNG, GIF — حد أقصى 10MB</div>
+       <div style="font-size:10px;color:var(--muted2);margin-top:4px">JPG, PNG, GIF, WEBP — حد أقصى 10MB</div>
        <img id="nl_img_prev" style="display:none;max-width:100%;max-height:140px;margin-top:10px;border-radius:10px;object-fit:cover"/>
      </div>
      <div class="upload-progress" style="display:none;margin-top:8px" id="nl_img_prog_wrap"><div class="upload-progress-fill" id="nl_img_prog" style="width:0%"></div></div>
      <div id="nl_img_prog_label" style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center"></div>
    </div>
+
+   <!-- PowerPoint Section -->
+   <div id="nl_ppt_section" class="fgroup" style="display:none">
+     <label>📊 ارفع ملف PowerPoint</label>
+     <div style="background:rgba(0,180,216,.07);border:1px solid rgba(0,180,216,.2);border-radius:12px;padding:10px 14px;margin-bottom:10px;font-size:11px;color:var(--blue);line-height:1.6">
+       💡 بعد الرفع، سيُعرض الملف مباشرة داخل الدرس عبر Microsoft Office Online
+     </div>
+     <div class="upload-area" onclick="document.getElementById('nl_ppt_file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleFileDrop(event,'nl_ppt_file','nl_ppt_prev','ppt')">
+       <input type="file" id="nl_ppt_file" accept=".ppt,.pptx" onchange="previewFile(this,'nl_ppt_prev','ppt')"/>
+       <div style="font-size:32px;margin-bottom:6px">📊</div>
+       <div style="font-size:12px;font-weight:700">اسحب ملف PowerPoint هنا أو اضغط للاختيار</div>
+       <div style="font-size:10px;color:var(--muted2);margin-top:4px">PPT, PPTX — حد أقصى 100MB</div>
+       <div id="nl_ppt_prev" style="display:none;margin-top:8px;font-size:12px;color:var(--green);font-weight:700"></div>
+     </div>
+     <div class="upload-progress" style="display:none;margin-top:8px" id="nl_ppt_prog_wrap"><div class="upload-progress-fill" id="nl_ppt_prog" style="width:0%"></div></div>
+     <div id="nl_ppt_prog_label" style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center"></div>
+   </div>
+
+   <!-- Audio Section -->
+   <div id="nl_aud_section" class="fgroup" style="display:none">
+     <label>🎧 ارفع ملف صوت</label>
+     <div class="upload-area" onclick="document.getElementById('nl_aud_file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleFileDrop(event,'nl_aud_file','nl_aud_prev','audio')">
+       <input type="file" id="nl_aud_file" accept="audio/*" onchange="previewFile(this,'nl_aud_prev','audio')"/>
+       <div style="font-size:32px;margin-bottom:6px">🎧</div>
+       <div style="font-size:12px;font-weight:700">اسحب ملف صوتي هنا أو اضغط للاختيار</div>
+       <div style="font-size:10px;color:var(--muted2);margin-top:4px">MP3, WAV, OGG, AAC, M4A — حد أقصى 50MB</div>
+       <div id="nl_aud_prev" style="display:none;margin-top:10px;width:100%"></div>
+     </div>
+     <div class="upload-progress" style="display:none;margin-top:8px" id="nl_aud_prog_wrap"><div class="upload-progress-fill" id="nl_aud_prog" style="width:0%"></div></div>
+     <div id="nl_aud_prog_label" style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center"></div>
+   </div>
+
+   <!-- Generic File Section -->
+   <div id="nl_file_section" class="fgroup" style="display:none">
+     <label>📎 ارفع أي ملف</label>
+     <div class="upload-area" onclick="document.getElementById('nl_any_file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleFileDrop(event,'nl_any_file','nl_any_prev','file')">
+       <input type="file" id="nl_any_file" onchange="previewFile(this,'nl_any_prev','file')"/>
+       <div style="font-size:32px;margin-bottom:6px">📎</div>
+       <div style="font-size:12px;font-weight:700">اسحب أي ملف هنا أو اضغط للاختيار</div>
+       <div style="font-size:10px;color:var(--muted2);margin-top:4px">Word, Excel, ZIP, وغيرها — حد أقصى 100MB</div>
+       <div id="nl_any_prev" style="display:none;margin-top:8px;font-size:12px;color:var(--green);font-weight:700"></div>
+     </div>
+     <div class="upload-progress" style="display:none;margin-top:8px" id="nl_file_prog_wrap"><div class="upload-progress-fill" id="nl_file_prog" style="width:0%"></div></div>
+     <div id="nl_file_prog_label" style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center"></div>
+   </div>
+
    <div class="fgroup"><label>الشرح</label><textarea class="inp" id="nl_d" placeholder="وصف الدرس..."></textarea></div>
 
-
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
- <div class="fgroup"><label>المدة *</label><input class="inp" id="nl_dur" placeholder="15 د"/></div>
- <div class="fgroup"><label>XP</label><input class="inp" id="nl_xp" type="number" placeholder="10"/></div>
-</div>
-<div style="display:flex;gap:8px">
- <button class="btn btn-red btn-sm" id="nl_save_btn" onclick="saveNewLesson('${cid}')">💾 حفظ الدرس</button>
- <button class="btn btn-ghost btn-sm" onclick="S.addingLesson=null;renderApp()">إلغاء</button>
-</div>
-
-
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+     <div class="fgroup"><label>المدة *</label><input class="inp" id="nl_dur" placeholder="15 د"/></div>
+     <div class="fgroup"><label>XP</label><input class="inp" id="nl_xp" type="number" placeholder="10"/></div>
+   </div>
+   <div style="display:flex;gap:8px">
+     <button class="btn btn-red btn-sm" id="nl_save_btn" onclick="saveNewLesson('${cid}')">💾 حفظ الدرس</button>
+     <button class="btn btn-ghost btn-sm" onclick="S.addingLesson=null;renderApp()">إلغاء</button>
+   </div>
  </div>`;
 }
 
-// شغّل الـ toggle بعد ما الـ DOM يتحدث
 setTimeout(() => { toggleLessonFields('nl'); }, 10);
 
 function toggleLessonFields(prefix) {
-const type = document.getElementById(prefix + '_type')?.value;
-const map = { 'فيديو': prefix+'_yt_section', 'نص': prefix+'_pdf_section', 'صورة': prefix+'_img_section' };
-// اخفي كل الـ sections
-[prefix+'_yt_section', prefix+'_pdf_section', prefix+'_img_section'].forEach(id => {
+const type = document.getElementById(prefix+'_type')?.value;
+const map = {
+'فيديو':    prefix+'_yt_section',
+'نص':       prefix+'_pdf_section',
+'صورة':     prefix+'_img_section',
+'بوربوينت': prefix+'_ppt_section',
+'صوت':      prefix+'_aud_section',
+'ملف':      prefix+'_file_section',
+};
+[prefix+'_yt_section', prefix+'_pdf_section', prefix+'_img_section',
+prefix+'_ppt_section', prefix+'_aud_section', prefix+'_file_section'].forEach(id => {
 const el = document.getElementById(id);
 if (el) el.style.display = 'none';
 });
-// فقط ظهّر اللي المفروض يظهر
 const target = map[type];
-if (target) {
-const el = document.getElementById(target);
-if (el) el.style.display = 'block';
-}
+if (target) { const el = document.getElementById(target); if (el) el.style.display = 'block'; }
 }
 
 function previewFile(input, previewId, type) {
 const file = input.files[0]; if (!file) return;
 const prev = document.getElementById(previewId); if (!prev) return;
-if (type === 'image') { prev.src = URL.createObjectURL(file); prev.style.display = 'block'; }
-else if (type === 'video') { prev.src = URL.createObjectURL(file); prev.style.display = 'block'; }
-else if (type === 'pdf') { prev.textContent = '✅ ' + file.name + ' (' + (file.size/1024/1024).toFixed(1) + ' MB)'; prev.style.display = 'block'; }
+const sizeMB = (file.size/1024/1024).toFixed(1);
+if (type==='image') {
+prev.src=URL.createObjectURL(file); prev.style.display='block';
+} else if (type==='video') {
+prev.src=URL.createObjectURL(file); prev.style.display='block';
+} else if (type==='pdf') {
+prev.textContent='✅ '+file.name+' ('+sizeMB+' MB)'; prev.style.display='block';
+} else if (type==='ppt') {
+prev.textContent='✅ '+file.name+' ('+sizeMB+' MB)'; prev.style.display='block';
+} else if (type==='audio') {
+prev.innerHTML=`<audio controls style="width:100%;border-radius:8px" src="${URL.createObjectURL(file)}"></audio><div style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center">✅ ${file.name} (${sizeMB} MB)</div>`;
+prev.style.display='block';
+} else if (type==='file') {
+const ext = file.name.split('.').pop().toUpperCase();
+const icons = {PDF:'📄',DOC:'📝',DOCX:'📝',XLS:'📊',XLSX:'📊',ZIP:'🗜️',RAR:'🗜️',TXT:'📃'};
+const icon = icons[ext] || '📎';
+prev.textContent=icon+' '+file.name+' ('+sizeMB+' MB)'; prev.style.display='block';
+}
 }
 
 function handleFileDrop(event, inputId, previewId, type) {
@@ -1458,92 +1529,179 @@ const dt = new DataTransfer(); dt.items.add(file); input.files = dt.files;
 previewFile(input, previewId, type);
 }
 
+// ============================================================
+// FIX #2 — saveNewLesson مع رسالة واضحة لو Storage مش متاح
+// ============================================================
 async function saveNewLesson(courseId) {
-const course = COURSES.find(c => c.id === courseId); if (!course) return;
+const course = COURSES.find(c => c.id===courseId); if (!course) return;
 const title    = document.getElementById('nl_t')?.value.trim();
 const type     = document.getElementById('nl_type')?.value;
 const desc     = document.getElementById('nl_d')?.value.trim();
 const duration = document.getElementById('nl_dur')?.value.trim();
-const xp       = parseInt(document.getElementById('nl_xp')?.value, 10) || 10;
+const xp       = parseInt(document.getElementById('nl_xp')?.value,10) || 10;
 const saveBtn  = document.getElementById('nl_save_btn');
-if (!title || !duration) { showToast('⚠️', 'اكتب عنوان الدرس والمدة', 'var(–amber)'); return; }
-const newLesson = { id: 'l' + Date.now(), title, type, desc, duration, xp, yt: '', pdf: '', img: '' };
+if (!title || !duration) { showToast('⚠️','اكتب عنوان الدرس والمدة','var(–amber)'); return; }
+const newLesson = { id:'l'+Date.now(), title, type, desc, duration, xp, yt:'', pdf:'', img:'', ppt:'', audio:'', file:'', fileName:'' };
 try {
-if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'جاري الحفظ...'; }
-if (type === 'فيديو') {
+if (saveBtn) { saveBtn.disabled=true; saveBtn.textContent='جاري الحفظ...'; }
+if (type==='فيديو') {
 const ytUrl  = document.getElementById('nl_yt')?.value.trim();
 const vidFile = document.getElementById('nl_vid_file')?.files[0];
-if (vidFile) { document.getElementById('nl_vid_prog_wrap').style.display='block'; newLesson.yt = await uploadFile(vidFile,'videos','nl_vid_prog'); document.getElementById('nl_vid_prog_label').textContent='✅ تم رفع الفيديو!'; }
-else if (ytUrl) { newLesson.yt = ytUrl; }
-} else if (type === 'نص') {
+if (vidFile) {
+document.getElementById('nl_vid_prog_wrap').style.display='block';
+try {
+newLesson.yt = await uploadFile(vidFile,'videos','nl_vid_prog');
+document.getElementById('nl_vid_prog_label').textContent='✅ تم رفع الفيديو!';
+} catch(uploadErr) {
+showToast('❌','فشل رفع الفيديو — تأكد من Firebase Storage Rules','var(–red)');
+if (saveBtn) { saveBtn.disabled=false; saveBtn.textContent='💾 حفظ الدرس'; }
+return;
+}
+} else if (ytUrl) {
+newLesson.yt = normalizeYouTubeUrl(ytUrl);
+}
+} else if (type==='نص') {
 const pdfUrl  = document.getElementById('nl_pdf')?.value.trim();
 const pdfFile = document.getElementById('nl_pdf_file')?.files[0];
-if (pdfFile) { document.getElementById('nl_pdf_prog_wrap').style.display='block'; newLesson.pdf = await uploadFile(pdfFile,'pdfs','nl_pdf_prog'); document.getElementById('nl_pdf_prog_label').textContent='✅ تم رفع الملف!'; }
-else if (pdfUrl) { newLesson.pdf = pdfUrl; }
-} else if (type === 'صورة') {
+if (pdfFile) {
+document.getElementById('nl_pdf_prog_wrap').style.display='block';
+try {
+newLesson.pdf = await uploadFile(pdfFile,'pdfs','nl_pdf_prog');
+document.getElementById('nl_pdf_prog_label').textContent='✅ تم رفع الملف!';
+} catch(uploadErr) {
+showToast('❌','فشل رفع PDF — تأكد من Firebase Storage Rules','var(–red)');
+if (saveBtn) { saveBtn.disabled=false; saveBtn.textContent='💾 حفظ الدرس'; }
+return;
+}
+} else if (pdfUrl) { newLesson.pdf = pdfUrl; }
+} else if (type==='صورة') {
 const imgFile = document.getElementById('nl_img_file')?.files[0];
-if (imgFile) { document.getElementById('nl_img_prog_wrap').style.display='block'; newLesson.img = await uploadFile(imgFile,'images','nl_img_prog'); document.getElementById('nl_img_prog_label').textContent='✅ تم رفع الصورة!'; }
+if (imgFile) {
+document.getElementById('nl_img_prog_wrap').style.display='block';
+try {
+newLesson.img = await uploadFile(imgFile,'images','nl_img_prog');
+document.getElementById('nl_img_prog_label').textContent='✅ تم رفع الصورة!';
+} catch(uploadErr) {
+showToast('❌','فشل رفع الصورة — تأكد من Firebase Storage Rules','var(–red)');
+if (saveBtn) { saveBtn.disabled=false; saveBtn.textContent='💾 حفظ الدرس'; }
+return;
+}
+}
+} else if (type==='بوربوينت') {
+const pptFile = document.getElementById('nl_ppt_file')?.files[0];
+if (pptFile) {
+document.getElementById('nl_ppt_prog_wrap').style.display='block';
+try {
+newLesson.ppt = await uploadFile(pptFile,'presentations','nl_ppt_prog');
+newLesson.fileName = pptFile.name;
+document.getElementById('nl_ppt_prog_label').textContent='✅ تم رفع العرض!';
+} catch(uploadErr) {
+showToast('❌','فشل رفع PowerPoint — تأكد من Firebase Storage Rules','var(–red)');
+if (saveBtn) { saveBtn.disabled=false; saveBtn.textContent='💾 حفظ الدرس'; }
+return;
+}
+}
+} else if (type==='صوت') {
+const audFile = document.getElementById('nl_aud_file')?.files[0];
+if (audFile) {
+document.getElementById('nl_aud_prog_wrap').style.display='block';
+try {
+newLesson.audio = await uploadFile(audFile,'audio','nl_aud_prog');
+newLesson.fileName = audFile.name;
+document.getElementById('nl_aud_prog_label').textContent='✅ تم رفع الملف الصوتي!';
+} catch(uploadErr) {
+showToast('❌','فشل رفع الصوت — تأكد من Firebase Storage Rules','var(–red)');
+if (saveBtn) { saveBtn.disabled=false; saveBtn.textContent='💾 حفظ الدرس'; }
+return;
+}
+}
+} else if (type==='ملف') {
+const anyFile = document.getElementById('nl_any_file')?.files[0];
+if (anyFile) {
+document.getElementById('nl_file_prog_wrap').style.display='block';
+try {
+newLesson.file = await uploadFile(anyFile,'files','nl_file_prog');
+newLesson.fileName = anyFile.name;
+document.getElementById('nl_file_prog_label').textContent='✅ تم رفع الملف!';
+} catch(uploadErr) {
+showToast('❌','فشل رفع الملف — تأكد من Firebase Storage Rules','var(–red)');
+if (saveBtn) { saveBtn.disabled=false; saveBtn.textContent='💾 حفظ الدرس'; }
+return;
+}
+}
 }
 if (!course.lessons) course.lessons = [];
 course.lessons.push(newLesson);
-await fbSet('courses/' + courseId, course);
-showToast('✅', 'تم إضافة الدرس!');
+await fbSet('courses/'+courseId, course);
+showToast('✅','تم إضافة الدرس!');
 S.addingLesson = null;
 renderApp();
 } catch(e) {
 console.error(e);
-showToast('❌', 'فشل الرفع: ' + (e.message || e.code), 'var(–red)');
-if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = '💾 حفظ الدرس'; }
+showToast('❌','خطأ: '+(e.message||e.code),'var(–red)');
+if (saveBtn) { saveBtn.disabled=false; saveBtn.textContent='💾 حفظ الدرس'; }
 }
 }
 
 function editLessonModal(courseId, lessonId) {
-const course = COURSES.find(c => c.id === courseId);
-const lesson = (course?.lessons || []).find(l => l.id === lessonId);
+const course = COURSES.find(c => c.id===courseId);
+const lesson = (course?.lessons||[]).find(l => l.id===lessonId);
 if (!lesson) return;
 S.editingLesson = { courseId, lessonId };
+document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
 
-document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()"> <div class="modal-box"> <div style="font-weight:800;font-size:15px;margin-bottom:16px">✏️ تعديل: ${lesson.title}</div> <div class="fgroup"><label>عنوان الدرس</label><input class="inp" id="el_t" value="${lesson.title || ''}"/></div> <div class="fgroup"><label>النوع</label><select class="inp" id="el_type"> ${['فيديو', 'نص', 'امتحان'].map(t => `<option ${lesson.type === t ? 'selected' : ''}>${t}</option>`).join('')}
-</select></div>
-<div class="fgroup"><label>🎬 يوتيوب Embed</label><input class="inp" id="el_yt" value="${lesson.yt || ''}"/></div>
-<div class="fgroup"><label>📄 رابط PDF</label><input class="inp" id="el_pdf" value="${lesson.pdf || ''}"/></div>
-<div class="fgroup"><label>الشرح</label><textarea class="inp" id="el_d">${lesson.desc || ''}</textarea></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-<div class="fgroup"><label>المدة</label><input class="inp" id="el_dur" value="${lesson.duration || ''}"/></div>
-<div class="fgroup"><label>XP</label><input class="inp" id="el_xp" type="number" value="${lesson.xp || 0}"/></div>
-</div>
-<div style="display:flex;gap:8px">
-<button class="btn btn-red" style="flex:1" onclick="saveEditLesson()">💾 حفظ</button>
-<button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
-</div>
-</div>
-
+   <div class="modal-box">
+     <div style="font-weight:800;font-size:15px;margin-bottom:16px">✏️ تعديل: ${lesson.title}</div>
+     <div class="fgroup"><label>عنوان الدرس</label><input class="inp" id="el_t" value="${lesson.title||''}"/></div>
+     <div class="fgroup"><label>النوع</label>
+       <select class="inp" id="el_type">
+         ${['فيديو','نص','صورة','بوربوينت','صوت','ملف','امتحان'].map(t=>`<option ${lesson.type===t?'selected':''}>${t}</option>`).join('')}
+       </select>
+     </div>
+     <div class="fgroup"><label>🎬 يوتيوب (أي رابط)</label><input class="inp" id="el_yt" value="${lesson.yt||''}"/></div>
+     <div class="fgroup"><label>📄 رابط PDF</label><input class="inp" id="el_pdf" value="${lesson.pdf||''}"/></div>
+     <div class="fgroup"><label>📊 رابط PPT (مُرفوع)</label><input class="inp" id="el_ppt" value="${lesson.ppt||''}"/></div>
+     <div class="fgroup"><label>🎧 رابط صوت (مُرفوع)</label><input class="inp" id="el_audio" value="${lesson.audio||''}"/></div>
+     <div class="fgroup"><label>📎 رابط ملف (مُرفوع)</label><input class="inp" id="el_file" value="${lesson.file||''}"/></div>
+     <div class="fgroup"><label>اسم الملف</label><input class="inp" id="el_filename" value="${lesson.fileName||''}"/></div>
+     <div class="fgroup"><label>الشرح</label><textarea class="inp" id="el_d">${lesson.desc||''}</textarea></div>
+     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+       <div class="fgroup"><label>المدة</label><input class="inp" id="el_dur" value="${lesson.duration||''}"/></div>
+       <div class="fgroup"><label>XP</label><input class="inp" id="el_xp" type="number" value="${lesson.xp||0}"/></div>
+     </div>
+     <div style="display:flex;gap:8px">
+       <button class="btn btn-red" style="flex:1" onclick="saveEditLesson()">💾 حفظ</button>
+       <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
+     </div>
+   </div>
  </div>`;
 }
 
 async function saveEditLesson() {
 const { courseId, lessonId } = S.editingLesson || {};
-const course = COURSES.find(c => c.id === courseId);
-const idx = (course?.lessons || []).findIndex(l => l.id === lessonId);
-if (idx === -1) return;
-
+const course = COURSES.find(c => c.id===courseId);
+const idx = (course?.lessons||[]).findIndex(l => l.id===lessonId);
+if (idx===-1) return;
 const title = document.getElementById('el_t')?.value.trim();
 const duration = document.getElementById('el_dur')?.value.trim();
-if (!title || !duration) { showToast('⚠️', 'اكتب العنوان والمدة', 'var(–amber)'); return; }
-
+if (!title || !duration) { showToast('⚠️','اكتب العنوان والمدة','var(–amber)'); return; }
+const rawYt = document.getElementById('el_yt')?.value.trim();
 course.lessons[idx] = {
 ...course.lessons[idx],
 title,
 type: document.getElementById('el_type')?.value,
-yt: document.getElementById('el_yt')?.value.trim(),
+yt: normalizeYouTubeUrl(rawYt),
 pdf: document.getElementById('el_pdf')?.value.trim(),
+ppt: document.getElementById('el_ppt')?.value.trim(),
+audio: document.getElementById('el_audio')?.value.trim(),
+file: document.getElementById('el_file')?.value.trim(),
+fileName: document.getElementById('el_filename')?.value.trim(),
 desc: document.getElementById('el_d')?.value.trim(),
 duration,
-xp: parseInt(document.getElementById('el_xp')?.value, 10) || 0,
+xp: parseInt(document.getElementById('el_xp')?.value,10) || 0,
 };
-
-await fbSet('courses/' + courseId, course);
-showToast('✅', 'تم حفظ التعديلات!');
+await fbSet('courses/'+courseId, course);
+showToast('✅','تم حفظ التعديلات!');
 closeModal();
 S.editingLesson = null;
 renderApp();
@@ -1551,102 +1709,93 @@ renderApp();
 
 async function deleteLesson(courseId, lessonId) {
 if (!confirm('هل أنت متأكد من حذف هذا الدرس؟')) return;
-const course = COURSES.find(c => c.id === courseId);
-if (!course) return;
-course.lessons = (course.lessons || []).filter(l => l.id !== lessonId);
-await fbSet('courses/' + courseId, course);
-showToast('🗑️', 'تم حذف الدرس');
+const course = COURSES.find(c => c.id===courseId); if (!course) return;
+course.lessons = (course.lessons||[]).filter(l => l.id!==lessonId);
+await fbSet('courses/'+courseId, course);
+showToast('🗑️','تم حذف الدرس');
 renderApp();
 }
 
 function addCourseModal() {
 document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-<div class="modal-box">
-<div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ كورس جديد</div>
-<div class="fgroup"><label>عنوان الكورس *</label><input class="inp" id="nc_t" placeholder="مثال: مقدمة في البيانات"/></div>
-<div class="fgroup"><label>الأيقونة *</label><input class="inp" id="nc_icon" placeholder="مثال: 📊"/></div>
-<div class="fgroup"><label>اللون (hex)</label><input class="inp" id="nc_color" placeholder="مثال: #00b4d8"/></div>
-<div style="display:flex;gap:8px">
-<button class="btn btn-red" style="flex:1" onclick="saveNewCourse()">💾 حفظ</button>
-<button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
-</div>
-</div>
 
+   <div class="modal-box">
+     <div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ كورس جديد</div>
+     <div class="fgroup"><label>عنوان الكورس *</label><input class="inp" id="nc_t" placeholder="مثال: مقدمة في البيانات"/></div>
+     <div class="fgroup"><label>الأيقونة *</label><input class="inp" id="nc_icon" placeholder="مثال: 📊"/></div>
+     <div class="fgroup"><label>اللون (hex)</label><input class="inp" id="nc_color" placeholder="مثال: #00b4d8"/></div>
+     <div style="display:flex;gap:8px">
+       <button class="btn btn-red" style="flex:1" onclick="saveNewCourse()">💾 حفظ</button>
+       <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
+     </div>
+   </div>
  </div>`;
 }
 
 async function saveNewCourse() {
 const title = document.getElementById('nc_t')?.value.trim();
-const icon = document.getElementById('nc_icon')?.value.trim();
+const icon  = document.getElementById('nc_icon')?.value.trim();
 const color = document.getElementById('nc_color')?.value.trim();
-if (!title || !icon) { showToast('⚠️', 'اكتب العنوان والأيقونة', 'var(–amber)'); return; }
-
-const newCourse = { id: 'course_' + Date.now(), title, icon, color: color || null, lessons: [] };
+if (!title || !icon) { showToast('⚠️','اكتب العنوان والأيقونة','var(–amber)'); return; }
+const newCourse = { id:'course_'+Date.now(), title, icon, color:color||null, lessons:[] };
 COURSES.push(newCourse);
-await fbSet('courses/' + newCourse.id, newCourse);
-showToast('✅', 'تم إضافة الكورس!');
+await fbSet('courses/'+newCourse.id, newCourse);
+showToast('✅','تم إضافة الكورس!');
 closeModal();
 renderApp();
 }
 
 function editCourseModal(courseId) {
-const c = COURSES.find(x => x.id === courseId);
-if (!c) return;
+const c = COURSES.find(x => x.id===courseId); if (!c) return;
 document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-<div class="modal-box">
-<div style="font-weight:800;font-size:15px;margin-bottom:16px">✏️ تعديل: ${c.title}</div>
-<div class="fgroup"><label>عنوان الكورس</label><input class="inp" id="ec_t" value="${c.title}"/></div>
-<div class="fgroup"><label>الأيقونة</label><input class="inp" id="ec_icon" value="${c.icon}"/></div>
-<div class="fgroup"><label>اللون</label><input class="inp" id="ec_color" value="${c.color || ''}"/></div>
-<div style="display:flex;gap:8px">
-<button class="btn btn-red" style="flex:1" onclick="saveEditCourse('${c.id}')">💾 حفظ</button>
-<button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
-</div>
-</div>
 
+   <div class="modal-box">
+     <div style="font-weight:800;font-size:15px;margin-bottom:16px">✏️ تعديل: ${c.title}</div>
+     <div class="fgroup"><label>عنوان الكورس</label><input class="inp" id="ec_t" value="${c.title}"/></div>
+     <div class="fgroup"><label>الأيقونة</label><input class="inp" id="ec_icon" value="${c.icon}"/></div>
+     <div class="fgroup"><label>اللون</label><input class="inp" id="ec_color" value="${c.color||''}"/></div>
+     <div style="display:flex;gap:8px">
+       <button class="btn btn-red" style="flex:1" onclick="saveEditCourse('${c.id}')">💾 حفظ</button>
+       <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
+     </div>
+   </div>
  </div>`;
 }
 
 async function saveEditCourse(courseId) {
-const c = COURSES.find(x => x.id === courseId);
-if (!c) return;
+const c = COURSES.find(x => x.id===courseId); if (!c) return;
 const title = document.getElementById('ec_t')?.value.trim();
-const icon = document.getElementById('ec_icon')?.value.trim();
-if (!title || !icon) { showToast('⚠️', 'اكتب العنوان والأيقونة', 'var(–amber)'); return; }
-c.title = title;
-c.icon = icon;
-c.color = document.getElementById('ec_color')?.value.trim() || null;
-await fbSet('courses/' + courseId, c);
-showToast('✅', 'تم حفظ التعديلات!');
+const icon  = document.getElementById('ec_icon')?.value.trim();
+if (!title || !icon) { showToast('⚠️','اكتب العنوان والأيقونة','var(–amber)'); return; }
+c.title = title; c.icon = icon; c.color = document.getElementById('ec_color')?.value.trim()||null;
+await fbSet('courses/'+courseId, c);
+showToast('✅','تم حفظ التعديلات!');
 closeModal();
 renderApp();
 }
 
 async function deleteCourse(courseId) {
 if (!confirm('هل أنت متأكد من حذف هذا الكورس بالكامل؟')) return;
-COURSES = COURSES.filter(c => c.id !== courseId);
-await db.ref('courses/' + courseId).remove();
-showToast('🗑️', 'تم حذف الكورس');
+COURSES = COURSES.filter(c => c.id!==courseId);
+await db.ref('courses/'+courseId).remove();
+showToast('🗑️','تم حذف الكورس');
 renderApp();
 }
 
 // ============================================================
 // MANAGE USERS
-// مدير (content): يضيف ويحذف ويعدل كل الأدوار
-// مدرب (tracker): يضيف ويحذف المتدربين فقط
 // ============================================================
 async function renderManageUsers() {
 const allUsers = await fbGet('users') || {};
-const isAdmin   = S.role === 'content';
-const isTrainer = S.role === 'tracker';
+const isAdmin   = S.role==='content';
+const isTrainer = S.role==='tracker';
 const users = Object.entries(allUsers)
-.filter(([, v]) => isTrainer ? v.role === 'employee' : true)
-.map(([key, val]) => ({ ...val, ukey: key }));
-const addBtnLabel = isTrainer ? '➕ متدرب جديد' : '➕ مستخدم جديد';
-const pageTitle   = isTrainer ? 'إدارة المتدربين' : 'إدارة المستخدمين';
-const pageSub     = isTrainer ? 'إضافة وحذف المتدربين' : 'إضافة وتعديل وحذف الحسابات';
-const cols        = isAdmin ? '1fr 100px 120px 100px' : '1fr 100px 120px 60px';
-
+.filter(([,v]) => isTrainer ? v.role==='employee' : true)
+.map(([key,val]) => ({...val, ukey:key}));
+const addBtnLabel = isTrainer?'➕ متدرب جديد':'➕ مستخدم جديد';
+const pageTitle   = isTrainer?'إدارة المتدربين':'إدارة المستخدمين';
+const pageSub     = isTrainer?'إضافة وحذف المتدربين':'إضافة وتعديل وحذف الحسابات';
+const cols        = isAdmin?'1fr 100px 120px 100px':'1fr 100px 120px 60px';
 const html = `<div class="fu">
 
  <div class="topbar">
@@ -1657,15 +1806,15 @@ const html = `<div class="fu">
    <div style="display:grid;grid-template-columns:${cols};gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);font-weight:700;color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
      <div>الاسم</div><div>الدور</div><div>اسم الدخول</div><div>إجراء</div>
    </div>
-   ${users.length === 0 ? `<div style="padding:30px;text-align:center;color:var(--muted2)">لا يوجد مستخدمون.</div>` :
+   ${users.length===0?`<div style="padding:30px;text-align:center;color:var(--muted2)">لا يوجد مستخدمون.</div>`:
    users.map(u => `
      <div style="display:grid;grid-template-columns:${cols};gap:10px;padding:12px 16px;border-top:1px solid var(--border);align-items:center">
-       <div><div style="font-weight:700">${u.name || '—'}</div><div style="font-size:10px;color:var(--muted2)">Lv${u.level||1} · ${u.xp||0} XP</div></div>
+       <div><div style="font-weight:700">${u.name||'—'}</div><div style="font-size:10px;color:var(--muted2)">Lv${u.level||1} · ${u.xp||0} XP</div></div>
        <div><span class="tag" style="background:${u.role==='content'?'rgba(124,58,237,.15)':u.role==='tracker'?'rgba(0,180,216,.15)':'rgba(0,214,143,.1)'};color:${u.role==='content'?'var(--purple)':u.role==='tracker'?'var(--blue)':'var(--green)'}">${ROLE_LABELS[u.role]||u.role}</span></div>
        <div style="font-size:12px;color:var(--muted2)">${u.ukey}</div>
        <div style="display:flex;gap:4px">
-         ${isAdmin ? `<button class="btn btn-ghost btn-sm" title="تغيير كلمة السر" onclick="resetPassModal('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🔑</button>` : ''}
-         ${u.ukey !== S.ukey ? `<button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteUser('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🗑️</button>` : ''}
+         ${isAdmin?`<button class="btn btn-ghost btn-sm" title="تغيير كلمة السر" onclick="resetPassModal('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🔑</button>`:''}
+         ${u.ukey!==S.ukey?`<button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteUser('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🗑️</button>`:''}
        </div>
      </div>
    `).join('')}
@@ -1675,101 +1824,91 @@ const html = `<div class="fu">
 }
 
 function showAddUserModal() {
-const isTrainer = S.role === 'tracker';
+const isTrainer = S.role==='tracker';
 const roleField = isTrainer
 ? `<input type="hidden" id="nu_r" value="employee"/>`
-: `<div class="fgroup"><label>الدور</label><select class="inp" id="nu_r"> <option value="employee">متدرب</option> <option value="tracker">مدرب</option> <option value="content">مدير</option> </select></div>`;
+: `<div class="fgroup"><label>الدور</label><select class="inp" id="nu_r"><option value="employee">متدرب</option><option value="tracker">مدرب</option><option value="content">مدير</option></select></div>`;
 document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-<div class="modal-box">
-<div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ ${isTrainer ? 'متدرب جديد' : 'مستخدم جديد'}</div>
-<div class="fgroup"><label>الاسم الكامل</label><input class="inp" id="nu_n" placeholder="الاسم الكامل"/></div>
-<div class="fgroup"><label>اسم الدخول (فريد)</label><input class="inp" id="nu_u" placeholder="مثال: ahmed123"/></div>
-<div class="fgroup"><label>كلمة المرور</label><input class="inp" id="nu_p" type="password" placeholder="6 أحرف على الأقل"/></div>
-${roleField}
-<div id="nu_err" style="color:var(--red);font-size:12px;display:none;margin-bottom:8px"></div>
-<div style="display:flex;gap:8px">
-<button class="btn btn-red" style="flex:1" onclick="saveNewUser()">💾 حفظ</button>
-<button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
-</div>
-</div>
 
+   <div class="modal-box">
+     <div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ ${isTrainer?'متدرب جديد':'مستخدم جديد'}</div>
+     <div class="fgroup"><label>الاسم الكامل</label><input class="inp" id="nu_n" placeholder="الاسم الكامل"/></div>
+     <div class="fgroup"><label>اسم الدخول (فريد)</label><input class="inp" id="nu_u" placeholder="مثال: ahmed123"/></div>
+     <div class="fgroup"><label>كلمة المرور</label><input class="inp" id="nu_p" type="password" placeholder="6 أحرف على الأقل"/></div>
+     ${roleField}
+     <div id="nu_err" style="color:var(--red);font-size:12px;display:none;margin-bottom:8px"></div>
+     <div style="display:flex;gap:8px">
+       <button class="btn btn-red" style="flex:1" onclick="saveNewUser()">💾 حفظ</button>
+       <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
+     </div>
+   </div>
  </div>`;
 }
 
 async function saveNewUser() {
-const name = document.getElementById('nu_n')?.value.trim();
-const uname = document.getElementById('nu_u')?.value.trim().toLowerCase().replace(/\s/g, '');
-const pass = document.getElementById('nu_p')?.value.trim();
-const role = document.getElementById('nu_r')?.value || 'employee';
+const name  = document.getElementById('nu_n')?.value.trim();
+const uname = document.getElementById('nu_u')?.value.trim().toLowerCase().replace(/\s/g,'');
+const pass  = document.getElementById('nu_p')?.value.trim();
+const role  = document.getElementById('nu_r')?.value || 'employee';
 const errEl = document.getElementById('nu_err');
 errEl.style.display = 'none';
-
-if (!name || !uname || !pass) { errEl.textContent = '⚠️ أكمل كل البيانات'; errEl.style.display = 'block'; return; }
-if (pass.length < 6) { errEl.textContent = '⚠️ كلمة السر 6 أحرف على الأقل'; errEl.style.display = 'block'; return; }
-
-const existing = await fbGet('users/' + uname);
-if (existing) { errEl.textContent = '❌ اسم المستخدم موجود بالفعل'; errEl.style.display = 'block'; return; }
-
+if (!name||!uname||!pass) { errEl.textContent='⚠️ أكمل كل البيانات'; errEl.style.display='block'; return; }
+if (pass.length<6) { errEl.textContent='⚠️ كلمة السر 6 أحرف على الأقل'; errEl.style.display='block'; return; }
+const existing = await fbGet('users/'+uname);
+if (existing) { errEl.textContent='❌ اسم المستخدم موجود بالفعل'; errEl.style.display='block'; return; }
 try {
-const email = uname + '@lms.internal';
+const email = uname+'@lms.internal';
 await auth.createUserWithEmailAndPassword(email, pass);
-await fbSet('users/' + uname, { name, role, email, xp: 0, level: 1, streak: 0, badges: [], progress: {}, scores: {} });
+await fbSet('users/'+uname, { name, role, email, xp:0, level:1, streak:0, badges:[], progress:{}, scores:{} });
 closeModal();
-showToast('✅', 'تم إضافة ' + name);
+showToast('✅','تم إضافة '+name);
 await renderManageUsers();
-} catch (e) {
+} catch(e) {
 console.error(e);
-if (e.code === 'auth/email-already-in-use') {
-await fbSet('users/' + uname, { name, role, email: uname + '@lms.internal', xp: 0, level: 1, streak: 0, badges: [], progress: {}, scores: {} });
-closeModal();
-showToast('✅', 'تم إضافة ' + name);
-await renderManageUsers();
+if (e.code==='auth/email-already-in-use') {
+await fbSet('users/'+uname, { name, role, email:uname+'@lms.internal', xp:0, level:1, streak:0, badges:[], progress:{}, scores:{} });
+closeModal(); showToast('✅','تم إضافة '+name); await renderManageUsers();
 } else {
-errEl.textContent = '❌ خطأ: ' + (e.message || e.code);
-errEl.style.display = 'block';
+errEl.textContent='❌ خطأ: '+(e.message||e.code); errEl.style.display='block';
 }
 }
 }
 
 function resetPassModal(ukey, uname) {
 document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-<div class="modal-box" style="max-width:380px">
-<div style="font-weight:800;font-size:15px;margin-bottom:16px">🔑 تغيير سر: ${uname}</div>
-<div class="fgroup"><label>كلمة السر الجديدة</label><input class="inp" id="rp_pass" type="password" placeholder="6 أحرف على الأقل"/></div>
-<div id="rp_err" style="color:var(--red);font-size:12px;display:none;margin-bottom:8px"></div>
-<div style="display:flex;gap:8px">
-<button class="btn btn-red" style="flex:1" onclick="doResetPass('${ukey}')">حفظ</button>
-<button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
-</div>
-</div>
 
+   <div class="modal-box" style="max-width:380px">
+     <div style="font-weight:800;font-size:15px;margin-bottom:16px">🔑 تغيير سر: ${uname}</div>
+     <div class="fgroup"><label>كلمة السر الجديدة</label><input class="inp" id="rp_pass" type="password" placeholder="6 أحرف على الأقل"/></div>
+     <div id="rp_err" style="color:var(--red);font-size:12px;display:none;margin-bottom:8px"></div>
+     <div style="display:flex;gap:8px">
+       <button class="btn btn-red" style="flex:1" onclick="doResetPass('${ukey}')">حفظ</button>
+       <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
+     </div>
+   </div>
  </div>`;
 }
 
 async function doResetPass(ukey) {
 const newpass = document.getElementById('rp_pass')?.value.trim();
 const errEl = document.getElementById('rp_err');
-if (!newpass || newpass.length < 6) { errEl.textContent = '⚠️ 6 أحرف على الأقل'; errEl.style.display = 'block'; return; }
-
+if (!newpass||newpass.length<6) { errEl.textContent='⚠️ 6 أحرف على الأقل'; errEl.style.display='block'; return; }
 try {
-await fbUpdate('users/' + ukey, { _passNote: 'Password updated by admin - ' + new Date().toISOString() });
+await fbUpdate('users/'+ukey, { _passNote:'Password updated by admin - '+new Date().toISOString() });
 closeModal();
-showToast('✅', 'تم تحديث كلمة السر في قاعدة البيانات');
-} catch (e) {
-errEl.textContent = '❌ خطأ: ' + e.message;
-errEl.style.display = 'block';
+showToast('✅','تم تحديث كلمة السر في قاعدة البيانات');
+} catch(e) {
+errEl.textContent='❌ خطأ: '+e.message; errEl.style.display='block';
 }
 }
 
 async function deleteUser(ukey, uname) {
-if (!confirm('هل أنت متأكد من حذف ' + uname + '؟ لا يمكن التراجع.')) return;
+if (!confirm('هل أنت متأكد من حذف '+uname+'؟ لا يمكن التراجع.')) return;
 try {
-await db.ref('users/' + ukey).remove();
-showToast('🗑️', 'تم حذف ' + uname);
+await db.ref('users/'+ukey).remove();
+showToast('🗑️','تم حذف '+uname);
 await renderManageUsers();
-} catch (e) {
-alert('❌ خطأ: ' + e.message);
-}
+} catch(e) { alert('❌ خطأ: '+e.message); }
 }
 
 // ============================================================
@@ -1777,18 +1916,18 @@ alert('❌ خطأ: ' + e.message);
 // ============================================================
 function showChangePassModal() {
 document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-<div class="modal-box" style="max-width:380px">
-<div style="font-weight:800;font-size:15px;margin-bottom:16px">🔑 تغيير كلمة السر</div>
-<div class="fgroup"><label>كلمة السر الحالية</label><input class="inp" id="cp_old" type="password" placeholder="كلمة السر الحالية"/></div>
-<div class="fgroup"><label>كلمة السر الجديدة</label><input class="inp" id="cp_new" type="password" placeholder="6 أحرف على الأقل"/></div>
-<div class="fgroup"><label>تأكيد كلمة السر الجديدة</label><input class="inp" id="cp_con" type="password" placeholder="أعد كتابة كلمة السر"/></div>
-<div id="cp_err" style="color:var(--red);font-size:12px;display:none;margin-bottom:8px"></div>
-<div style="display:flex;gap:8px">
-<button class="btn btn-red" style="flex:1" onclick="saveChangePass()">تغيير</button>
-<button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
-</div>
-</div>
 
+   <div class="modal-box" style="max-width:380px">
+     <div style="font-weight:800;font-size:15px;margin-bottom:16px">🔑 تغيير كلمة السر</div>
+     <div class="fgroup"><label>كلمة السر الحالية</label><input class="inp" id="cp_old" type="password" placeholder="كلمة السر الحالية"/></div>
+     <div class="fgroup"><label>كلمة السر الجديدة</label><input class="inp" id="cp_new" type="password" placeholder="6 أحرف على الأقل"/></div>
+     <div class="fgroup"><label>تأكيد كلمة السر</label><input class="inp" id="cp_con" type="password" placeholder="أعد كتابة كلمة السر"/></div>
+     <div id="cp_err" style="color:var(--red);font-size:12px;display:none;margin-bottom:8px"></div>
+     <div style="display:flex;gap:8px">
+       <button class="btn btn-red" style="flex:1" onclick="saveChangePass()">تغيير</button>
+       <button class="btn btn-ghost" style="flex:1" onclick="closeModal()">إلغاء</button>
+     </div>
+   </div>
  </div>`;
 }
 
@@ -1798,23 +1937,19 @@ const newP = document.getElementById('cp_new')?.value;
 const conP = document.getElementById('cp_con')?.value;
 const errEl = document.getElementById('cp_err');
 errEl.style.display = 'none';
-
-if (!oldP || !newP || !conP) { errEl.textContent = '⚠️ أكمل كل الحقول'; errEl.style.display = 'block'; return; }
-if (newP.length < 6) { errEl.textContent = '⚠️ كلمة السر 6 أحرف على الأقل'; errEl.style.display = 'block'; return; }
-if (newP !== conP) { errEl.textContent = '⚠️ كلمة السر مش متطابقة'; errEl.style.display = 'block'; return; }
-
+if (!oldP||!newP||!conP) { errEl.textContent='⚠️ أكمل كل الحقول'; errEl.style.display='block'; return; }
+if (newP.length<6) { errEl.textContent='⚠️ كلمة السر 6 أحرف على الأقل'; errEl.style.display='block'; return; }
+if (newP!==conP) { errEl.textContent='⚠️ كلمة السر مش متطابقة'; errEl.style.display='block'; return; }
 try {
 const user = auth.currentUser;
-const email = user.email;
-const cred = firebase.auth.EmailAuthProvider.credential(email, oldP);
+const cred = firebase.auth.EmailAuthProvider.credential(user.email, oldP);
 await user.reauthenticateWithCredential(cred);
 await user.updatePassword(newP);
 closeModal();
-showToast('✅', 'تم تغيير كلمة السر بنجاح');
-} catch (e) {
-const msgs = { 'auth/wrong-password': '❌ كلمة السر الحالية غلط', 'auth/weak-password': '❌ كلمة السر ضعيفة' };
-errEl.textContent = msgs[e.code] || '❌ خطأ: ' + e.message;
-errEl.style.display = 'block';
+showToast('✅','تم تغيير كلمة السر بنجاح');
+} catch(e) {
+const msgs = { 'auth/wrong-password':'❌ كلمة السر الحالية غلط', 'auth/weak-password':'❌ كلمة السر ضعيفة' };
+errEl.textContent = msgs[e.code]||'❌ خطأ: '+e.message; errEl.style.display='block';
 }
 }
 
@@ -1824,57 +1959,47 @@ errEl.style.display = 'block';
 async function logLogin(username, prevData) {
 const today = new Date().toLocaleDateString('ar-EG');
 const updates = { lastLogin: today };
-
 const lastDate = prevData?.lastLogin;
 if (lastDate) {
 const last = new Date(lastDate.split('/').reverse().join('-'));
-const diff = Math.floor((new Date() - last) / 86400000);
-if (diff === 1) {
-updates.streak = (prevData.streak || 0) + 1;
+const diff = Math.floor((new Date()-last)/86400000);
+if (diff===1) {
+updates.streak = (prevData.streak||0)+1;
 S.user.streak = updates.streak;
-if (updates.streak >= 7 && !S.user.badges.includes('streak_7')) {
+if (updates.streak>=7 && !S.user.badges.includes('streak_7')) {
 S.user.badges.push('streak_7');
 updates.badges = S.user.badges;
-setTimeout(() => showToast('🔥', 'حصلت على شارة “سلسلة 7 أيام”!', 'var(–xp)'), 1200);
+setTimeout(() => showToast('🔥','حصلت على شارة “سلسلة 7 أيام”!','var(–xp)'), 1200);
 }
-} else if (diff > 1) {
-updates.streak = 1;
-S.user.streak = 1;
-}
-} else {
-updates.streak = 1;
-S.user.streak = 1;
-}
-
-await fbUpdate('users/' + username, updates);
-await fbSet('loginLogs/' + username + '_' + Date.now(), { user: username, time: new Date().toISOString() });
+} else if (diff>1) { updates.streak=1; S.user.streak=1; }
+} else { updates.streak=1; S.user.streak=1; }
+await fbUpdate('users/'+username, updates);
+await fbSet('loginLogs/'+username+'_'+Date.now(), { user:username, time:new Date().toISOString() });
 }
 
 async function loadNotification(username) {
-const userData = await fbGet('users/' + username);
+const userData = await fbGet('users/'+username);
 S.notification = (userData?.notification && !userData.notification.read) ? userData.notification : null;
 }
 
 async function dismissNotification() {
 S.notification = null;
-await fbUpdate('users/' + S.ukey, { 'notification/read': true });
+await fbUpdate('users/'+S.ukey, { 'notification/read': true });
 renderApp();
 }
 
 async function notifyLate() {
 const allUsers = await fbGet('users') || {};
-const emps = Object.entries(allUsers).filter(([, v]) => v.role === 'employee');
-const late = emps.filter(([, u]) => COURSES.length > 0 && COURSES.reduce((a, c) => a + ((u.progress || {})[c.id] || 0), 0) / COURSES.length < 30);
-
-if (late.length === 0) { showToast('✅', 'لا يوجد Traineeين متأخرين!'); return; }
-
+const emps = Object.entries(allUsers).filter(([,v]) => v.role==='employee');
+const late = emps.filter(([,u]) => COURSES.length>0 && COURSES.reduce((a,c)=>a+((u.progress||{})[c.id]||0),0)/COURSES.length<30);
+if (late.length===0) { showToast('✅','لا يوجد متدربين متأخرين!'); return; }
 const now = new Date().toLocaleDateString('ar-EG');
 await Promise.all(late.map(([key]) =>
-fbUpdate('users/' + key, {
-notification: { msg: '⚠️ تنبيه: لم تكمل الكورسات المطلوبة بعد. يرجى الاستمرار في التعلم.', from: S.name, date: now, read: false }
+fbUpdate('users/'+key, {
+notification: { msg:'⚠️ تنبيه: لم تكمل الكورسات المطلوبة بعد. يرجى الاستمرار في التعلم.', from:S.name, date:now, read:false }
 })
 ));
-showToast('🔔', 'تم إرسال تنبيه لـ ' + late.length + ' Trainee');
+showToast('🔔','تم إرسال تنبيه لـ '+late.length+' متدرب');
 }
 
 // ============================================================
@@ -1882,23 +2007,22 @@ showToast('🔔', 'تم إرسال تنبيه لـ ' + late.length + ' Trainee')
 // ============================================================
 async function exportExcel() {
 const allUsers = await fbGet('users') || {};
-const emps = Object.entries(allUsers).filter(([, v]) => v.role === 'employee');
-const BOM = '\uFEFF';
-const NL = '\n';
-const headers = ['الاسم', 'اسم الدخول', 'الدور', 'المستوى', 'XP', 'متوسط النتيجة', 'التقدم %', 'الشارات', 'السلسلة', 'آخر دخول'];
-const rows = emps.map(([key, u]) => {
-const scores = Object.values(u.scores || {});
-const avg = scores.length > 0 ? Math.round(scores.reduce((a, v) => a + v, 0) / scores.length) : 0;
-const pct = COURSES.length > 0 ? Math.round(COURSES.reduce((a, c) => a + ((u.progress || {})[c.id] || 0), 0) / COURSES.length) : 0;
-return [u.name || '—', key, ROLE_LABELS[u.role] || u.role, u.level || 1, u.xp || 0, avg + '%', pct + '%', (u.badges || []).length, u.streak || 0, u.lastLogin || '—'];
+const emps = Object.entries(allUsers).filter(([,v]) => v.role==='employee');
+const BOM='\uFEFF', NL='\n';
+const headers=['الاسم','اسم الدخول','الدور','المستوى','XP','متوسط النتيجة','التقدم %','الشارات','السلسلة','آخر دخول'];
+const rows = emps.map(([key,u]) => {
+const scores = Object.values(u.scores||{});
+const avg = scores.length>0?Math.round(scores.reduce((a,v)=>a+v,0)/scores.length):0;
+const pct = COURSES.length>0?Math.round(COURSES.reduce((a,c)=>a+((u.progress||{})[c.id]||0),0)/COURSES.length):0;
+return [u.name||'—',key,ROLE_LABELS[u.role]||u.role,u.level||1,u.xp||0,avg+'%',pct+'%',(u.badges||[]).length,u.streak||0,u.lastLogin||'—'];
 });
-let csv = BOM + headers.join(',') + NL + rows.map(r => r.map(v => `"${v}"`).join(',')).join(NL);
-const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+let csv = BOM+headers.join(',')+NL+rows.map(r=>r.map(v=>`"${v}"`).join(',')).join(NL);
+const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
 const url = URL.createObjectURL(blob);
 const a = document.createElement('a');
-a.href = url; a.download = 'eand_report_' + Date.now() + '.csv'; a.click();
+a.href=url; a.download='eand_report_'+Date.now()+'.csv'; a.click();
 URL.revokeObjectURL(url);
-showToast('📥', 'تم التصدير بنجاح!');
+showToast('📥','تم التصدير بنجاح!');
 }
 
 // ============================================================
@@ -1908,7 +2032,6 @@ function toggleMob() {
 const sb = document.getElementById('sidebar');
 if (sb) sb.classList.toggle('mob-open');
 }
-
 document.addEventListener('click', (e) => {
 const sb = document.getElementById('sidebar');
 if (sb?.classList.contains('mob-open') && !sb.contains(e.target) && !e.target.classList.contains('mob-burger')) {
@@ -1917,42 +2040,44 @@ sb.classList.remove('mob-open');
 });
 
 // ============================================================
-// CREATE FIRST ADMIN (بتشتغل مرة واحدة بس)
+// CREATE FIRST ADMIN
 // ============================================================
 async function createFirstAdmin() {
 try {
 const existing = await fbGet('users/admin');
-if (existing) return; // موجود بالفعل
-await auth.createUserWithEmailAndPassword('admin@lms.internal', 'a123456');
-await fbSet('users/admin', {
-name: 'المدير', role: 'content', email: 'admin@lms.internal',
-xp: 0, level: 1, streak: 0, badges: [], progress: {}, scores: {}
-});
+if (existing) return;
+await auth.createUserWithEmailAndPassword('admin@lms.internal','a123456');
+await fbSet('users/admin', { name:'المدير', role:'content', email:'admin@lms.internal', xp:0, level:1, streak:0, badges:[], progress:{}, scores:{} });
 console.log('✅ تم إنشاء حساب المدير تلقائياً');
 } catch(e) {
-if (e.code !== 'auth/email-already-in-use') console.error('createFirstAdmin:', e);
+if (e.code!=='auth/email-already-in-use') console.error('createFirstAdmin:',e);
 }
 }
 createFirstAdmin();
 
 // ============================================================
-// INIT - Firebase Auth State Listener
+// FIX #1 — onAuthStateChanged: يشتغل بس لو مفيش login جاري
 // ============================================================
 auth.onAuthStateChanged(async (firebaseUser) => {
 const loadingEl = document.getElementById('loadingScreen');
 if (loadingEl) loadingEl.style.display = 'none';
 
-if (firebaseUser) {
-if (!S.user) {
+// لو في login جاري بالكود، متدخلش
+if (S._loginInProgress) return;
+
+if (firebaseUser && !S._loggedIn) {
+// جلسة متبقية من قبل — حمّل بياناتها
 const username = firebaseUser.email.split('@')[0];
-const userData = await fbGet('users/' + username);
+const userData = await fbGet('users/'+username);
 if (userData) {
+S._loggedIn = true;
 await afterLogin(username, userData);
 } else {
+await auth.signOut();
 renderApp();
 }
-}
-} else {
+} else if (!firebaseUser) {
+S._loggedIn = false;
 renderApp();
 }
 });
@@ -1960,5 +2085,3 @@ renderApp();
 
 </body>
 </html>
-
-Sent from my iPhone
