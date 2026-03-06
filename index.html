@@ -154,6 +154,16 @@ select.inp{cursor:pointer}
 /* Mob burger */
 .mob-burger{display:none;position:fixed;top:14px;left:14px;z-index:200;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:8px 10px;cursor:pointer;font-size:18px}
 
+/* ROLE CARDS */
+@keyframes roleIn{from{opacity:0;transform:translateY(10px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+.role-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;margin-bottom:20px}
+.role-card{border-radius:16px;padding:16px 10px;cursor:pointer;transition:all .25s;border:2px solid var(--border);background:rgba(255,255,255,.03);text-align:center;animation:roleIn .4s ease both}
+.role-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.role-card.selected{transform:scale(1.04)}
+.role-card .rc-icon{font-size:30px;margin-bottom:7px}
+.role-card .rc-label{font-size:12px;font-weight:800}
+.role-card .rc-sub{font-size:9px;color:var(--muted2);margin-top:2px}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .mob-burger{display:flex}
@@ -181,7 +191,7 @@ select.inp{cursor:pointer}
     <div class="sb-logo">
       <span>e&</span>
       <span style="font-size:14px;font-weight:700;color:var(--text)">Academy</span>
-      <span style="margin-right:auto;font-size:18px">🚀</span>
+      <span style="margin-right:auto;font-size:18px"></span>
     </div>
     <div class="nav-lbl">القائمة</div>
     <div id="navItems"></div>
@@ -219,20 +229,57 @@ select.inp{cursor:pointer}
 
 <!-- LOGIN -->
 
-<div id="loginScreen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;max-width:400px;margin:0 auto;text-align:center">
-  <div style="font-size:32px;font-weight:900;color:var(--red);letter-spacing:-1px;margin-bottom:8px">e& <span style="color:var(--text)">Academy</span> 🚀</div>
-  <div style="font-size:13px;color:var(--muted2);margin-bottom:30px">منصة التعلم الإلكتروني</div>
-  <div class="fgroup" style="width:100%;text-align:right">
-    <label for="username">اسم المستخدم</label>
-    <input class="inp" id="username" placeholder="اسم المستخدم" onkeydown="if(event.key==='Enter')doLogin()"/>
+<div id="loginScreen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;max-width:420px;margin:0 auto;text-align:center">
+  <div style="font-size:32px;font-weight:900;color:var(--red);letter-spacing:-1px;margin-bottom:4px">e& <span style="color:var(--text)">Academy</span> </div>
+  <div style="font-size:12px;color:var(--muted2);margin-bottom:24px">منصة تدريب خدمة العملاء</div>
+
+  <!-- STEP 1: اختيار الدور -->
+
+  <div id="roleStep" style="width:100%">
+    <div style="font-size:11px;font-weight:800;color:var(--muted2);margin-bottom:12px;text-align:right">اختر نوع حسابك أولاً</div>
+    <div class="role-cards">
+      <div class="role-card" id="rc_trainee" onclick="selectLoginRole('trainee')" style="animation-delay:.05s;border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.06)">
+        <div class="rc-icon">🎓</div>
+        <div class="rc-label" style="color:var(--green)">Trainee</div>
+        <div class="rc-sub"></div>
+      </div>
+      <div class="role-card" id="rc_trainer" onclick="selectLoginRole('trainer')" style="animation-delay:.1s;border-color:rgba(0,180,216,.3);background:rgba(0,180,216,.06)">
+        <div class="rc-icon">👨‍🏫</div>
+        <div class="rc-label" style="color:var(--blue)">Trainer</div>
+        <div class="rc-sub"></div>
+      </div>
+      <div class="role-card" id="rc_admin" onclick="selectLoginRole('admin')" style="animation-delay:.15s;border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.06)">
+        <div class="rc-icon">⚙️</div>
+        <div class="rc-label" style="color:var(--purple)">Admin</div>
+        <div class="rc-sub"></div>
+      </div>
+    </div>
   </div>
-  <div class="fgroup" style="width:100%;text-align:right">
-    <label for="password">كلمة المرور</label>
-    <input class="inp" id="password" type="password" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')doLogin()"/>
+
+  <!-- STEP 2: فورم الدخول -->
+
+  <div id="loginFormStep" style="width:100%;display:none">
+    <div id="roleHeader" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:16px;text-align:right">
+      <span id="roleHeaderIcon" style="font-size:24px"></span>
+      <div style="flex:1">
+        <div id="roleHeaderLabel" style="font-size:13px;font-weight:800"></div>
+        <div id="roleHeaderSub" style="font-size:10px;color:var(--muted2)"></div>
+      </div>
+      <button onclick="resetLoginRole()" style="background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted2);cursor:pointer;font-size:12px;font-family:'Cairo',sans-serif;padding:4px 10px">↩ تغيير</button>
+    </div>
+    <div class="fgroup" style="text-align:right">
+      <label>اسم المستخدم</label>
+      <input class="inp" id="username" placeholder="اسم المستخدم" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div class="fgroup" style="text-align:right">
+      <label>كلمة المرور</label>
+      <input class="inp" id="password" type="password" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div id="loginErr" style="color:var(--red);font-size:12px;margin-bottom:12px;display:none;text-align:right"></div>
+    <button class="btn btn-red" id="loginBtn" style="width:100%" onclick="doLogin()">دخول 🚀</button>
   </div>
-  <div id="loginErr" style="color:var(--red);font-size:12px;margin-bottom:15px;display:none;width:100%;text-align:right"></div>
-  <button class="btn btn-red" id="loginBtn" style="width:100%;margin-bottom:15px" onclick="doLogin()">دخول</button>
-  <div style="font-size:11px;color:var(--muted)">نسخة تجريبية - e& Academy LMS</div>
+
+  <div style="font-size:10px;color:var(--muted);margin-top:20px">e& Academy · منصة تدريب خدمة العملاء</div>
 </div>
 
 <div id="overlay"></div>
@@ -291,57 +338,131 @@ const S = {
   currentLessonId: null,
   currentExam: null,
   examResult: null,
+  selectedLoginRole: null, // 'trainee' | 'trainer' | 'admin'
 };
 
 // ============================================================
-// STATIC DATA
+// STATIC DATA - برامج تدريب خدمة العملاء
 // ============================================================
 const COURSES_DEFAULT = [
-  { id: 'course1', title: 'مقدمة في البرمجة', icon: '💻', color: '#00b4d8', lessons: [
-    { id: 'l1', title: 'أساسيات JavaScript', type: 'فيديو', yt: 'https://www.youtube.com/embed/W6NZfCO5sks', desc: 'تعلم أساسيات JavaScript من الصفر.', duration: '15 د', xp: 10 },
-    { id: 'l2', title: 'مقدمة في HTML/CSS', type: 'نص', pdf: 'https://docs.google.com/document/d/12345/preview', desc: 'بناء صفحات الويب بـ HTML و CSS.', duration: '20 د', xp: 15 },
-    { id: 'l3', title: 'اختبار الوحدة الأولى', type: 'امتحان', exam: { questions: [{ q: 'ما هي لغة البرمجة التي تعمل في المتصفح؟', options: ['Python', 'Java', 'JavaScript', 'C++'], ans: 2 }, { q: 'ما هو الوسم الصحيح للعنوان الرئيسي في HTML؟', options: ['<head>', '<h1>', '<title>', '<header>'], ans: 1 }], passScore: 50 }, duration: '10 د', xp: 20 },
+  { id: 'cs1', title: 'أساسيات خدمة العملاء', icon: '🌟', color: '#00b4d8', lessons: [
+    { id: 'cs1l1', title: 'مفهوم تجربة العميل (CX)', type: 'فيديو', yt: 'https://www.youtube.com/embed/6sE3OmWPH-k', desc: 'تعرّف على أهمية تجربة العميل CX وكيف تؤثر على ولاء العملاء ونجاح الشركة.', duration: '12 د', xp: 10 },
+    { id: 'cs1l2', title: 'مهارات الاستماع الفعّال', type: 'نص', pdf: '', desc: 'تعلّم كيف تستمع بفاعلية لشكاوى ومتطلبات العملاء وتعكس تفهّمك لهم.', duration: '15 د', xp: 15 },
+    { id: 'cs1l3', title: 'اختبار الوحدة الأولى', type: 'امتحان', exam: { questions: [
+      { q: 'ما هو الهدف الرئيسي لخدمة العملاء المتميزة؟', options: ['زيادة الأرباح فقط', 'إرضاء العميل وحل مشكلاته بكفاءة', 'تقليل وقت المكالمات', 'بيع أكبر عدد من المنتجات'], ans: 1 },
+      { q: 'ما هو أول شيء تفعله عند استقبال شكوى عميل؟', options: ['الاعتذار فوراً دون الاستماع', 'تحويله لمسؤول آخر', 'الاستماع الكامل دون مقاطعة', 'إغلاق الخط'], ans: 2 },
+      { q: 'ماذا تعني "الاستماع الفعّال"؟', options: ['الانتظار حتى ينتهي العميل من الكلام فقط', 'فهم المشاعر والمحتوى والرد بشكل مناسب', 'تدوين ملاحظات فقط', 'الرد السريع دون تفكير'], ans: 1 },
+    ], passScore: 60 }, duration: '10 د', xp: 25 },
   ]},
-  { id: 'course2', title: 'تطوير الويب المتقدم', icon: '🌐', color: '#7c3aed', lessons: [
-    { id: 'l4', title: 'مقدمة في React', type: 'فيديو', yt: 'https://www.youtube.com/embed/S_R_d-D4s8s', desc: 'بناء واجهات المستخدم التفاعلية.', duration: '30 د', xp: 25 },
-    { id: 'l5', title: 'إدارة الحالة', type: 'نص', pdf: 'https://docs.google.com/document/d/67890/preview', desc: 'تعلم إدارة الحالة في التطبيقات.', duration: '25 د', xp: 20 },
+  { id: 'cs2', title: 'التعامل مع الشكاوى والعملاء الصعبين', icon: '🛡️', color: '#e4002b', lessons: [
+    { id: 'cs2l1', title: 'أنواع شكاوى العملاء وتصنيفها', type: 'فيديو', yt: 'https://www.youtube.com/embed/kG5mRV7zj5I', desc: 'تعرّف على الأنواع الشائعة لشكاوى العملاء وكيفية تصنيفها للتعامل معها بشكل أفضل.', duration: '14 د', xp: 15 },
+    { id: 'cs2l2', title: 'تقنية LEAP للتعامل مع الغضب', type: 'نص', pdf: '', desc: 'تعلّم تقنية Listen-Empathize-Apologize-Problem Solve للتعامل الاحترافي مع العملاء الغاضبين.', duration: '20 د', xp: 20 },
+    { id: 'cs2l3', title: 'سيناريوهات عملية من بيئة العمل', type: 'نص', pdf: '', desc: 'تدرّب على سيناريوهات حقيقية لشكاوى شائعة في مجال الاتصالات وخدمة العملاء.', duration: '25 د', xp: 20 },
+    { id: 'cs2l4', title: 'اختبار التعامل مع الشكاوى', type: 'امتحان', exam: { questions: [
+      { q: 'ماذا تفعل إذا كان العميل يصرخ ويتحدث بعدوانية؟', options: ['الرد بنفس الأسلوب', 'إغلاق الخط فوراً', 'الحفاظ على الهدوء والتعاطف معه', 'تحويله لمشرف مباشرة بدون كلام'], ans: 2 },
+      { q: 'ما هي الخطوة الأولى في تقنية LEAP؟', options: ['الاعتذار (Apologize)', 'الاستماع (Listen)', 'حل المشكلة (Problem Solve)', 'التعاطف (Empathize)'], ans: 1 },
+      { q: 'ما هو الوقت المثالي لحل شكوى العميل؟', options: ['أسبوع كامل على الأقل', 'شهر', 'أقصر وقت ممكن مع الحفاظ على الجودة', 'لا يهم الوقت طالما حُلّت'], ans: 2 },
+    ], passScore: 60 }, duration: '10 د', xp: 30 },
+  ]},
+  { id: 'cs3', title: 'مهارات التواصل الاحترافي', icon: '💬', color: '#7c3aed', lessons: [
+    { id: 'cs3l1', title: 'لغة الجسد والنبرة الصوتية', type: 'فيديو', yt: 'https://www.youtube.com/embed/pFqErusv0R8', desc: 'تعلّم تأثير نبرة الصوت واللغة الإيجابية على إدراك العميل لجودة الخدمة.', duration: '16 د', xp: 15 },
+    { id: 'cs3l2', title: 'الكلمات الإيجابية في خدمة العملاء', type: 'نص', pdf: '', desc: 'اكتشف قائمة الكلمات والعبارات الإيجابية التي ترفع رضا العميل وتُظهر الاحترافية.', duration: '12 د', xp: 15 },
+    { id: 'cs3l3', title: 'اختبار مهارات التواصل', type: 'امتحان', exam: { questions: [
+      { q: 'أيٌّ من هذه العبارات أكثر احترافية عند عدم معرفة الإجابة؟', options: ['"مش عارف"', '"مش من اختصاصي"', '"سأتحقق من ذلك وأعود إليك في أقرب وقت"', '"مشكلتك مش عندنا"'], ans: 2 },
+      { q: 'ما نسبة تأثير نبرة الصوت في التواصل الهاتفي مع العملاء؟', options: ['10%', '38%', '55%', '70%'], ans: 1 },
+      { q: 'ما المقصود بـ "اللغة الإيجابية" في خدمة العملاء؟', options: ['الابتسام فقط', 'استخدام عبارات تُركّز على الحلول لا المشاكل', 'التحدث بسرعة', 'قول نعم لكل شيء'], ans: 1 },
+    ], passScore: 60 }, duration: '10 د', xp: 25 },
+  ]},
+  { id: 'cs4', title: 'رضا العميل ومؤشرات الأداء', icon: '📊', color: '#00d68f', lessons: [
+    { id: 'cs4l1', title: 'مؤشر NPS وقياس رضا العملاء', type: 'فيديو', yt: 'https://www.youtube.com/embed/9kq-KBPYcpI', desc: 'تعرّف على مؤشر Net Promoter Score وكيفية استخدامه لتحليل رضا العملاء.', duration: '18 د', xp: 20 },
+    { id: 'cs4l2', title: 'تحليل تغذية العملاء الراجعة', type: 'نص', pdf: '', desc: 'تعلّم كيف تستفيد من آراء وتعليقات العملاء لتحسين جودة الخدمة باستمرار.', duration: '20 د', xp: 20 },
+    { id: 'cs4l3', title: 'اختبار مؤشرات الأداء', type: 'امتحان', exam: { questions: [
+      { q: 'ماذا يقيس مؤشر NPS (Net Promoter Score)؟', options: ['سرعة الرد على العملاء', 'احتمالية توصية العميل بالشركة لأصدقائه', 'عدد المكالمات اليومية', 'وقت انتظار العميل'], ans: 1 },
+      { q: 'ما هو CSAT؟', options: ['نوع من أنواع الشكاوى الشائعة', 'مؤشر رضا العميل عن تجربة محددة', 'نظام لإدارة طلبات العملاء', 'تقنية تواصل متقدمة'], ans: 1 },
+      { q: 'ما أهمية تحليل تغذية العملاء الراجعة؟', options: ['لا فائدة منها', 'تحسين الخدمة ومعالجة نقاط الضعف', 'لأغراض التسويق فقط', 'لمعاقبة الموظفين'], ans: 1 },
+    ], passScore: 60 }, duration: '10 د', xp: 25 },
   ]},
 ];
 
 let COURSES = JSON.parse(JSON.stringify(COURSES_DEFAULT));
 
 const BADGES = [
-  { id: 'first_login', name: 'أول تسجيل دخول', icon: '👋', desc: 'سجلت دخولك للمرة الأولى.' },
-  { id: 'course_master', name: 'خبير كورس', icon: '🏆', desc: 'أكملت كورساً كاملاً بنجاح.' },
-  { id: 'streak_7', name: 'سلسلة 7 أيام', icon: '🔥', desc: 'تعلمت 7 أيام متتالية.' },
-  { id: 'exam_ace', name: 'متفوق في الامتحانات', icon: '🎯', desc: 'حصلت على 100% في امتحان.' },
+  { id: 'first_login',    name: 'أول تسجيل دخول',        icon: '👋', desc: 'سجّلت دخولك للمرة الأولى.' },
+  { id: 'course_master',  name: 'خبير التدريب',           icon: '🏆', desc: 'أكملت برنامجاً تدريبياً كاملاً.' },
+  { id: 'streak_7',       name: 'سلسلة 7 أيام',          icon: '🔥', desc: 'تدرّبت 7 أيام متتالية.' },
+  { id: 'exam_ace',       name: 'متفوق في الاختبارات',   icon: '🎯', desc: 'حصلت على 100% في اختبار.' },
+  { id: 'customer_hero',  name: 'بطل خدمة العملاء',      icon: '🌟', desc: 'أكملت جميع البرامج التدريبية.' },
 ];
 
 const MASCOT_MSGS = {
-  home: ['أهلاً بك! استمر في التعلم لتحقيق أهدافك.', 'كل يوم تتعلم فيه هو خطوة نحو النجاح!', 'لا تتوقف عن الاستكشاف، المعرفة قوة.'],
-  course: ['ابدأ الدرس الأول لتكتشف عالم جديد!', 'التعلم متعة، استمتع بكل لحظة.'],
-  exam: ['حظاً موفقاً في الامتحان!', 'ثق بقدراتك، أنت قادر على النجاح.'],
+  home: ['أهلاً بك! ابدأ رحلتك نحو خدمة عملاء متميزة.', 'كل درس تتعلمه يجعلك أقرب لإرضاء عملائك!', 'العميل السعيد هو هدفنا، استمر في التدريب.'],
+  course: ['ابدأ الدرس الأول لتكتشف أسرار خدمة العملاء!', 'التدريب الجيد يصنع الفرق مع كل عميل.'],
+  exam: ['حظاً موفقاً في الاختبار!', 'ثق بما تعلمته، أنت مستعد لإرضاء العملاء!'],
 };
 
-const ROLE_LABELS = { employee: 'Trainee', tracker: 'Trainer', content: 'Admin' };
+const ROLE_LABELS = { employee: 'متدرب', tracker: 'مدرب', content: 'مدير' };
+
+const ROLE_INFO = {
+  trainee: { label: 'متدرب', sub: 'تسجيل دخول كمتدرب', icon: '🎓', color: 'var(--green)',  dbRole: 'employee' },
+  trainer: { label: 'مدرب',  sub: 'تسجيل دخول كمدرب',  icon: '👨‍🏫', color: 'var(--blue)',   dbRole: 'tracker'  },
+  admin:   { label: 'مدير',  sub: 'تسجيل دخول كمدير',  icon: '⚙️',  color: 'var(--purple)', dbRole: 'content'  },
+};
+
+// ============================================================
+// LOGIN ROLE SELECTOR
+// ============================================================
+function selectLoginRole(role) {
+  S.selectedLoginRole = role;
+  const info = ROLE_INFO[role];
+
+  // تظليل الكرت المختار
+  ['trainee','trainer','admin'].forEach(r => {
+    const el = document.getElementById('rc_' + r);
+    if (el) { el.style.opacity = r === role ? '1' : '0.35'; el.style.transform = r === role ? 'scale(1.06)' : 'scale(1)'; }
+  });
+
+  // تحديث header الفورم
+  document.getElementById('roleHeaderIcon').textContent = info.icon;
+  document.getElementById('roleHeaderLabel').textContent = info.sub;
+  document.getElementById('roleHeaderLabel').style.color = info.color;
+  document.getElementById('roleHeaderSub').textContent = info.label;
+
+  // إظهار فورم الدخول
+  const form = document.getElementById('loginFormStep');
+  form.style.display = 'block';
+  form.style.animation = 'fadeUp .3s ease';
+  setTimeout(() => { const u = document.getElementById('username'); if(u) u.focus(); }, 100);
+}
+
+function resetLoginRole() {
+  S.selectedLoginRole = null;
+  ['trainee','trainer','admin'].forEach(r => {
+    const el = document.getElementById('rc_' + r);
+    if (el) { el.style.opacity = '1'; el.style.transform = 'scale(1)'; }
+  });
+  document.getElementById('loginFormStep').style.display = 'none';
+  const errEl = document.getElementById('loginErr');
+  if (errEl) errEl.style.display = 'none';
+  const u = document.getElementById('username'); if(u) u.value = '';
+  const p = document.getElementById('password'); if(p) p.value = '';
+}
 
 // ============================================================
 // AUTH
 // ============================================================
 async function doLogin() {
+  if (!S.selectedLoginRole) { showErr('اختر نوع حسابك أولاً.'); return; }
+
   const usernameEl = document.getElementById('username');
   const passwordEl = document.getElementById('password');
-  const loginBtn = document.getElementById('loginBtn');
-  const errEl = document.getElementById('loginErr');
+  const loginBtn   = document.getElementById('loginBtn');
+  const errEl      = document.getElementById('loginErr');
 
   const username = usernameEl.value.trim();
   const password = passwordEl.value.trim();
   errEl.style.display = 'none';
 
-  if (!username || !password) {
-    showErr('الرجاء إدخال اسم المستخدم وكلمة المرور.', errEl);
-    return;
-  }
+  if (!username || !password) { showErr('أكمل اسم المستخدم وكلمة المرور.', errEl); return; }
 
   loginBtn.disabled = true;
   loginBtn.textContent = 'جاري الدخول...';
@@ -349,30 +470,34 @@ async function doLogin() {
   try {
     const email = username + '@lms.internal';
     await auth.signInWithEmailAndPassword(email, password);
-
     const userData = await fbGet('users/' + username);
+
     if (!userData) {
       await auth.signOut();
-      showErr('لم يتم العثور على بيانات المستخدم.', errEl);
-      loginBtn.disabled = false;
-      loginBtn.textContent = 'دخول';
-      return;
+      showErr('المستخدم غير موجود في النظام.', errEl);
+      loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀'; return;
+    }
+
+    // التحقق أن الدور المختور يطابق الحساب
+    const expectedRole = ROLE_INFO[S.selectedLoginRole].dbRole;
+    if (userData.role !== expectedRole) {
+      await auth.signOut();
+      showErr('هذا الحساب مسجل كـ "' + (ROLE_LABELS[userData.role]||userData.role) + '" وليس ' + ROLE_INFO[S.selectedLoginRole].label + '.', errEl);
+      loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀'; return;
     }
 
     await afterLogin(username, userData);
 
   } catch (e) {
-    console.error('Login error:', e);
     const msgs = {
-      'auth/wrong-password': 'كلمة المرور غلط.',
-      'auth/user-not-found': 'المستخدم غير موجود.',
-      'auth/invalid-email': 'بيانات دخول غير صحيحة.',
-      'auth/too-many-requests': 'محاولات كثيرة، حاول بعد شوية.',
+      'auth/wrong-password':     'كلمة المرور غلط.',
+      'auth/user-not-found':     'المستخدم غير موجود.',
+      'auth/invalid-email':      'بيانات دخول غير صحيحة.',
+      'auth/too-many-requests':  'محاولات كثيرة، حاول بعد شوية.',
       'auth/invalid-credential': 'اسم المستخدم أو كلمة المرور غير صحيحة.',
     };
     showErr(msgs[e.code] || 'اسم المستخدم أو كلمة المرور غير صحيحة.', errEl);
-    loginBtn.disabled = false;
-    loginBtn.textContent = 'دخول';
+    loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀';
   }
 }
 
@@ -409,7 +534,8 @@ async function afterLogin(username, userData) {
 
 async function logout() {
   try { await auth.signOut(); } catch (e) {}
-  Object.assign(S, { screen: 'login', user: null, ukey: null, role: null, name: null, notification: null, courseId: null, currentLessonId: null, currentExam: null, examResult: null });
+  Object.assign(S, { screen: 'login', user: null, ukey: null, role: null, name: null, notification: null, courseId: null, currentLessonId: null, currentExam: null, examResult: null, selectedLoginRole: null });
+  resetLoginRole();
   renderApp();
 }
 
@@ -480,20 +606,24 @@ function renderNav() {
   const role = S.user?.role;
   let items = [];
   if (role === 'employee') {
+    // متدرب: يشوف كورساته وإنجازاته وترتيبه فقط
     items = [
-      { icon: '🏠', label: 'الرئيسية', screen: 'home' },
-      { icon: '🏆', label: 'إنجازاتي', screen: 'achievements' },
-      { icon: '📊', label: 'ترتيبي', screen: 'leaderboard' },
+      { icon: '🏠', label: 'الرئيسية',   screen: 'home' },
+      { icon: '🏆', label: 'إنجازاتي',   screen: 'achievements' },
+      { icon: '📊', label: 'لوحة الشرف', screen: 'leaderboard' },
     ];
   } else if (role === 'tracker') {
+    // مدرب: يشوف تقدم المتدربين + يضيف/يحذف متدربين فقط
     items = [
-      { icon: '📊', label: 'لوحة المتابعة', screen: 'tracking' },
-      { icon: '🧑‍💼', label: 'إدارة الحسابات', screen: 'manageusers' },
+      { icon: '📊', label: 'تقدم المتدربين',  screen: 'tracking'    },
+      { icon: '🧑‍💼', label: 'إدارة المتدربين', screen: 'manageusers' },
     ];
   } else if (role === 'content') {
+    // مدير: كل الصلاحيات
     items = [
-      { icon: '📚', label: 'إدارة المحتوى', screen: 'content' },
-      { icon: '👥', label: 'المستخدمون', screen: 'manageusers' },
+      { icon: '📊', label: 'لوحة المتابعة',   screen: 'tracking'    },
+      { icon: '📚', label: 'إدارة المحتوى',   screen: 'content'     },
+      { icon: '👥', label: 'إدارة المستخدمين', screen: 'manageusers' },
     ];
   } else {
     items = [{ icon: '🏠', label: 'الرئيسية', screen: 'home' }];
@@ -641,7 +771,7 @@ function renderHome() {
   </div>` : ''}
 
   <div class="topbar">
-    <div><div class="pg-title">أهلاً، ${getFirstName(u.name)}! 👋</div><div class="pg-sub">استمر في رحلتك التعليمية</div></div>
+    <div><div class="pg-title">أهلاً، ${getFirstName(u.name)}! 👋</div><div class="pg-sub">رحلتك نحو خدمة عملاء متميزة</div></div>
     <div style="display:flex;align-items:center;gap:10px">
       <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--xp)">${xp}</div><div style="font-size:9px;color:#7a8aaa">⭐ XP</div></div>
       <div style="width:1px;height:28px;background:var(--border)"></div>
@@ -684,8 +814,8 @@ function renderHome() {
   </div>
 
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-    <div style="font-size:14px;font-weight:900">🎮 مساراتك</div>
-    <span style="font-size:11px;color:var(--muted2)">${COURSES.length} مسارات</span>
+    <div style="font-size:14px;font-weight:900">📚 برامجك التدريبية</div>
+    <span style="font-size:11px;color:var(--muted2)">${COURSES.length} برامج تدريبية</span>
   </div>
   <div class="courses-grid">
     ${COURSES.map((c, i) => {
@@ -1050,7 +1180,7 @@ async function renderTracking() {
   const html = `<div class="fu">
   <div class="topbar">
     <div><div class="pg-title">📊 لوحة المتابعة</div><div class="pg-sub">تقدم الTraineeين في الوقت الحقيقي</div></div>
-    <button class="btn btn-red btn-sm" onclick="exportExcel()">📥 Excel</button>
+    ${S.role === 'content' ? `<button class="btn btn-red btn-sm" onclick="exportExcel()">📥 Excel</button>` : ''}
   </div>
 
   <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
@@ -1152,7 +1282,7 @@ function showUserModal(u) {
 function renderContent() {
   return `<div class="fu">
   <div class="topbar">
-    <div><div class="pg-title">📚 إدارة المحتوى</div><div class="pg-sub">أضف وعدّل المسارات والدروس</div></div>
+    <div><div class="pg-title">📚 إدارة المحتوى</div><div class="pg-sub">أضف وعدّل البرامج تدريبية والدروس</div></div>
     <button class="btn btn-red btn-sm" onclick="addCourseModal()">➕ كورس جديد</button>
   </div>
   ${COURSES.map((c, ci) => `
@@ -1196,6 +1326,7 @@ function renderAddLessonForm(cid) {
     <div class="fgroup"><label>📄 رابط PDF</label><input class="inp" id="nl_pdf" placeholder="https://drive.google.com/file/d/.../preview"/></div>
     <div class="fgroup"><label>الشرح</label><textarea class="inp" id="nl_d" placeholder="وصف الدرس..."></textarea></div>
 
+
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
   <div class="fgroup"><label>المدة *</label><input class="inp" id="nl_dur" placeholder="15 د"/></div>
   <div class="fgroup"><label>XP</label><input class="inp" id="nl_xp" type="number" placeholder="10"/></div>
@@ -1204,6 +1335,8 @@ function renderAddLessonForm(cid) {
   <button class="btn btn-red btn-sm" onclick="saveNewLesson('${cid}')">💾 حفظ</button>
   <button class="btn btn-ghost btn-sm" onclick="S.addingLesson=null;renderApp()">إلغاء</button>
 </div>
+
+
   </div>`;
 }
 
@@ -1365,33 +1498,39 @@ renderApp();
 
 // ============================================================
 // MANAGE USERS
+// مدير (content): يضيف ويحذف ويعدل كل الأدوار
+// مدرب (tracker): يضيف ويحذف المتدربين فقط
 // ============================================================
 async function renderManageUsers() {
 const allUsers = await fbGet('users') || {};
-const users = Object.entries(allUsers).map(([key, val]) => ({ ...val, ukey: key }));
+const isAdmin   = S.role === 'content';
+const isTrainer = S.role === 'tracker';
+const users = Object.entries(allUsers)
+.filter(([, v]) => isTrainer ? v.role === 'employee' : true)
+.map(([key, val]) => ({ ...val, ukey: key }));
+const addBtnLabel = isTrainer ? '➕ متدرب جديد' : '➕ مستخدم جديد';
+const pageTitle   = isTrainer ? 'إدارة المتدربين' : 'إدارة المستخدمين';
+const pageSub     = isTrainer ? 'إضافة وحذف المتدربين' : 'إضافة وتعديل وحذف الحسابات';
+const cols        = isAdmin ? '1fr 100px 120px 100px' : '1fr 100px 120px 60px';
 
 const html = `<div class="fu">
 
   <div class="topbar">
-    <div><div class="pg-title">🧑‍💼 إدارة المستخدمين</div><div class="pg-sub">إضافة وتعديل وحذف الحسابات</div></div>
-    <button class="btn btn-red btn-sm" onclick="showAddUserModal()">➕ مستخدم جديد</button>
+    <div><div class="pg-title">🧑‍💼 ${pageTitle}</div><div class="pg-sub">${pageSub}</div></div>
+    <button class="btn btn-red btn-sm" onclick="showAddUserModal()">${addBtnLabel}</button>
   </div>
-
   <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden">
-    <div style="display:grid;grid-template-columns:1fr 100px 120px 80px;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);font-weight:700;color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
+    <div style="display:grid;grid-template-columns:${cols};gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);font-weight:700;color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
       <div>الاسم</div><div>الدور</div><div>اسم الدخول</div><div>إجراء</div>
     </div>
     ${users.length === 0 ? `<div style="padding:30px;text-align:center;color:var(--muted2)">لا يوجد مستخدمون.</div>` :
     users.map(u => `
-      <div style="display:grid;grid-template-columns:1fr 100px 120px 80px;gap:10px;padding:12px 16px;border-top:1px solid var(--border);align-items:center">
-        <div>
-          <div style="font-weight:700">${u.name || '—'}</div>
-          <div style="font-size:10px;color:var(--muted2)">Lv${u.level || 1} · ${u.xp || 0} XP</div>
-        </div>
-        <div><span class="tag" style="background:${u.role === 'content' ? 'rgba(124,58,237,.15)' : u.role === 'tracker' ? 'rgba(0,180,216,.15)' : 'rgba(0,214,143,.1)'};color:${u.role === 'content' ? 'var(--purple)' : u.role === 'tracker' ? 'var(--blue)' : 'var(--green)'}">${ROLE_LABELS[u.role] || u.role}</span></div>
+      <div style="display:grid;grid-template-columns:${cols};gap:10px;padding:12px 16px;border-top:1px solid var(--border);align-items:center">
+        <div><div style="font-weight:700">${u.name || '—'}</div><div style="font-size:10px;color:var(--muted2)">Lv${u.level||1} · ${u.xp||0} XP</div></div>
+        <div><span class="tag" style="background:${u.role==='content'?'rgba(124,58,237,.15)':u.role==='tracker'?'rgba(0,180,216,.15)':'rgba(0,214,143,.1)'};color:${u.role==='content'?'var(--purple)':u.role==='tracker'?'var(--blue)':'var(--green)'}">${ROLE_LABELS[u.role]||u.role}</span></div>
         <div style="font-size:12px;color:var(--muted2)">${u.ukey}</div>
         <div style="display:flex;gap:4px">
-          <button class="btn btn-ghost btn-sm" title="تغيير كلمة السر" onclick="resetPassModal('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🔑</button>
+          ${isAdmin ? `<button class="btn btn-ghost btn-sm" title="تغيير كلمة السر" onclick="resetPassModal('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🔑</button>` : ''}
           ${u.ukey !== S.ukey ? `<button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteUser('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🗑️</button>` : ''}
         </div>
       </div>
@@ -1402,17 +1541,17 @@ const html = `<div class="fu">
 }
 
 function showAddUserModal() {
+const isTrainer = S.role === 'tracker';
+const roleField = isTrainer
+? `<input type="hidden" id="nu_r" value="employee"/>`
+: `<div class="fgroup"><label>الدور</label><select class="inp" id="nu_r"> <option value="employee">متدرب</option> <option value="tracker">مدرب</option> <option value="content">مدير</option> </select></div>`;
 document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
 <div class="modal-box">
-<div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ مستخدم جديد</div>
-<div class="fgroup"><label>الاسم الكامل</label><input class="inp" id="nu_n" placeholder="اسم المستخدم"/></div>
+<div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ ${isTrainer ? 'متدرب جديد' : 'مستخدم جديد'}</div>
+<div class="fgroup"><label>الاسم الكامل</label><input class="inp" id="nu_n" placeholder="الاسم الكامل"/></div>
 <div class="fgroup"><label>اسم الدخول (فريد)</label><input class="inp" id="nu_u" placeholder="مثال: ahmed123"/></div>
 <div class="fgroup"><label>كلمة المرور</label><input class="inp" id="nu_p" type="password" placeholder="6 أحرف على الأقل"/></div>
-<div class="fgroup"><label>الدور</label><select class="inp" id="nu_r">
-<option value="employee">Trainee</option>
-<option value="tracker">Trainer</option>
-<option value="content">Admin</option>
-</select></div>
+${roleField}
 <div id="nu_err" style="color:var(--red);font-size:12px;display:none;margin-bottom:8px"></div>
 <div style="display:flex;gap:8px">
 <button class="btn btn-red" style="flex:1" onclick="saveNewUser()">💾 حفظ</button>
