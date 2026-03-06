@@ -20,12 +20,12 @@
 
 <style>
 :root{
-  --red:#e4002b;--red2:#ff1744;--reddim:rgba(228,0,43,.13);
-  --dark:#07080f;--dark2:#0d0e1a;--dark3:#12141f;--card:#161824;
-  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
-  --text:#f1f5f9;--muted:#6b7a99;--muted2:#9aa5b8;
-  --green:#00d68f;--amber:#ffb300;--blue:#00b4d8;--purple:#7c3aed;
-  --xp:#ffd700;
+ --red:#e4002b;--red2:#ff1744;--reddim:rgba(228,0,43,.13);
+ --dark:#07080f;--dark2:#0d0e1a;--dark3:#12141f;--card:#161824;
+ --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+ --text:#f1f5f9;--muted:#6b7a99;--muted2:#9aa5b8;
+ --green:#00d68f;--amber:#ffb300;--blue:#00b4d8;--purple:#7c3aed;
+ --xp:#ffd700;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Cairo',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;direction:rtl;overflow-x:hidden}
@@ -177,13 +177,13 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  .mob-burger{display:flex}
-  .sidebar{transform:translateX(100%);width:280px;border-left:none;box-shadow:0 0 30px rgba(0,0,0,.3)}
-  .sidebar.mob-open{transform:translateX(0)}
-  .main{margin-right:0;padding:16px;padding-top:54px}
-  .lesson-layout{grid-template-columns:1fr;gap:14px}
-  .lessons-panel{position:static}
-  .topbar{flex-direction:column;align-items:flex-start}
+ .mob-burger{display:flex}
+ .sidebar{transform:translateX(100%);width:280px;border-left:none;box-shadow:0 0 30px rgba(0,0,0,.3)}
+ .sidebar.mob-open{transform:translateX(0)}
+ .main{margin-right:0;padding:16px;padding-top:54px}
+ .lesson-layout{grid-template-columns:1fr;gap:14px}
+ .lessons-panel{position:static}
+ .topbar{flex-direction:column;align-items:flex-start}
 }
 </style>
 
@@ -191,106 +191,106 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
 <body>
 
 <div id="loadingScreen">
-  <div class="loader"></div>
-  <div style="font-size:12px;color:var(--muted2)">جاري التحميل...</div>
+ <div class="loader"></div>
+ <div style="font-size:12px;color:var(--muted2)">جاري التحميل...</div>
 </div>
 
 <div id="appShell" style="display:none">
-  <button class="mob-burger" onclick="toggleMob()">☰</button>
+ <button class="mob-burger" onclick="toggleMob()">☰</button>
 
-  <div class="sidebar" id="sidebar">
-    <div class="sb-logo">
-      <span>e&</span>
-      <span style="font-size:14px;font-weight:700;color:var(--text)">Academy</span>
-      <span style="margin-right:auto;font-size:18px">🚀</span>
-    </div>
-    <div class="nav-lbl">القائمة</div>
-    <div id="navItems"></div>
+ <div class="sidebar" id="sidebar">
+   <div class="sb-logo">
+     <span>e&</span>
+     <span style="font-size:14px;font-weight:700;color:var(--text)">Academy</span>
+     <span style="margin-right:auto;font-size:18px">🚀</span>
+   </div>
+   <div class="nav-lbl">القائمة</div>
+   <div id="navItems"></div>
 
 
 <div class="sb-footer">
-  <div class="user-chip">
-    <div class="u-av" id="uAvTxt">
-      <span id="uAvChar">?</span>
-      <div class="u-level-badge" id="uLvlBadge">1</div>
-    </div>
-    <div style="flex:1;min-width:0">
-      <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="uName"></div>
-      <div style="font-size:10px;color:var(--muted2)" id="uRole"></div>
-    </div>
-  </div>
-  <div style="height:10px"></div>
-  <div class="xp-bar-wrap">
-    <div class="xp-bar-fill" id="sbXpFill" style="width:0%"></div>
-  </div>
-  <div style="display:flex;justify-content:space-between;margin-top:6px">
-    <div style="font-size:9px;color:var(--muted2)" id="sbXpTxt">0/200 XP</div>
-    <div style="font-size:9px;color:var(--muted2)" id="sbLvlTxt">المستوى 1</div>
-  </div>
-  <div style="height:14px"></div>
-  <button class="btn btn-ghost" style="width:100%;margin-bottom:6px" onclick="showChangePassModal()">🔑 تغيير كلمة السر</button>
-  <button class="btn btn-ghost" style="width:100%" onclick="logout()">تسجيل الخروج</button>
+ <div class="user-chip">
+   <div class="u-av" id="uAvTxt">
+     <span id="uAvChar">?</span>
+     <div class="u-level-badge" id="uLvlBadge">1</div>
+   </div>
+   <div style="flex:1;min-width:0">
+     <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="uName"></div>
+     <div style="font-size:10px;color:var(--muted2)" id="uRole"></div>
+   </div>
+ </div>
+ <div style="height:10px"></div>
+ <div class="xp-bar-wrap">
+   <div class="xp-bar-fill" id="sbXpFill" style="width:0%"></div>
+ </div>
+ <div style="display:flex;justify-content:space-between;margin-top:6px">
+   <div style="font-size:9px;color:var(--muted2)" id="sbXpTxt">0/200 XP</div>
+   <div style="font-size:9px;color:var(--muted2)" id="sbLvlTxt">المستوى 1</div>
+ </div>
+ <div style="height:14px"></div>
+ <button class="btn btn-ghost" style="width:100%;margin-bottom:6px" onclick="showChangePassModal()">🔑 تغيير كلمة السر</button>
+ <button class="btn btn-ghost" style="width:100%" onclick="logout()">تسجيل الخروج</button>
 </div>
 
 
-  </div>
+ </div>
 
-  <div class="main" id="mainArea"></div>
+ <div class="main" id="mainArea"></div>
 </div>
 
 <!-- LOGIN -->
 
 <div id="loginScreen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;max-width:420px;margin:0 auto;text-align:center">
-  <div style="font-size:32px;font-weight:900;color:var(--red);letter-spacing:-1px;margin-bottom:4px">e& <span style="color:var(--text)">Academy</span> 🚀</div>
-  <div style="font-size:12px;color:var(--muted2);margin-bottom:24px">منصة تدريب خدمة العملاء</div>
+ <div style="font-size:32px;font-weight:900;color:var(--red);letter-spacing:-1px;margin-bottom:4px">e& <span style="color:var(--text)">Academy</span> 🚀</div>
+ <div style="font-size:12px;color:var(--muted2);margin-bottom:24px">منصة تدريب خدمة العملاء</div>
 
-  <!-- STEP 1: اختيار الدور -->
+ <!-- STEP 1: اختيار الدور -->
 
-  <div id="roleStep" style="width:100%">
-    <div style="font-size:11px;font-weight:800;color:var(--muted2);margin-bottom:12px;text-align:right">اختر نوع حسابك أولاً</div>
-    <div class="role-cards">
-      <div class="role-card" id="rc_trainee" onclick="selectLoginRole('trainee')" style="animation-delay:.05s;border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.06)">
-        <div class="rc-icon">🎓</div>
-        <div class="rc-label" style="color:var(--green)">متدرب</div>
-        <div class="rc-sub">Trainee</div>
-      </div>
-      <div class="role-card" id="rc_trainer" onclick="selectLoginRole('trainer')" style="animation-delay:.1s;border-color:rgba(0,180,216,.3);background:rgba(0,180,216,.06)">
-        <div class="rc-icon">👨‍🏫</div>
-        <div class="rc-label" style="color:var(--blue)">مدرب</div>
-        <div class="rc-sub">Trainer</div>
-      </div>
-      <div class="role-card" id="rc_admin" onclick="selectLoginRole('admin')" style="animation-delay:.15s;border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.06)">
-        <div class="rc-icon">⚙️</div>
-        <div class="rc-label" style="color:var(--purple)">مدير</div>
-        <div class="rc-sub">Admin</div>
-      </div>
-    </div>
-  </div>
+ <div id="roleStep" style="width:100%">
+   <div style="font-size:11px;font-weight:800;color:var(--muted2);margin-bottom:12px;text-align:right">اختر نوع حسابك أولاً</div>
+   <div class="role-cards">
+     <div class="role-card" id="rc_trainee" onclick="selectLoginRole('trainee')" style="animation-delay:.05s;border-color:rgba(0,214,143,.3);background:rgba(0,214,143,.06)">
+       <div class="rc-icon">🎓</div>
+       <div class="rc-label" style="color:var(--green)">متدرب</div>
+       <div class="rc-sub">Trainee</div>
+     </div>
+     <div class="role-card" id="rc_trainer" onclick="selectLoginRole('trainer')" style="animation-delay:.1s;border-color:rgba(0,180,216,.3);background:rgba(0,180,216,.06)">
+       <div class="rc-icon">👨‍🏫</div>
+       <div class="rc-label" style="color:var(--blue)">مدرب</div>
+       <div class="rc-sub">Trainer</div>
+     </div>
+     <div class="role-card" id="rc_admin" onclick="selectLoginRole('admin')" style="animation-delay:.15s;border-color:rgba(124,58,237,.3);background:rgba(124,58,237,.06)">
+       <div class="rc-icon">⚙️</div>
+       <div class="rc-label" style="color:var(--purple)">مدير</div>
+       <div class="rc-sub">Admin</div>
+     </div>
+   </div>
+ </div>
 
-  <!-- STEP 2: فورم الدخول -->
+ <!-- STEP 2: فورم الدخول -->
 
-  <div id="loginFormStep" style="width:100%;display:none">
-    <div id="roleHeader" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:16px;text-align:right">
-      <span id="roleHeaderIcon" style="font-size:24px"></span>
-      <div style="flex:1">
-        <div id="roleHeaderLabel" style="font-size:13px;font-weight:800"></div>
-        <div id="roleHeaderSub" style="font-size:10px;color:var(--muted2)"></div>
-      </div>
-      <button onclick="resetLoginRole()" style="background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted2);cursor:pointer;font-size:12px;font-family:'Cairo',sans-serif;padding:4px 10px">↩ تغيير</button>
-    </div>
-    <div class="fgroup" style="text-align:right">
-      <label>اسم المستخدم</label>
-      <input class="inp" id="username" placeholder="اسم المستخدم" onkeydown="if(event.key==='Enter')doLogin()"/>
-    </div>
-    <div class="fgroup" style="text-align:right">
-      <label>كلمة المرور</label>
-      <input class="inp" id="password" type="password" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')doLogin()"/>
-    </div>
-    <div id="loginErr" style="color:var(--red);font-size:12px;margin-bottom:12px;display:none;text-align:right"></div>
-    <button class="btn btn-red" id="loginBtn" style="width:100%" onclick="doLogin()">دخول 🚀</button>
-  </div>
+ <div id="loginFormStep" style="width:100%;display:none">
+   <div id="roleHeader" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin-bottom:16px;text-align:right">
+     <span id="roleHeaderIcon" style="font-size:24px"></span>
+     <div style="flex:1">
+       <div id="roleHeaderLabel" style="font-size:13px;font-weight:800"></div>
+       <div id="roleHeaderSub" style="font-size:10px;color:var(--muted2)"></div>
+     </div>
+     <button onclick="resetLoginRole()" style="background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted2);cursor:pointer;font-size:12px;font-family:'Cairo',sans-serif;padding:4px 10px">↩ تغيير</button>
+   </div>
+   <div class="fgroup" style="text-align:right">
+     <label>اسم المستخدم</label>
+     <input class="inp" id="username" placeholder="اسم المستخدم" onkeydown="if(event.key==='Enter')doLogin()"/>
+   </div>
+   <div class="fgroup" style="text-align:right">
+     <label>كلمة المرور</label>
+     <input class="inp" id="password" type="password" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter')doLogin()"/>
+   </div>
+   <div id="loginErr" style="color:var(--red);font-size:12px;margin-bottom:12px;display:none;text-align:right"></div>
+   <button class="btn btn-red" id="loginBtn" style="width:100%" onclick="doLogin()">دخول 🚀</button>
+ </div>
 
-  <div style="font-size:10px;color:var(--muted);margin-top:20px">e& Academy · منصة تدريب خدمة العملاء</div>
+ <div style="font-size:10px;color:var(--muted);margin-top:20px">e& Academy · منصة تدريب خدمة العملاء</div>
 </div>
 
 <div id="overlay"></div>
@@ -302,13 +302,13 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
 // FIREBASE INITIALIZATION
 // ============================================================
 const firebaseConfig = {
-  apiKey: "AIzaSyB4MGENw13REVpvw2pSY1Jxd884tRQre9o",
-  authDomain: "lms-demo-e0348.firebaseapp.com",
-  databaseURL: "https://lms-demo-e0348-default-rtdb.firebaseio.com",
-  projectId: "lms-demo-e0348",
-  storageBucket: "lms-demo-e0348.firebasestorage.app",
-  messagingSenderId: "776022866442",
-  appId: "1:776022866442:web:6ab13f3d6d67ebd1e8fdf3"
+ apiKey: "AIzaSyB4MGENw13REVpvw2pSY1Jxd884tRQre9o",
+ authDomain: "lms-demo-e0348.firebaseapp.com",
+ databaseURL: "https://lms-demo-e0348-default-rtdb.firebaseio.com",
+ projectId: "lms-demo-e0348",
+ storageBucket: "lms-demo-e0348.firebasestorage.app",
+ messagingSenderId: "776022866442",
+ appId: "1:776022866442:web:6ab13f3d6d67ebd1e8fdf3"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -320,1126 +320,1126 @@ const storage = firebase.storage();
 // FIREBASE HELPERS
 // ============================================================
 async function fbGet(path) {
-  const snap = await db.ref(path).once('value');
-  return snap.val();
+ const snap = await db.ref(path).once('value');
+ return snap.val();
 }
 
 async function fbSet(path, value) {
-  await db.ref(path).set(value);
+ await db.ref(path).set(value);
 }
 
 async function fbUpdate(path, value) {
-  await db.ref(path).update(value);
+ await db.ref(path).update(value);
 }
 
 // رفع ملف على Firebase Storage مع شريط تقدم
 function uploadFile(file, folder, progressBarId) {
-  return new Promise((resolve, reject) => {
-    const ext = file.name.split('.').pop();
-    const filename = folder + '/' + Date.now() + '_' + Math.random().toString(36).slice(2) + '.' + ext;
-    const ref = storage.ref(filename);
-    const task = ref.put(file);
+ return new Promise((resolve, reject) => {
+   const ext = file.name.split('.').pop();
+   const filename = folder + '/' + Date.now() + '_' + Math.random().toString(36).slice(2) + '.' + ext;
+   const ref = storage.ref(filename);
+   const task = ref.put(file);
 
-    task.on('state_changed',
-      snap => {
-        const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-        const bar = document.getElementById(progressBarId);
-        if (bar) bar.style.width = pct + '%';
-        const label = document.getElementById(progressBarId + '_label');
-        if (label) label.textContent = 'جاري الرفع... ' + pct + '%';
-      },
-      err => reject(err),
-      async () => {
-        const url = await task.snapshot.ref.getDownloadURL();
-        resolve(url);
-      }
-    );
-  });
+   task.on('state_changed',
+     snap => {
+       const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+       const bar = document.getElementById(progressBarId);
+       if (bar) bar.style.width = pct + '%';
+       const label = document.getElementById(progressBarId + '_label');
+       if (label) label.textContent = 'جاري الرفع... ' + pct + '%';
+     },
+     err => reject(err),
+     async () => {
+       const url = await task.snapshot.ref.getDownloadURL();
+       resolve(url);
+     }
+   );
+ });
 }
 
 // ============================================================
 // GLOBAL STATE
 // ============================================================
 const S = {
-  screen: 'login',
-  user: null,
-  ukey: null,
-  role: null,
-  name: null,
-  notification: null,
-  trackFilter: '',
-  trackStatus: 'all',
-  addingLesson: null,
-  editingLesson: null,
-  courseId: null,
-  currentLessonId: null,
-  currentExam: null,
-  examResult: null,
-  selectedLoginRole: null, // 'trainee' | 'trainer' | 'admin'
+ screen: 'login',
+ user: null,
+ ukey: null,
+ role: null,
+ name: null,
+ notification: null,
+ trackFilter: '',
+ trackStatus: 'all',
+ addingLesson: null,
+ editingLesson: null,
+ courseId: null,
+ currentLessonId: null,
+ currentExam: null,
+ examResult: null,
+ selectedLoginRole: null, // 'trainee' | 'trainer' | 'admin'
 };
 
 // ============================================================
 // STATIC DATA - برامج تدريب خدمة العملاء
 // ============================================================
 const COURSES_DEFAULT = [
-  { id: 'cs1', title: 'أساسيات خدمة العملاء', icon: '🌟', color: '#00b4d8', lessons: [
-    { id: 'cs1l1', title: 'مفهوم تجربة العميل (CX)', type: 'فيديو', yt: 'https://www.youtube.com/embed/6sE3OmWPH-k', desc: 'تعرّف على أهمية تجربة العميل CX وكيف تؤثر على ولاء العملاء ونجاح الشركة.', duration: '12 د', xp: 10 },
-    { id: 'cs1l2', title: 'مهارات الاستماع الفعّال', type: 'نص', pdf: '', desc: 'تعلّم كيف تستمع بفاعلية لشكاوى ومتطلبات العملاء وتعكس تفهّمك لهم.', duration: '15 د', xp: 15 },
-    { id: 'cs1l3', title: 'اختبار الوحدة الأولى', type: 'امتحان', exam: { questions: [
-      { q: 'ما هو الهدف الرئيسي لخدمة العملاء المتميزة؟', options: ['زيادة الأرباح فقط', 'إرضاء العميل وحل مشكلاته بكفاءة', 'تقليل وقت المكالمات', 'بيع أكبر عدد من المنتجات'], ans: 1 },
-      { q: 'ما هو أول شيء تفعله عند استقبال شكوى عميل؟', options: ['الاعتذار فوراً دون الاستماع', 'تحويله لمسؤول آخر', 'الاستماع الكامل دون مقاطعة', 'إغلاق الخط'], ans: 2 },
-      { q: 'ماذا تعني "الاستماع الفعّال"؟', options: ['الانتظار حتى ينتهي العميل من الكلام فقط', 'فهم المشاعر والمحتوى والرد بشكل مناسب', 'تدوين ملاحظات فقط', 'الرد السريع دون تفكير'], ans: 1 },
-    ], passScore: 60 }, duration: '10 د', xp: 25 },
-  ]},
-  { id: 'cs2', title: 'التعامل مع الشكاوى والعملاء الصعبين', icon: '🛡️', color: '#e4002b', lessons: [
-    { id: 'cs2l1', title: 'أنواع شكاوى العملاء وتصنيفها', type: 'فيديو', yt: 'https://www.youtube.com/embed/kG5mRV7zj5I', desc: 'تعرّف على الأنواع الشائعة لشكاوى العملاء وكيفية تصنيفها للتعامل معها بشكل أفضل.', duration: '14 د', xp: 15 },
-    { id: 'cs2l2', title: 'تقنية LEAP للتعامل مع الغضب', type: 'نص', pdf: '', desc: 'تعلّم تقنية Listen-Empathize-Apologize-Problem Solve للتعامل الاحترافي مع العملاء الغاضبين.', duration: '20 د', xp: 20 },
-    { id: 'cs2l3', title: 'سيناريوهات عملية من بيئة العمل', type: 'نص', pdf: '', desc: 'تدرّب على سيناريوهات حقيقية لشكاوى شائعة في مجال الاتصالات وخدمة العملاء.', duration: '25 د', xp: 20 },
-    { id: 'cs2l4', title: 'اختبار التعامل مع الشكاوى', type: 'امتحان', exam: { questions: [
-      { q: 'ماذا تفعل إذا كان العميل يصرخ ويتحدث بعدوانية؟', options: ['الرد بنفس الأسلوب', 'إغلاق الخط فوراً', 'الحفاظ على الهدوء والتعاطف معه', 'تحويله لمشرف مباشرة بدون كلام'], ans: 2 },
-      { q: 'ما هي الخطوة الأولى في تقنية LEAP؟', options: ['الاعتذار (Apologize)', 'الاستماع (Listen)', 'حل المشكلة (Problem Solve)', 'التعاطف (Empathize)'], ans: 1 },
-      { q: 'ما هو الوقت المثالي لحل شكوى العميل؟', options: ['أسبوع كامل على الأقل', 'شهر', 'أقصر وقت ممكن مع الحفاظ على الجودة', 'لا يهم الوقت طالما حُلّت'], ans: 2 },
-    ], passScore: 60 }, duration: '10 د', xp: 30 },
-  ]},
-  { id: 'cs3', title: 'مهارات التواصل الاحترافي', icon: '💬', color: '#7c3aed', lessons: [
-    { id: 'cs3l1', title: 'لغة الجسد والنبرة الصوتية', type: 'فيديو', yt: 'https://www.youtube.com/embed/pFqErusv0R8', desc: 'تعلّم تأثير نبرة الصوت واللغة الإيجابية على إدراك العميل لجودة الخدمة.', duration: '16 د', xp: 15 },
-    { id: 'cs3l2', title: 'الكلمات الإيجابية في خدمة العملاء', type: 'نص', pdf: '', desc: 'اكتشف قائمة الكلمات والعبارات الإيجابية التي ترفع رضا العميل وتُظهر الاحترافية.', duration: '12 د', xp: 15 },
-    { id: 'cs3l3', title: 'اختبار مهارات التواصل', type: 'امتحان', exam: { questions: [
-      { q: 'أيٌّ من هذه العبارات أكثر احترافية عند عدم معرفة الإجابة؟', options: ['"مش عارف"', '"مش من اختصاصي"', '"سأتحقق من ذلك وأعود إليك في أقرب وقت"', '"مشكلتك مش عندنا"'], ans: 2 },
-      { q: 'ما نسبة تأثير نبرة الصوت في التواصل الهاتفي مع العملاء؟', options: ['10%', '38%', '55%', '70%'], ans: 1 },
-      { q: 'ما المقصود بـ "اللغة الإيجابية" في خدمة العملاء؟', options: ['الابتسام فقط', 'استخدام عبارات تُركّز على الحلول لا المشاكل', 'التحدث بسرعة', 'قول نعم لكل شيء'], ans: 1 },
-    ], passScore: 60 }, duration: '10 د', xp: 25 },
-  ]},
-  { id: 'cs4', title: 'رضا العميل ومؤشرات الأداء', icon: '📊', color: '#00d68f', lessons: [
-    { id: 'cs4l1', title: 'مؤشر NPS وقياس رضا العملاء', type: 'فيديو', yt: 'https://www.youtube.com/embed/9kq-KBPYcpI', desc: 'تعرّف على مؤشر Net Promoter Score وكيفية استخدامه لتحليل رضا العملاء.', duration: '18 د', xp: 20 },
-    { id: 'cs4l2', title: 'تحليل تغذية العملاء الراجعة', type: 'نص', pdf: '', desc: 'تعلّم كيف تستفيد من آراء وتعليقات العملاء لتحسين جودة الخدمة باستمرار.', duration: '20 د', xp: 20 },
-    { id: 'cs4l3', title: 'اختبار مؤشرات الأداء', type: 'امتحان', exam: { questions: [
-      { q: 'ماذا يقيس مؤشر NPS (Net Promoter Score)؟', options: ['سرعة الرد على العملاء', 'احتمالية توصية العميل بالشركة لأصدقائه', 'عدد المكالمات اليومية', 'وقت انتظار العميل'], ans: 1 },
-      { q: 'ما هو CSAT؟', options: ['نوع من أنواع الشكاوى الشائعة', 'مؤشر رضا العميل عن تجربة محددة', 'نظام لإدارة طلبات العملاء', 'تقنية تواصل متقدمة'], ans: 1 },
-      { q: 'ما أهمية تحليل تغذية العملاء الراجعة؟', options: ['لا فائدة منها', 'تحسين الخدمة ومعالجة نقاط الضعف', 'لأغراض التسويق فقط', 'لمعاقبة الموظفين'], ans: 1 },
-    ], passScore: 60 }, duration: '10 د', xp: 25 },
-  ]},
+ { id: 'cs1', title: 'أساسيات خدمة العملاء', icon: '🌟', color: '#00b4d8', lessons: [
+   { id: 'cs1l1', title: 'مفهوم تجربة العميل (CX)', type: 'فيديو', yt: 'https://www.youtube.com/embed/6sE3OmWPH-k', desc: 'تعرّف على أهمية تجربة العميل CX وكيف تؤثر على ولاء العملاء ونجاح الشركة.', duration: '12 د', xp: 10 },
+   { id: 'cs1l2', title: 'مهارات الاستماع الفعّال', type: 'نص', pdf: '', desc: 'تعلّم كيف تستمع بفاعلية لشكاوى ومتطلبات العملاء وتعكس تفهّمك لهم.', duration: '15 د', xp: 15 },
+   { id: 'cs1l3', title: 'اختبار الوحدة الأولى', type: 'امتحان', exam: { questions: [
+     { q: 'ما هو الهدف الرئيسي لخدمة العملاء المتميزة؟', options: ['زيادة الأرباح فقط', 'إرضاء العميل وحل مشكلاته بكفاءة', 'تقليل وقت المكالمات', 'بيع أكبر عدد من المنتجات'], ans: 1 },
+     { q: 'ما هو أول شيء تفعله عند استقبال شكوى عميل؟', options: ['الاعتذار فوراً دون الاستماع', 'تحويله لمسؤول آخر', 'الاستماع الكامل دون مقاطعة', 'إغلاق الخط'], ans: 2 },
+     { q: 'ماذا تعني "الاستماع الفعّال"؟', options: ['الانتظار حتى ينتهي العميل من الكلام فقط', 'فهم المشاعر والمحتوى والرد بشكل مناسب', 'تدوين ملاحظات فقط', 'الرد السريع دون تفكير'], ans: 1 },
+   ], passScore: 60 }, duration: '10 د', xp: 25 },
+ ]},
+ { id: 'cs2', title: 'التعامل مع الشكاوى والعملاء الصعبين', icon: '🛡️', color: '#e4002b', lessons: [
+   { id: 'cs2l1', title: 'أنواع شكاوى العملاء وتصنيفها', type: 'فيديو', yt: 'https://www.youtube.com/embed/kG5mRV7zj5I', desc: 'تعرّف على الأنواع الشائعة لشكاوى العملاء وكيفية تصنيفها للتعامل معها بشكل أفضل.', duration: '14 د', xp: 15 },
+   { id: 'cs2l2', title: 'تقنية LEAP للتعامل مع الغضب', type: 'نص', pdf: '', desc: 'تعلّم تقنية Listen-Empathize-Apologize-Problem Solve للتعامل الاحترافي مع العملاء الغاضبين.', duration: '20 د', xp: 20 },
+   { id: 'cs2l3', title: 'سيناريوهات عملية من بيئة العمل', type: 'نص', pdf: '', desc: 'تدرّب على سيناريوهات حقيقية لشكاوى شائعة في مجال الاتصالات وخدمة العملاء.', duration: '25 د', xp: 20 },
+   { id: 'cs2l4', title: 'اختبار التعامل مع الشكاوى', type: 'امتحان', exam: { questions: [
+     { q: 'ماذا تفعل إذا كان العميل يصرخ ويتحدث بعدوانية؟', options: ['الرد بنفس الأسلوب', 'إغلاق الخط فوراً', 'الحفاظ على الهدوء والتعاطف معه', 'تحويله لمشرف مباشرة بدون كلام'], ans: 2 },
+     { q: 'ما هي الخطوة الأولى في تقنية LEAP؟', options: ['الاعتذار (Apologize)', 'الاستماع (Listen)', 'حل المشكلة (Problem Solve)', 'التعاطف (Empathize)'], ans: 1 },
+     { q: 'ما هو الوقت المثالي لحل شكوى العميل؟', options: ['أسبوع كامل على الأقل', 'شهر', 'أقصر وقت ممكن مع الحفاظ على الجودة', 'لا يهم الوقت طالما حُلّت'], ans: 2 },
+   ], passScore: 60 }, duration: '10 د', xp: 30 },
+ ]},
+ { id: 'cs3', title: 'مهارات التواصل الاحترافي', icon: '💬', color: '#7c3aed', lessons: [
+   { id: 'cs3l1', title: 'لغة الجسد والنبرة الصوتية', type: 'فيديو', yt: 'https://www.youtube.com/embed/pFqErusv0R8', desc: 'تعلّم تأثير نبرة الصوت واللغة الإيجابية على إدراك العميل لجودة الخدمة.', duration: '16 د', xp: 15 },
+   { id: 'cs3l2', title: 'الكلمات الإيجابية في خدمة العملاء', type: 'نص', pdf: '', desc: 'اكتشف قائمة الكلمات والعبارات الإيجابية التي ترفع رضا العميل وتُظهر الاحترافية.', duration: '12 د', xp: 15 },
+   { id: 'cs3l3', title: 'اختبار مهارات التواصل', type: 'امتحان', exam: { questions: [
+     { q: 'أيٌّ من هذه العبارات أكثر احترافية عند عدم معرفة الإجابة؟', options: ['"مش عارف"', '"مش من اختصاصي"', '"سأتحقق من ذلك وأعود إليك في أقرب وقت"', '"مشكلتك مش عندنا"'], ans: 2 },
+     { q: 'ما نسبة تأثير نبرة الصوت في التواصل الهاتفي مع العملاء؟', options: ['10%', '38%', '55%', '70%'], ans: 1 },
+     { q: 'ما المقصود بـ "اللغة الإيجابية" في خدمة العملاء؟', options: ['الابتسام فقط', 'استخدام عبارات تُركّز على الحلول لا المشاكل', 'التحدث بسرعة', 'قول نعم لكل شيء'], ans: 1 },
+   ], passScore: 60 }, duration: '10 د', xp: 25 },
+ ]},
+ { id: 'cs4', title: 'رضا العميل ومؤشرات الأداء', icon: '📊', color: '#00d68f', lessons: [
+   { id: 'cs4l1', title: 'مؤشر NPS وقياس رضا العملاء', type: 'فيديو', yt: 'https://www.youtube.com/embed/9kq-KBPYcpI', desc: 'تعرّف على مؤشر Net Promoter Score وكيفية استخدامه لتحليل رضا العملاء.', duration: '18 د', xp: 20 },
+   { id: 'cs4l2', title: 'تحليل تغذية العملاء الراجعة', type: 'نص', pdf: '', desc: 'تعلّم كيف تستفيد من آراء وتعليقات العملاء لتحسين جودة الخدمة باستمرار.', duration: '20 د', xp: 20 },
+   { id: 'cs4l3', title: 'اختبار مؤشرات الأداء', type: 'امتحان', exam: { questions: [
+     { q: 'ماذا يقيس مؤشر NPS (Net Promoter Score)؟', options: ['سرعة الرد على العملاء', 'احتمالية توصية العميل بالشركة لأصدقائه', 'عدد المكالمات اليومية', 'وقت انتظار العميل'], ans: 1 },
+     { q: 'ما هو CSAT؟', options: ['نوع من أنواع الشكاوى الشائعة', 'مؤشر رضا العميل عن تجربة محددة', 'نظام لإدارة طلبات العملاء', 'تقنية تواصل متقدمة'], ans: 1 },
+     { q: 'ما أهمية تحليل تغذية العملاء الراجعة؟', options: ['لا فائدة منها', 'تحسين الخدمة ومعالجة نقاط الضعف', 'لأغراض التسويق فقط', 'لمعاقبة الموظفين'], ans: 1 },
+   ], passScore: 60 }, duration: '10 د', xp: 25 },
+ ]},
 ];
 
 let COURSES = JSON.parse(JSON.stringify(COURSES_DEFAULT));
 
 const BADGES = [
-  { id: 'first_login',    name: 'أول تسجيل دخول',        icon: '👋', desc: 'سجّلت دخولك للمرة الأولى.' },
-  { id: 'course_master',  name: 'خبير التدريب',           icon: '🏆', desc: 'أكملت برنامجاً تدريبياً كاملاً.' },
-  { id: 'streak_7',       name: 'سلسلة 7 أيام',          icon: '🔥', desc: 'تدرّبت 7 أيام متتالية.' },
-  { id: 'exam_ace',       name: 'متفوق في الاختبارات',   icon: '🎯', desc: 'حصلت على 100% في اختبار.' },
-  { id: 'customer_hero',  name: 'بطل خدمة العملاء',      icon: '🌟', desc: 'أكملت جميع البرامج التدريبية.' },
+ { id: 'first_login',    name: 'أول تسجيل دخول',        icon: '👋', desc: 'سجّلت دخولك للمرة الأولى.' },
+ { id: 'course_master',  name: 'خبير التدريب',           icon: '🏆', desc: 'أكملت برنامجاً تدريبياً كاملاً.' },
+ { id: 'streak_7',       name: 'سلسلة 7 أيام',          icon: '🔥', desc: 'تدرّبت 7 أيام متتالية.' },
+ { id: 'exam_ace',       name: 'متفوق في الاختبارات',   icon: '🎯', desc: 'حصلت على 100% في اختبار.' },
+ { id: 'customer_hero',  name: 'بطل خدمة العملاء',      icon: '🌟', desc: 'أكملت جميع البرامج التدريبية.' },
 ];
 
 const MASCOT_MSGS = {
-  home: ['أهلاً بك! ابدأ رحلتك نحو خدمة عملاء متميزة.', 'كل درس تتعلمه يجعلك أقرب لإرضاء عملائك!', 'العميل السعيد هو هدفنا، استمر في التدريب.'],
-  course: ['ابدأ الدرس الأول لتكتشف أسرار خدمة العملاء!', 'التدريب الجيد يصنع الفرق مع كل عميل.'],
-  exam: ['حظاً موفقاً في الاختبار!', 'ثق بما تعلمته، أنت مستعد لإرضاء العملاء!'],
+ home: ['أهلاً بك! ابدأ رحلتك نحو خدمة عملاء متميزة.', 'كل درس تتعلمه يجعلك أقرب لإرضاء عملائك!', 'العميل السعيد هو هدفنا، استمر في التدريب.'],
+ course: ['ابدأ الدرس الأول لتكتشف أسرار خدمة العملاء!', 'التدريب الجيد يصنع الفرق مع كل عميل.'],
+ exam: ['حظاً موفقاً في الاختبار!', 'ثق بما تعلمته، أنت مستعد لإرضاء العملاء!'],
 };
 
 const ROLE_LABELS = { employee: 'متدرب', tracker: 'مدرب', content: 'مدير' };
 
 const ROLE_INFO = {
-  trainee: { label: 'متدرب', sub: 'تسجيل دخول كمتدرب', icon: '🎓', color: 'var(--green)',  dbRole: 'employee' },
-  trainer: { label: 'مدرب',  sub: 'تسجيل دخول كمدرب',  icon: '👨‍🏫', color: 'var(--blue)',   dbRole: 'tracker'  },
-  admin:   { label: 'مدير',  sub: 'تسجيل دخول كمدير',  icon: '⚙️',  color: 'var(--purple)', dbRole: 'content'  },
+ trainee: { label: 'متدرب', sub: 'تسجيل دخول كمتدرب', icon: '🎓', color: 'var(--green)',  dbRole: 'employee' },
+ trainer: { label: 'مدرب',  sub: 'تسجيل دخول كمدرب',  icon: '👨‍🏫', color: 'var(--blue)',   dbRole: 'tracker'  },
+ admin:   { label: 'مدير',  sub: 'تسجيل دخول كمدير',  icon: '⚙️',  color: 'var(--purple)', dbRole: 'content'  },
 };
 
 // ============================================================
 // LOGIN ROLE SELECTOR
 // ============================================================
 function selectLoginRole(role) {
-  S.selectedLoginRole = role;
-  const info = ROLE_INFO[role];
+ S.selectedLoginRole = role;
+ const info = ROLE_INFO[role];
 
-  // تظليل الكرت المختار
-  ['trainee','trainer','admin'].forEach(r => {
-    const el = document.getElementById('rc_' + r);
-    if (el) { el.style.opacity = r === role ? '1' : '0.35'; el.style.transform = r === role ? 'scale(1.06)' : 'scale(1)'; }
-  });
+ // تظليل الكرت المختار
+ ['trainee','trainer','admin'].forEach(r => {
+   const el = document.getElementById('rc_' + r);
+   if (el) { el.style.opacity = r === role ? '1' : '0.35'; el.style.transform = r === role ? 'scale(1.06)' : 'scale(1)'; }
+ });
 
-  // تحديث header الفورم
-  document.getElementById('roleHeaderIcon').textContent = info.icon;
-  document.getElementById('roleHeaderLabel').textContent = info.sub;
-  document.getElementById('roleHeaderLabel').style.color = info.color;
-  document.getElementById('roleHeaderSub').textContent = info.label;
+ // تحديث header الفورم
+ document.getElementById('roleHeaderIcon').textContent = info.icon;
+ document.getElementById('roleHeaderLabel').textContent = info.sub;
+ document.getElementById('roleHeaderLabel').style.color = info.color;
+ document.getElementById('roleHeaderSub').textContent = info.label;
 
-  // إظهار فورم الدخول
-  const form = document.getElementById('loginFormStep');
-  form.style.display = 'block';
-  form.style.animation = 'fadeUp .3s ease';
-  setTimeout(() => { const u = document.getElementById('username'); if(u) u.focus(); }, 100);
+ // إظهار فورم الدخول
+ const form = document.getElementById('loginFormStep');
+ form.style.display = 'block';
+ form.style.animation = 'fadeUp .3s ease';
+ setTimeout(() => { const u = document.getElementById('username'); if(u) u.focus(); }, 100);
 }
 
 function resetLoginRole() {
-  S.selectedLoginRole = null;
-  ['trainee','trainer','admin'].forEach(r => {
-    const el = document.getElementById('rc_' + r);
-    if (el) { el.style.opacity = '1'; el.style.transform = 'scale(1)'; }
-  });
-  document.getElementById('loginFormStep').style.display = 'none';
-  const errEl = document.getElementById('loginErr');
-  if (errEl) errEl.style.display = 'none';
-  const u = document.getElementById('username'); if(u) u.value = '';
-  const p = document.getElementById('password'); if(p) p.value = '';
+ S.selectedLoginRole = null;
+ ['trainee','trainer','admin'].forEach(r => {
+   const el = document.getElementById('rc_' + r);
+   if (el) { el.style.opacity = '1'; el.style.transform = 'scale(1)'; }
+ });
+ document.getElementById('loginFormStep').style.display = 'none';
+ const errEl = document.getElementById('loginErr');
+ if (errEl) errEl.style.display = 'none';
+ const u = document.getElementById('username'); if(u) u.value = '';
+ const p = document.getElementById('password'); if(p) p.value = '';
 }
 
 // ============================================================
 // AUTH
 // ============================================================
 async function doLogin() {
-  if (!S.selectedLoginRole) { showErr('اختر نوع حسابك أولاً.'); return; }
+ if (!S.selectedLoginRole) { showErr('اختر نوع حسابك أولاً.'); return; }
 
-  const usernameEl = document.getElementById('username');
-  const passwordEl = document.getElementById('password');
-  const loginBtn   = document.getElementById('loginBtn');
-  const errEl      = document.getElementById('loginErr');
+ const usernameEl = document.getElementById('username');
+ const passwordEl = document.getElementById('password');
+ const loginBtn   = document.getElementById('loginBtn');
+ const errEl      = document.getElementById('loginErr');
 
-  const username = usernameEl.value.trim();
-  const password = passwordEl.value.trim();
-  errEl.style.display = 'none';
+ const username = usernameEl.value.trim();
+ const password = passwordEl.value.trim();
+ errEl.style.display = 'none';
 
-  if (!username || !password) { showErr('أكمل اسم المستخدم وكلمة المرور.', errEl); return; }
+ if (!username || !password) { showErr('أكمل اسم المستخدم وكلمة المرور.', errEl); return; }
 
-  loginBtn.disabled = true;
-  loginBtn.textContent = 'جاري الدخول...';
+ loginBtn.disabled = true;
+ loginBtn.textContent = 'جاري الدخول...';
 
-  try {
-    const email = username + '@lms.internal';
-    await auth.signInWithEmailAndPassword(email, password);
-    const userData = await fbGet('users/' + username);
+ try {
+   const email = username + '@lms.internal';
+   await auth.signInWithEmailAndPassword(email, password);
+   const userData = await fbGet('users/' + username);
 
-    if (!userData) {
-      await auth.signOut();
-      showErr('المستخدم غير موجود في النظام.', errEl);
-      loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀'; return;
-    }
+   if (!userData) {
+     await auth.signOut();
+     showErr('المستخدم غير موجود في النظام.', errEl);
+     loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀'; return;
+   }
 
-    // التحقق أن الدور المختور يطابق الحساب
-    const expectedRole = ROLE_INFO[S.selectedLoginRole].dbRole;
-    if (userData.role !== expectedRole) {
-      await auth.signOut();
-      showErr('هذا الحساب مسجل كـ "' + (ROLE_LABELS[userData.role]||userData.role) + '" وليس ' + ROLE_INFO[S.selectedLoginRole].label + '.', errEl);
-      loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀'; return;
-    }
+   // التحقق أن الدور المختور يطابق الحساب
+   const expectedRole = ROLE_INFO[S.selectedLoginRole].dbRole;
+   if (userData.role !== expectedRole) {
+     await auth.signOut();
+     showErr('هذا الحساب مسجل كـ "' + (ROLE_LABELS[userData.role]||userData.role) + '" وليس ' + ROLE_INFO[S.selectedLoginRole].label + '.', errEl);
+     loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀'; return;
+   }
 
-    await afterLogin(username, userData);
+   await afterLogin(username, userData);
 
-  } catch (e) {
-    const msgs = {
-      'auth/wrong-password':     'كلمة المرور غلط.',
-      'auth/user-not-found':     'المستخدم غير موجود.',
-      'auth/invalid-email':      'بيانات دخول غير صحيحة.',
-      'auth/too-many-requests':  'محاولات كثيرة، حاول بعد شوية.',
-      'auth/invalid-credential': 'اسم المستخدم أو كلمة المرور غير صحيحة.',
-    };
-    showErr(msgs[e.code] || 'اسم المستخدم أو كلمة المرور غير صحيحة.', errEl);
-    loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀';
-  }
+ } catch (e) {
+   const msgs = {
+     'auth/wrong-password':     'كلمة المرور غلط.',
+     'auth/user-not-found':     'المستخدم غير موجود.',
+     'auth/invalid-email':      'بيانات دخول غير صحيحة.',
+     'auth/too-many-requests':  'محاولات كثيرة، حاول بعد شوية.',
+     'auth/invalid-credential': 'اسم المستخدم أو كلمة المرور غير صحيحة.',
+   };
+   showErr(msgs[e.code] || 'اسم المستخدم أو كلمة المرور غير صحيحة.', errEl);
+   loginBtn.disabled = false; loginBtn.textContent = 'دخول 🚀';
+ }
 }
 
 async function afterLogin(username, userData) {
-  S.ukey = username;
-  S.role = userData.role;
-  S.name = userData.name;
-  S.user = {
-    ...userData,
-    xp: userData.xp || 0,
-    level: userData.level || 1,
-    streak: userData.streak || 0,
-    badges: userData.badges || [],
-    progress: userData.progress || {},
-    scores: userData.scores || {},
-  };
+ S.ukey = username;
+ S.role = userData.role;
+ S.name = userData.name;
+ S.user = {
+   ...userData,
+   xp: userData.xp || 0,
+   level: userData.level || 1,
+   streak: userData.streak || 0,
+   badges: userData.badges || [],
+   progress: userData.progress || {},
+   scores: userData.scores || {},
+ };
 
-  const fbCourses = await fbGet('courses');
-  if (fbCourses) {
-    COURSES = Object.values(fbCourses);
-  }
+ const fbCourses = await fbGet('courses');
+ if (fbCourses) {
+   COURSES = Object.values(fbCourses);
+ }
 
-  await logLogin(username, userData);
-  await loadNotification(username);
+ await logLogin(username, userData);
+ await loadNotification(username);
 
-  if (!S.user.badges.includes('first_login')) {
-    S.user.badges.push('first_login');
-    await fbUpdate('users/' + username, { badges: S.user.badges });
-    setTimeout(() => showToast('👋', 'حصلت على شارة "أول تسجيل دخول"!', 'var(--xp)'), 1000);
-  }
+ if (!S.user.badges.includes('first_login')) {
+   S.user.badges.push('first_login');
+   await fbUpdate('users/' + username, { badges: S.user.badges });
+   setTimeout(() => showToast('👋', 'حصلت على شارة "أول تسجيل دخول"!', 'var(--xp)'), 1000);
+ }
 
-  setState({ screen: 'home' });
+ setState({ screen: 'home' });
 }
 
 async function logout() {
-  try { await auth.signOut(); } catch (e) {}
-  Object.assign(S, { screen: 'login', user: null, ukey: null, role: null, name: null, notification: null, courseId: null, currentLessonId: null, currentExam: null, examResult: null, selectedLoginRole: null });
-  resetLoginRole();
-  renderApp();
+ try { await auth.signOut(); } catch (e) {}
+ Object.assign(S, { screen: 'login', user: null, ukey: null, role: null, name: null, notification: null, courseId: null, currentLessonId: null, currentExam: null, examResult: null, selectedLoginRole: null });
+ resetLoginRole();
+ renderApp();
 }
 
 // ============================================================
 // STATE
 // ============================================================
 function setState(newState) {
-  Object.assign(S, newState);
-  renderApp();
+ Object.assign(S, newState);
+ renderApp();
 }
 
 // ============================================================
 // RENDER ROUTER
 // ============================================================
 async function renderApp() {
-  const loadingEl = document.getElementById('loadingScreen');
-  const loginEl = document.getElementById('loginScreen');
-  const appEl = document.getElementById('appShell');
+ const loadingEl = document.getElementById('loadingScreen');
+ const loginEl = document.getElementById('loginScreen');
+ const appEl = document.getElementById('appShell');
 
-  if (loadingEl) loadingEl.style.display = 'none';
+ if (loadingEl) loadingEl.style.display = 'none';
 
-  if (!S.user || S.screen === 'login') {
-    loginEl.style.display = 'flex';
-    appEl.style.display = 'none';
-    const lb = document.getElementById('loginBtn');
-    if (lb) { lb.disabled = false; lb.textContent = 'دخول'; }
-    return;
-  }
+ if (!S.user || S.screen === 'login') {
+   loginEl.style.display = 'flex';
+   appEl.style.display = 'none';
+   const lb = document.getElementById('loginBtn');
+   if (lb) { lb.disabled = false; lb.textContent = 'دخول'; }
+   return;
+ }
 
-  loginEl.style.display = 'none';
-  appEl.style.display = 'block';
+ loginEl.style.display = 'none';
+ appEl.style.display = 'block';
 
-  renderNav();
-  updateXpBar();
-  updateSidebarUser();
+ renderNav();
+ updateXpBar();
+ updateSidebarUser();
 
-  const el = document.getElementById('mainArea');
-  if (!el) return;
+ const el = document.getElementById('mainArea');
+ if (!el) return;
 
-  const asyncScreens = {
-    leaderboard: renderLeaderboard,
-    tracking: renderTracking,
-    employees: renderTracking,
-    manageusers: renderManageUsers,
-  };
-  const syncMap = {
-    home: renderHome,
-    achievements: renderAchievements,
-    course: renderCourse,
-    exam: renderExam,
-    result: renderResult,
-    content: renderContent,
-  };
+ const asyncScreens = {
+   leaderboard: renderLeaderboard,
+   tracking: renderTracking,
+   employees: renderTracking,
+   manageusers: renderManageUsers,
+ };
+ const syncMap = {
+   home: renderHome,
+   achievements: renderAchievements,
+   course: renderCourse,
+   exam: renderExam,
+   result: renderResult,
+   content: renderContent,
+ };
 
-  if (asyncScreens[S.screen]) {
-    el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;min-height:300px;flex-direction:column;gap:14px">
-      <div style="width:36px;height:36px;border:3px solid rgba(228,0,43,.2);border-top-color:var(--red);border-radius:50%;animation:spin 1s linear infinite"></div>
-      <div style="font-size:12px;color:var(--muted2)">جاري التحميل...</div>
-    </div>`;
-    await asyncScreens[S.screen]();
-  } else {
-    el.innerHTML = (syncMap[S.screen] || renderHome)();
-  }
-  el.scrollTop = 0;
+ if (asyncScreens[S.screen]) {
+   el.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;min-height:300px;flex-direction:column;gap:14px">
+     <div style="width:36px;height:36px;border:3px solid rgba(228,0,43,.2);border-top-color:var(--red);border-radius:50%;animation:spin 1s linear infinite"></div>
+     <div style="font-size:12px;color:var(--muted2)">جاري التحميل...</div>
+   </div>`;
+   await asyncScreens[S.screen]();
+ } else {
+   el.innerHTML = (syncMap[S.screen] || renderHome)();
+ }
+ el.scrollTop = 0;
 }
 
 function renderNav() {
-  const role = S.user?.role;
-  let items = [];
-  if (role === 'employee') {
-    // متدرب: يشوف كورساته وإنجازاته وترتيبه فقط
-    items = [
-      { icon: '🏠', label: 'Home',   screen: 'home' },
-      { icon: '🏆', label: 'achievements',   screen: 'achievements' },
-      { icon: '📊', label: 'leaderboard', screen: 'leaderboard' },
-    ];
-  } else if (role === 'tracker') {
-    // مدرب: يشوف تقدم المتدربين + يضيف/يحذف متدربين فقط
-    items = [
-      { icon: '📊', label: 'تقدم المتدربين',  screen: 'tracking'    },
-      { icon: '🧑‍💼', label: 'Trainee Management', screen: 'manageusers' },
-    ];
-  } else if (role === 'content') {
-    // مدير: كل الصلاحيات
-    items = [
-      { icon: '📊', label: 'Dashboard',   screen: 'tracking'    },
-      { icon: '📚', label: 'Content Management',   screen: 'content'     },
-      { icon: '👥', label: 'User Management', screen: 'manageusers' },
-    ];
-  } else {
-    items = [{ icon: '🏠', label: 'Home', screen: 'home' }];
-  }
+ const role = S.user?.role;
+ let items = [];
+ if (role === 'employee') {
+   // متدرب: يشوف كورساته وإنجازاته وترتيبه فقط
+   items = [
+     { icon: '🏠', label: 'الرئيسية',   screen: 'home' },
+     { icon: '🏆', label: 'إنجازاتي',   screen: 'achievements' },
+     { icon: '📊', label: 'لوحة الشرف', screen: 'leaderboard' },
+   ];
+ } else if (role === 'tracker') {
+   // مدرب: يشوف تقدم المتدربين + يضيف/يحذف متدربين فقط
+   items = [
+     { icon: '📊', label: 'تقدم المتدربين',  screen: 'tracking'    },
+     { icon: '🧑‍💼', label: 'إدارة المتدربين', screen: 'manageusers' },
+   ];
+ } else if (role === 'content') {
+   // مدير: كل الصلاحيات
+   items = [
+     { icon: '📊', label: 'لوحة المتابعة',   screen: 'tracking'    },
+     { icon: '📚', label: 'إدارة المحتوى',   screen: 'content'     },
+     { icon: '👥', label: 'إدارة المستخدمين', screen: 'manageusers' },
+   ];
+ } else {
+   items = [{ icon: '🏠', label: 'الرئيسية', screen: 'home' }];
+ }
 
-  const nav = document.getElementById('navItems');
-  if (nav) {
-    nav.innerHTML = items.map(it => `
-      <div class="nav-item ${S.screen === it.screen ? 'active' : ''}" onclick="setState({screen:'${it.screen}'})">
-        <span class="ni">${it.icon}</span>${it.label}
-      </div>`).join('');
-  }
+ const nav = document.getElementById('navItems');
+ if (nav) {
+   nav.innerHTML = items.map(it => `
+     <div class="nav-item ${S.screen === it.screen ? 'active' : ''}" onclick="setState({screen:'${it.screen}'})">
+       <span class="ni">${it.icon}</span>${it.label}
+     </div>`).join('');
+ }
 }
 
 function updateSidebarUser() {
-  const nameEl = document.getElementById('uName');
-  const avEl = document.getElementById('uAvChar');
-  const roleEl = document.getElementById('uRole');
-  if (nameEl && S.user) nameEl.textContent = S.user.name || '';
-  if (avEl && S.user) avEl.textContent = (S.user.name || '?').charAt(0);
-  if (roleEl) roleEl.textContent = ROLE_LABELS[S.role] || '';
+ const nameEl = document.getElementById('uName');
+ const avEl = document.getElementById('uAvChar');
+ const roleEl = document.getElementById('uRole');
+ if (nameEl && S.user) nameEl.textContent = S.user.name || '';
+ if (avEl && S.user) avEl.textContent = (S.user.name || '?').charAt(0);
+ if (roleEl) roleEl.textContent = ROLE_LABELS[S.role] || '';
 }
 
 function updateXpBar() {
-  if (!S.user) return;
-  const xp = S.user.xp || 0;
-  const level = Math.floor(xp / 200) + 1;
-  S.user.level = level;
-  const xpInLevel = xp % 200;
-  const pct = Math.min((xpInLevel / 200) * 100, 100);
-  const fill = document.getElementById('sbXpFill');
-  if (fill) fill.style.width = pct + '%';
-  const lt = document.getElementById('sbLvlTxt');
-  if (lt) lt.textContent = 'المستوى ' + level;
-  const xt = document.getElementById('sbXpTxt');
-  if (xt) xt.textContent = xpInLevel + '/200 XP';
-  const badge = document.getElementById('uLvlBadge');
-  if (badge) badge.textContent = level;
+ if (!S.user) return;
+ const xp = S.user.xp || 0;
+ const level = Math.floor(xp / 200) + 1;
+ S.user.level = level;
+ const xpInLevel = xp % 200;
+ const pct = Math.min((xpInLevel / 200) * 100, 100);
+ const fill = document.getElementById('sbXpFill');
+ if (fill) fill.style.width = pct + '%';
+ const lt = document.getElementById('sbLvlTxt');
+ if (lt) lt.textContent = 'المستوى ' + level;
+ const xt = document.getElementById('sbXpTxt');
+ if (xt) xt.textContent = xpInLevel + '/200 XP';
+ const badge = document.getElementById('uLvlBadge');
+ if (badge) badge.textContent = level;
 }
 
 // ============================================================
 // FX
 // ============================================================
 function showXpPopup(amount, el) {
-  const div = document.createElement('div');
-  div.className = 'xp-popup';
-  div.textContent = '+' + amount + ' XP ⭐';
-  const r = el?.getBoundingClientRect?.();
-  div.style.left = (r ? r.left + r.width / 2 : window.innerWidth / 2) + 'px';
-  div.style.top = (r ? r.top : window.innerHeight / 2) + 'px';
-  document.getElementById('xpArea').appendChild(div);
-  setTimeout(() => div.remove(), 1200);
+ const div = document.createElement('div');
+ div.className = 'xp-popup';
+ div.textContent = '+' + amount + ' XP ⭐';
+ const r = el?.getBoundingClientRect?.();
+ div.style.left = (r ? r.left + r.width / 2 : window.innerWidth / 2) + 'px';
+ div.style.top = (r ? r.top : window.innerHeight / 2) + 'px';
+ document.getElementById('xpArea').appendChild(div);
+ setTimeout(() => div.remove(), 1200);
 }
 
 function launchConfetti() {
-  const colors = ['#e4002b', '#ffd700', '#00d68f', '#00b4d8', '#a78bfa', '#ff6b6b'];
-  for (let i = 0; i < 60; i++) {
-    const el = document.createElement('div');
-    el.className = 'confetti-piece';
-    el.style.cssText = `left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};border-radius:${Math.random() > .5 ? '50%' : '3px'};width:${6 + Math.random() * 8}px;height:${6 + Math.random() * 8}px;animation-duration:${1.5 + Math.random() * 2}s;animation-delay:${Math.random() * .8}s`;
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 4000);
-  }
+ const colors = ['#e4002b', '#ffd700', '#00d68f', '#00b4d8', '#a78bfa', '#ff6b6b'];
+ for (let i = 0; i < 60; i++) {
+   const el = document.createElement('div');
+   el.className = 'confetti-piece';
+   el.style.cssText = `left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};border-radius:${Math.random() > .5 ? '50%' : '3px'};width:${6 + Math.random() * 8}px;height:${6 + Math.random() * 8}px;animation-duration:${1.5 + Math.random() * 2}s;animation-delay:${Math.random() * .8}s`;
+   document.body.appendChild(el);
+   setTimeout(() => el.remove(), 4000);
+ }
 }
 
 function showToast(icon, msg, clr = 'var(--green)') {
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.innerHTML = `<span style="font-size:20px">${icon}</span><span>${msg}</span>`;
-  t.style.borderColor = clr;
-  document.getElementById('toastArea').appendChild(t);
-  setTimeout(() => {
-    t.style.opacity = '0';
-    t.style.transition = 'opacity .4s';
-    setTimeout(() => t.remove(), 400);
-  }, 3500);
+ const t = document.createElement('div');
+ t.className = 'toast';
+ t.innerHTML = `<span style="font-size:20px">${icon}</span><span>${msg}</span>`;
+ t.style.borderColor = clr;
+ document.getElementById('toastArea').appendChild(t);
+ setTimeout(() => {
+   t.style.opacity = '0';
+   t.style.transition = 'opacity .4s';
+   setTimeout(() => t.remove(), 400);
+ }, 3500);
 }
 
 function showLevelUp(lv) {
-  const icons = ['🌱', '⭐', '🔥', '💎', '👑', '🚀', '🌟', '🏆', '💯', '🎖️'];
-  document.getElementById('overlay').innerHTML = `
-    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-      <div class="modal-box" style="max-width:380px;text-align:center;animation:levelUp .6s cubic-bezier(.34,1.56,.64,1)">
-        <div style="font-size:64px;animation:pop .6s ease">${icons[(lv - 1) % icons.length]}</div>
-        <div style="font-size:22px;font-weight:900;margin:12px 0 6px;color:var(--purple)">مستوى جديد! 🎉</div>
-        <div style="font-size:32px;font-weight:900;color:var(--xp)">المستوى ${lv}</div>
-        <div style="color:var(--muted2);font-size:13px;margin:10px 0 20px">رائع! أنت تتقدم بسرعة 🚀</div>
-        <button class="btn btn-xp" style="width:100%" onclick="closeModal()">استمر! ⚡</button>
-      </div>
-    </div>`;
+ const icons = ['🌱', '⭐', '🔥', '💎', '👑', '🚀', '🌟', '🏆', '💯', '🎖️'];
+ document.getElementById('overlay').innerHTML = `
+   <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+     <div class="modal-box" style="max-width:380px;text-align:center;animation:levelUp .6s cubic-bezier(.34,1.56,.64,1)">
+       <div style="font-size:64px;animation:pop .6s ease">${icons[(lv - 1) % icons.length]}</div>
+       <div style="font-size:22px;font-weight:900;margin:12px 0 6px;color:var(--purple)">مستوى جديد! 🎉</div>
+       <div style="font-size:32px;font-weight:900;color:var(--xp)">المستوى ${lv}</div>
+       <div style="color:var(--muted2);font-size:13px;margin:10px 0 20px">رائع! أنت تتقدم بسرعة 🚀</div>
+       <button class="btn btn-xp" style="width:100%" onclick="closeModal()">استمر! ⚡</button>
+     </div>
+   </div>`;
 }
 
 function closeModal() {
-  document.getElementById('overlay').innerHTML = '';
+ document.getElementById('overlay').innerHTML = '';
 }
 
 async function gainXP(amount, srcEl) {
-  if (!S.user) return;
-  const oldLv = Math.floor((S.user.xp || 0) / 200) + 1;
-  S.user.xp = (S.user.xp || 0) + amount;
-  const newLv = Math.floor(S.user.xp / 200) + 1;
-  S.user.level = newLv;
-  showXpPopup(amount, srcEl);
-  await fbUpdate('users/' + S.ukey, { xp: S.user.xp, level: newLv });
-  if (newLv > oldLv) {
-    setTimeout(() => { launchConfetti(); showLevelUp(newLv); }, 300);
-  }
-  updateXpBar();
+ if (!S.user) return;
+ const oldLv = Math.floor((S.user.xp || 0) / 200) + 1;
+ S.user.xp = (S.user.xp || 0) + amount;
+ const newLv = Math.floor(S.user.xp / 200) + 1;
+ S.user.level = newLv;
+ showXpPopup(amount, srcEl);
+ await fbUpdate('users/' + S.ukey, { xp: S.user.xp, level: newLv });
+ if (newLv > oldLv) {
+   setTimeout(() => { launchConfetti(); showLevelUp(newLv); }, 300);
+ }
+ updateXpBar();
 }
 
 function getRandMsg(k) {
-  const a = MASCOT_MSGS[k] || MASCOT_MSGS.home;
-  return a[Math.floor(Math.random() * a.length)];
+ const a = MASCOT_MSGS[k] || MASCOT_MSGS.home;
+ return a[Math.floor(Math.random() * a.length)];
 }
 
 function getFirstName(n) {
-  return n ? n.split(' ')[0] : '';
+ return n ? n.split(' ')[0] : '';
 }
 
 function showErr(msg, el) {
-  const target = el || document.getElementById('loginErr');
-  if (target) { target.textContent = msg; target.style.display = 'block'; }
+ const target = el || document.getElementById('loginErr');
+ if (target) { target.textContent = msg; target.style.display = 'block'; }
 }
 
 // ============================================================
 // HOME
 // ============================================================
 function renderHome() {
-  const u = S.user;
-  const prog = u.progress || {};
-  const totalProg = COURSES.length > 0 ? Math.round(COURSES.reduce((a, c) => a + (prog[c.id] || 0), 0) / COURSES.length) : 0;
-  const done = COURSES.filter(c => (prog[c.id] || 0) >= 100).length;
-  const xp = u.xp || 0;
-  const level = u.level || 1;
-  const xpInLevel = xp % 200;
-  const xpPct = Math.min((xpInLevel / 200) * 100, 100);
-  const lvIcons = ['🌱', '⭐', '🔥', '💎', '👑', '🚀', '🌟', '🏆', '💯', '🎖️'];
+ const u = S.user;
+ const prog = u.progress || {};
+ const totalProg = COURSES.length > 0 ? Math.round(COURSES.reduce((a, c) => a + (prog[c.id] || 0), 0) / COURSES.length) : 0;
+ const done = COURSES.filter(c => (prog[c.id] || 0) >= 100).length;
+ const xp = u.xp || 0;
+ const level = u.level || 1;
+ const xpInLevel = xp % 200;
+ const xpPct = Math.min((xpInLevel / 200) * 100, 100);
+ const lvIcons = ['🌱', '⭐', '🔥', '💎', '👑', '🚀', '🌟', '🏆', '💯', '🎖️'];
 
-  return `<div class="fu">
-  ${S.notification ? `<div style="background:linear-gradient(135deg,#ff4444,#c8001f);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;animation:fadeUp .3s ease">
-    <span style="font-size:20px">🔔</span>
-    <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#fff">${S.notification.msg}</div>
-    <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px">من: ${S.notification.from || 'الإدارة'} · ${S.notification.date || ''}</div></div>
-    <span onclick="dismissNotification()" style="cursor:pointer;color:rgba(255,255,255,.7);font-size:18px">✕</span>
-  </div>` : ''}
+ return `<div class="fu">
+ ${S.notification ? `<div style="background:linear-gradient(135deg,#ff4444,#c8001f);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:center;gap:12px;animation:fadeUp .3s ease">
+   <span style="font-size:20px">🔔</span>
+   <div style="flex:1"><div style="font-size:13px;font-weight:700;color:#fff">${S.notification.msg}</div>
+   <div style="font-size:10px;color:rgba(255,255,255,.7);margin-top:2px">من: ${S.notification.from || 'الإدارة'} · ${S.notification.date || ''}</div></div>
+   <span onclick="dismissNotification()" style="cursor:pointer;color:rgba(255,255,255,.7);font-size:18px">✕</span>
+ </div>` : ''}
 
-  <div class="topbar">
-    <div><div class="pg-title">أهلاً، ${getFirstName(u.name)}! 👋</div><div class="pg-sub">رحلتك نحو خدمة عملاء متميزة</div></div>
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--xp)">${xp}</div><div style="font-size:9px;color:#7a8aaa">⭐ XP</div></div>
-      <div style="width:1px;height:28px;background:var(--border)"></div>
-      <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--red)">${u.streak || 0}</div><div style="font-size:9px;color:#7a8aaa">🔥 يوم</div></div>
-    </div>
-  </div>
+ <div class="topbar">
+   <div><div class="pg-title">أهلاً، ${getFirstName(u.name)}! 👋</div><div class="pg-sub">رحلتك نحو خدمة عملاء متميزة</div></div>
+   <div style="display:flex;align-items:center;gap:10px">
+     <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--xp)">${xp}</div><div style="font-size:9px;color:#7a8aaa">⭐ XP</div></div>
+     <div style="width:1px;height:28px;background:var(--border)"></div>
+     <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--red)">${u.streak || 0}</div><div style="font-size:9px;color:#7a8aaa">🔥 يوم</div></div>
+   </div>
+ </div>
 
-  <div class="hero-card fu" style="animation-delay:.04s;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-    <div style="flex:1;min-width:200px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <div style="font-size:28px">${lvIcons[(level - 1) % lvIcons.length]}</div>
-        <div><div style="font-size:13px;font-weight:900">المستوى ${level}</div><div style="font-size:10px;color:var(--muted2)">${xpInLevel}/200 XP للمستوى التالي</div></div>
-      </div>
-      <div class="xp-bar-wrap" style="margin-bottom:14px"><div class="xp-bar-fill" style="width:${xpPct}%"></div></div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap">
-        ${[['✅', 'مكتمل', done + '/' + COURSES.length, 'var(--green)'], ['🎯', 'التقدم', totalProg + '%', 'var(--red)'], ['🏅', 'شارات', (u.badges || []).length, 'var(--xp)']].map(s =>
-          `<div><div style="font-size:20px;font-weight:900;color:${s[3]}">${s[2]}</div><div style="font-size:9px;color:#7a8aaa;font-weight:600">${s[0]} ${s[1]}</div></div>`
-        ).join('')}
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
-      <div style="background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:14px;padding:9px 13px;font-size:12px;font-weight:700;max-width:180px;text-align:center;margin-bottom:8px">${getRandMsg('home')}</div>
-      <div style="font-size:52px;animation:float 3.5s ease-in-out infinite;cursor:pointer;filter:drop-shadow(0 8px 20px rgba(228,0,43,.3))" onclick="this.style.animation='none';void this.offsetHeight;this.style.animation='bounce .6s ease'">🧑‍🚀</div>
-    </div>
-  </div>
+ <div class="hero-card fu" style="animation-delay:.04s;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+   <div style="flex:1;min-width:200px">
+     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+       <div style="font-size:28px">${lvIcons[(level - 1) % lvIcons.length]}</div>
+       <div><div style="font-size:13px;font-weight:900">المستوى ${level}</div><div style="font-size:10px;color:var(--muted2)">${xpInLevel}/200 XP للمستوى التالي</div></div>
+     </div>
+     <div class="xp-bar-wrap" style="margin-bottom:14px"><div class="xp-bar-fill" style="width:${xpPct}%"></div></div>
+     <div style="display:flex;gap:20px;flex-wrap:wrap">
+       ${[['✅', 'مكتمل', done + '/' + COURSES.length, 'var(--green)'], ['🎯', 'التقدم', totalProg + '%', 'var(--red)'], ['🏅', 'شارات', (u.badges || []).length, 'var(--xp)']].map(s =>
+         `<div><div style="font-size:20px;font-weight:900;color:${s[3]}">${s[2]}</div><div style="font-size:9px;color:#7a8aaa;font-weight:600">${s[0]} ${s[1]}</div></div>`
+       ).join('')}
+     </div>
+   </div>
+   <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
+     <div style="background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:14px;padding:9px 13px;font-size:12px;font-weight:700;max-width:180px;text-align:center;margin-bottom:8px">${getRandMsg('home')}</div>
+     <div style="font-size:52px;animation:float 3.5s ease-in-out infinite;cursor:pointer;filter:drop-shadow(0 8px 20px rgba(228,0,43,.3))" onclick="this.style.animation='none';void this.offsetHeight;this.style.animation='bounce .6s ease'">🧑‍🚀</div>
+   </div>
+ </div>
 
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:18px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div style="font-size:13px;font-weight:900">🔥 Daily Streak</div>
-      <span class="tag" style="background:rgba(255,179,0,.15);color:var(--amber)">${u.streak || 0} يوم</span>
-    </div>
-    <div style="display:flex;gap:6px;justify-content:center">
-      ${['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((d, i) => {
-        const streak = u.streak || 0;
-        const isDone = i < streak % 7 || (streak >= 7 && i < 7);
-        const isToday = i === streak % 7 && streak % 7 !== 0 || (streak === 0 && i === 0);
-        return `<div style="text-align:center"><div class="streak-day ${isDone ? 'done' : isToday ? 'today' : 'miss'}">${isDone ? '✓' : d}</div><div style="font-size:8px;color:#7a8aaa;margin-top:3px">${d}</div></div>`;
-      }).join('')}
-    </div>
-  </div>
+ <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:18px">
+   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+     <div style="font-size:13px;font-weight:900">🔥 السلسلة اليومية</div>
+     <span class="tag" style="background:rgba(255,179,0,.15);color:var(--amber)">${u.streak || 0} يوم</span>
+   </div>
+   <div style="display:flex;gap:6px;justify-content:center">
+     ${['س', 'ح', 'ث', 'أ', 'خ', 'ج', 'ش'].map((d, i) => {
+       const streak = u.streak || 0;
+       const isDone = i < streak % 7 || (streak >= 7 && i < 7);
+       const isToday = i === streak % 7 && streak % 7 !== 0 || (streak === 0 && i === 0);
+       return `<div style="text-align:center"><div class="streak-day ${isDone ? 'done' : isToday ? 'today' : 'miss'}">${isDone ? '✓' : d}</div><div style="font-size:8px;color:#7a8aaa;margin-top:3px">${d}</div></div>`;
+     }).join('')}
+   </div>
+ </div>
 
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-    <div style="font-size:14px;font-weight:900">📚 برامجك التدريبية</div>
-    <span style="font-size:11px;color:var(--muted2)">${COURSES.length} برامج تدريبية</span>
-  </div>
-  <div class="courses-grid">
-    ${COURSES.map((c, i) => {
-      const p = prog[c.id] || 0;
-      const stars = p >= 100 ? 3 : p >= 70 ? 2 : p > 0 ? 1 : 0;
-      return `<div class="c-card fu" style="animation-delay:${i * .05}s" onclick="setState({screen:'course',courseId:'${c.id}',currentLessonId:null})">
-        <div class="c-thumb" style="background:${c.color ? c.color + '22' : 'var(--reddim)'}">
-          <div class="c-thumb-glow" style="background:${c.color || 'var(--red)'}"></div>
-          ${c.icon}
-        </div>
-        <div class="c-body">
-          <div style="font-size:14px;font-weight:800;margin-bottom:6px">${c.title}</div>
-          <div style="font-size:10px;color:var(--muted2);margin-bottom:8px">${(c.lessons||[]).length} دروس</div>
-          <div class="pbar"><div class="pfill" style="width:${p}%"></div></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
-            <div style="font-size:9px;color:var(--muted2)">${Math.round(p)}% مكتمل</div>
-            <div>${Array(3).fill(0).map((_, idx) => `<span style="color:${idx < stars ? 'var(--xp)' : 'var(--muted)'};font-size:12px">⭐</span>`).join('')}</div>
-          </div>
-        </div>
-      </div>`;
-    }).join('')}
-  </div>
-  </div>`;
+ <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+   <div style="font-size:14px;font-weight:900">📚 برامجك التدريبية</div>
+   <span style="font-size:11px;color:var(--muted2)">${COURSES.length} برامج تدريبية</span>
+ </div>
+ <div class="courses-grid">
+   ${COURSES.map((c, i) => {
+     const p = prog[c.id] || 0;
+     const stars = p >= 100 ? 3 : p >= 70 ? 2 : p > 0 ? 1 : 0;
+     return `<div class="c-card fu" style="animation-delay:${i * .05}s" onclick="setState({screen:'course',courseId:'${c.id}',currentLessonId:null})">
+       <div class="c-thumb" style="background:${c.color ? c.color + '22' : 'var(--reddim)'}">
+         <div class="c-thumb-glow" style="background:${c.color || 'var(--red)'}"></div>
+         ${c.icon}
+       </div>
+       <div class="c-body">
+         <div style="font-size:14px;font-weight:800;margin-bottom:6px">${c.title}</div>
+         <div style="font-size:10px;color:var(--muted2);margin-bottom:8px">${(c.lessons||[]).length} دروس</div>
+         <div class="pbar"><div class="pfill" style="width:${p}%"></div></div>
+         <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+           <div style="font-size:9px;color:var(--muted2)">${Math.round(p)}% مكتمل</div>
+           <div>${Array(3).fill(0).map((_, idx) => `<span style="color:${idx < stars ? 'var(--xp)' : 'var(--muted)'};font-size:12px">⭐</span>`).join('')}</div>
+         </div>
+       </div>
+     </div>`;
+   }).join('')}
+ </div>
+ </div>`;
 }
 
 // ============================================================
 // ACHIEVEMENTS
 // ============================================================
 function renderAchievements() {
-  const userBadges = S.user?.badges || [];
-  return `<div class="fu">
-  <div class="topbar">
-    <div><div class="pg-title">🏆 achievements</div><div class="pg-sub">الشارات التي حصلت عليها</div></div>
-  </div>
-  <div class="courses-grid">
-    ${BADGES.map((b, i) => {
-      const has = userBadges.includes(b.id);
-      return `<div class="c-card fu" style="animation-delay:${i * .05}s;${!has ? 'opacity:.4;filter:grayscale(1)' : ''}">
-        <div class="c-thumb" style="background:rgba(255,215,0,.1)">
-          <div class="c-thumb-glow" style="background:var(--xp)"></div>
-          <span style="font-size:54px">${b.icon}</span>
-        </div>
-        <div class="c-body">
-          <div style="font-size:14px;font-weight:800;margin-bottom:6px">${b.name}</div>
-          <div style="font-size:10px;color:var(--muted2);min-height:30px">${b.desc || ''}</div>
-          ${has ? `<span class="tag" style="background:rgba(0,214,143,.15);color:var(--green);margin-top:10px">✅ مكتمل</span>` :
-                  `<span class="tag" style="background:rgba(255,255,255,.05);color:var(--muted);margin-top:10px">🔒 لم يكتمل</span>`}
-        </div>
-      </div>`;
-    }).join('')}
-  </div>
-  </div>`;
+ const userBadges = S.user?.badges || [];
+ return `<div class="fu">
+ <div class="topbar">
+   <div><div class="pg-title">🏆 إنجازاتي</div><div class="pg-sub">الشارات التي حصلت عليها</div></div>
+ </div>
+ <div class="courses-grid">
+   ${BADGES.map((b, i) => {
+     const has = userBadges.includes(b.id);
+     return `<div class="c-card fu" style="animation-delay:${i * .05}s;${!has ? 'opacity:.4;filter:grayscale(1)' : ''}">
+       <div class="c-thumb" style="background:rgba(255,215,0,.1)">
+         <div class="c-thumb-glow" style="background:var(--xp)"></div>
+         <span style="font-size:54px">${b.icon}</span>
+       </div>
+       <div class="c-body">
+         <div style="font-size:14px;font-weight:800;margin-bottom:6px">${b.name}</div>
+         <div style="font-size:10px;color:var(--muted2);min-height:30px">${b.desc || ''}</div>
+         ${has ? `<span class="tag" style="background:rgba(0,214,143,.15);color:var(--green);margin-top:10px">✅ مكتمل</span>` :
+                 `<span class="tag" style="background:rgba(255,255,255,.05);color:var(--muted);margin-top:10px">🔒 لم يكتمل</span>`}
+       </div>
+     </div>`;
+   }).join('')}
+ </div>
+ </div>`;
 }
 
 // ============================================================
 // COURSE & LESSONS
 // ============================================================
 function renderCourse() {
-  const course = COURSES.find(c => c.id === S.courseId);
-  if (!course) return `<div style="padding:30px;text-align:center;color:var(--muted2)">الكورس غير موجود.</div>`;
+ const course = COURSES.find(c => c.id === S.courseId);
+ if (!course) return `<div style="padding:30px;text-align:center;color:var(--muted2)">الكورس غير موجود.</div>`;
 
-  const u = S.user;
-  const lessons = course.lessons || [];
-  const firstLesson = lessons[0];
+ const u = S.user;
+ const lessons = course.lessons || [];
+ const firstLesson = lessons[0];
 
-  return `<div class="fu">
-  <div class="topbar">
-    <div><div class="pg-title">${course.icon} ${course.title}</div><div class="pg-sub">${lessons.length} دروس</div></div>
-    <button class="btn btn-ghost btn-sm" onclick="setState({screen:'home'})">← العودة</button>
-  </div>
+ return `<div class="fu">
+ <div class="topbar">
+   <div><div class="pg-title">${course.icon} ${course.title}</div><div class="pg-sub">${lessons.length} دروس</div></div>
+   <button class="btn btn-ghost btn-sm" onclick="setState({screen:'home'})">← العودة</button>
+ </div>
 
-  <div class="lesson-layout">
-    <div>
-      ${S.currentLessonId ? renderLessonContent(course, S.currentLessonId) :
-        firstLesson ? `<div class="video-ph" onclick="setState({currentLessonId:'${firstLesson.id}'})">
-          <div class="play-btn">▶</div>
-          <div style="font-size:14px;font-weight:700">ابدأ الدرس الأول</div>
-          <div style="font-size:11px;color:var(--muted2)">"${firstLesson.title}"</div>
-        </div>` : `<div style="padding:30px;text-align:center;color:var(--muted2)">لا توجد دروس بعد.</div>`
-      }
-    </div>
+ <div class="lesson-layout">
+   <div>
+     ${S.currentLessonId ? renderLessonContent(course, S.currentLessonId) :
+       firstLesson ? `<div class="video-ph" onclick="setState({currentLessonId:'${firstLesson.id}'})">
+         <div class="play-btn">▶</div>
+         <div style="font-size:14px;font-weight:700">ابدأ الدرس الأول</div>
+         <div style="font-size:11px;color:var(--muted2)">"${firstLesson.title}"</div>
+       </div>` : `<div style="padding:30px;text-align:center;color:var(--muted2)">لا توجد دروس بعد.</div>`
+     }
+   </div>
 
-    <div class="lessons-panel">
-      <div class="lp-head">
-        <div style="font-size:13px;font-weight:800">📋 قائمة الدروس</div>
-        <div style="font-size:10px;color:var(--muted2);margin-top:2px">${lessons.length} دروس</div>
-      </div>
-      ${lessons.map(lesson => {
-        const lessonProg = (u.progress[course.id] || {})[lesson.id];
-        const isDone = lessonProg === 100;
-        const isCurrent = S.currentLessonId === lesson.id;
-        return `<div class="lesson-row ${isCurrent ? 'active' : ''}" onclick="setState({currentLessonId:'${lesson.id}'})">
-          <div class="l-check ${isDone ? 'done' : isCurrent ? 'cur' : ''}">
-            ${isDone ? '✓' : isCurrent ? '▶' : ''}
-          </div>
-          <div style="flex:1;min-width:0">
-            <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lesson.title}</div>
-            <div style="font-size:10px;color:var(--muted2);margin-top:2px">${lesson.duration || ''} · ${lesson.xp || 0} XP · <span style="color:${lesson.type === 'امتحان' ? 'var(--amber)' : 'var(--blue)'}">${lesson.type}</span></div>
-          </div>
-        </div>`;
-      }).join('')}
-    </div>
-  </div>
-  </div>`;
+   <div class="lessons-panel">
+     <div class="lp-head">
+       <div style="font-size:13px;font-weight:800">📋 قائمة الدروس</div>
+       <div style="font-size:10px;color:var(--muted2);margin-top:2px">${lessons.length} دروس</div>
+     </div>
+     ${lessons.map(lesson => {
+       const lessonProg = (u.progress[course.id] || {})[lesson.id];
+       const isDone = lessonProg === 100;
+       const isCurrent = S.currentLessonId === lesson.id;
+       return `<div class="lesson-row ${isCurrent ? 'active' : ''}" onclick="setState({currentLessonId:'${lesson.id}'})">
+         <div class="l-check ${isDone ? 'done' : isCurrent ? 'cur' : ''}">
+           ${isDone ? '✓' : isCurrent ? '▶' : ''}
+         </div>
+         <div style="flex:1;min-width:0">
+           <div style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lesson.title}</div>
+           <div style="font-size:10px;color:var(--muted2);margin-top:2px">${lesson.duration || ''} · ${lesson.xp || 0} XP · <span style="color:${lesson.type === 'امتحان' ? 'var(--amber)' : 'var(--blue)'}">${lesson.type}</span></div>
+         </div>
+       </div>`;
+     }).join('')}
+   </div>
+ </div>
+ </div>`;
 }
 
 function renderLessonContent(course, lessonId) {
-  const lesson = (course.lessons || []).find(l => l.id === lessonId);
-  if (!lesson) return `<div style="padding:30px;text-align:center;color:var(--muted2)">الدرس غير موجود.</div>`;
+ const lesson = (course.lessons || []).find(l => l.id === lessonId);
+ if (!lesson) return `<div style="padding:30px;text-align:center;color:var(--muted2)">الدرس غير موجود.</div>`;
 
-  const lessonProg = (S.user.progress[course.id] || {})[lessonId];
-  const isDone = lessonProg === 100;
+ const lessonProg = (S.user.progress[course.id] || {})[lessonId];
+ const isDone = lessonProg === 100;
 
-  let mediaHtml = '';
-  if (lesson.type === 'امتحان' && lesson.exam) {
-    mediaHtml = `<div style="background:var(--card);border-radius:18px;padding:30px;text-align:center;border:1px solid var(--border)">
-      <div style="font-size:48px;margin-bottom:14px">📝</div>
-      <div style="font-size:18px;font-weight:900;margin-bottom:8px">${lesson.title}</div>
-      <div style="font-size:12px;color:var(--muted2);margin-bottom:20px">${lesson.exam.questions.length} أسئلة · حد النجاح ${lesson.exam.passScore}%</div>
-      ${isDone ? `<div class="tag" style="background:rgba(0,214,143,.15);color:var(--green);font-size:12px;padding:8px 16px;margin-bottom:14px">✅ اجتزت هذا الاختبار</div><br>` : ''}
-      <button class="btn btn-red" onclick="startExam('${course.id}','${lessonId}')">
-        ${isDone ? '🔄 إعادة الاختبار' : '🚀 ابدأ الاختبار'}
-      </button>
-    </div>`;
-  } else if (lesson.yt) {
-    mediaHtml = `<div class="video-wrap"><iframe src="${lesson.yt}" allowfullscreen></iframe></div>`;
-  } else if (lesson.pdf) {
-    mediaHtml = `<div style="border-radius:18px;overflow:hidden;height:480px;border:1px solid var(--border)"><iframe src="${lesson.pdf}" style="width:100%;height:100%;border:none"></iframe></div>`;
-  } else if (lesson.img) {
-    mediaHtml = `<div style="border-radius:18px;overflow:hidden;border:1px solid var(--border);text-align:center;background:var(--card)"><img src="${lesson.img}" style="max-width:100%;max-height:500px;object-fit:contain;display:block;margin:0 auto"/></div>`;
-  } else {
-    mediaHtml = `<div style="background:var(--card);border-radius:18px;padding:30px;text-align:center;border:1px solid var(--border);color:var(--muted2)">لا يوجد محتوى مرفق</div>`;
-  }
+ let mediaHtml = '';
+ if (lesson.type === 'امتحان' && lesson.exam) {
+   mediaHtml = `<div style="background:var(--card);border-radius:18px;padding:30px;text-align:center;border:1px solid var(--border)">
+     <div style="font-size:48px;margin-bottom:14px">📝</div>
+     <div style="font-size:18px;font-weight:900;margin-bottom:8px">${lesson.title}</div>
+     <div style="font-size:12px;color:var(--muted2);margin-bottom:20px">${lesson.exam.questions.length} أسئلة · حد النجاح ${lesson.exam.passScore}%</div>
+     ${isDone ? `<div class="tag" style="background:rgba(0,214,143,.15);color:var(--green);font-size:12px;padding:8px 16px;margin-bottom:14px">✅ اجتزت هذا الاختبار</div><br>` : ''}
+     <button class="btn btn-red" onclick="startExam('${course.id}','${lessonId}')">
+       ${isDone ? '🔄 إعادة الاختبار' : '🚀 ابدأ الاختبار'}
+     </button>
+   </div>`;
+ } else if (lesson.yt) {
+   mediaHtml = `<div class="video-wrap"><iframe src="${lesson.yt}" allowfullscreen></iframe></div>`;
+ } else if (lesson.pdf) {
+   mediaHtml = `<div style="border-radius:18px;overflow:hidden;height:480px;border:1px solid var(--border)"><iframe src="${lesson.pdf}" style="width:100%;height:100%;border:none"></iframe></div>`;
+ } else if (lesson.img) {
+   mediaHtml = `<div style="border-radius:18px;overflow:hidden;border:1px solid var(--border);text-align:center;background:var(--card)"><img src="${lesson.img}" style="max-width:100%;max-height:500px;object-fit:contain;display:block;margin:0 auto"/></div>`;
+ } else {
+   mediaHtml = `<div style="background:var(--card);border-radius:18px;padding:30px;text-align:center;border:1px solid var(--border);color:var(--muted2)">لا يوجد محتوى مرفق</div>`;
+ }
 
-  return `
-    <div style="margin-bottom:14px">${mediaHtml}</div>
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <div style="font-size:16px;font-weight:800;flex:1">${lesson.title}</div>
-        ${isDone ? `<span class="tag" style="background:rgba(0,214,143,.15);color:var(--green)">✅ مكتمل</span>` : ''}
-      </div>
-      <div style="font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:14px">${lesson.desc || ''}</div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--border)">
-        <div style="font-size:11px;color:var(--muted2)">⏱ ${lesson.duration || ''} &nbsp;·&nbsp; ⭐ ${lesson.xp || 0} XP</div>
-        ${lesson.type !== 'امتحان' ? `<button class="btn ${isDone ? 'btn-ghost' : 'btn-red'} btn-sm" onclick="completeLesson('${course.id}','${lessonId}',this)">
-          ${isDone ? '✓ مكتمل' : 'أكمل الدرس ✓'}
-        </button>` : ''}
-      </div>
-    </div>`;
+ return `
+   <div style="margin-bottom:14px">${mediaHtml}</div>
+   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px">
+     <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+       <div style="font-size:16px;font-weight:800;flex:1">${lesson.title}</div>
+       ${isDone ? `<span class="tag" style="background:rgba(0,214,143,.15);color:var(--green)">✅ مكتمل</span>` : ''}
+     </div>
+     <div style="font-size:13px;color:var(--muted2);line-height:1.7;margin-bottom:14px">${lesson.desc || ''}</div>
+     <div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--border)">
+       <div style="font-size:11px;color:var(--muted2)">⏱ ${lesson.duration || ''} &nbsp;·&nbsp; ⭐ ${lesson.xp || 0} XP</div>
+       ${lesson.type !== 'امتحان' ? `<button class="btn ${isDone ? 'btn-ghost' : 'btn-red'} btn-sm" onclick="completeLesson('${course.id}','${lessonId}',this)">
+         ${isDone ? '✓ مكتمل' : 'أكمل الدرس ✓'}
+       </button>` : ''}
+     </div>
+   </div>`;
 }
 
 async function completeLesson(courseId, lessonId, el) {
-  if (!S.user) return;
-  const course = COURSES.find(c => c.id === courseId);
-  const lesson = (course?.lessons || []).find(l => l.id === lessonId);
-  if (!course || !lesson) return;
+ if (!S.user) return;
+ const course = COURSES.find(c => c.id === courseId);
+ const lesson = (course?.lessons || []).find(l => l.id === lessonId);
+ if (!course || !lesson) return;
 
-  const already = (S.user.progress[courseId] || {})[lessonId] === 100;
-  if (already) { showToast('ℹ️', 'هذا الدرس مكتمل بالفعل!', 'var(--blue)'); return; }
+ const already = (S.user.progress[courseId] || {})[lessonId] === 100;
+ if (already) { showToast('ℹ️', 'هذا الدرس مكتمل بالفعل!', 'var(--blue)'); return; }
 
-  if (!S.user.progress[courseId]) S.user.progress[courseId] = {};
-  S.user.progress[courseId][lessonId] = 100;
+ if (!S.user.progress[courseId]) S.user.progress[courseId] = {};
+ S.user.progress[courseId][lessonId] = 100;
 
-  const total = (course.lessons || []).length;
-  const done = Object.values(S.user.progress[courseId]).filter(v => v === 100).length;
-  const pct = Math.round((done / total) * 100);
-  S.user.progress[courseId]._overall = pct;
+ const total = (course.lessons || []).length;
+ const done = Object.values(S.user.progress[courseId]).filter(v => v === 100).length;
+ const pct = Math.round((done / total) * 100);
+ S.user.progress[courseId]._overall = pct;
 
-  await gainXP(lesson.xp || 0, el);
-  await fbUpdate('users/' + S.ukey, { progress: S.user.progress });
+ await gainXP(lesson.xp || 0, el);
+ await fbUpdate('users/' + S.ukey, { progress: S.user.progress });
 
-  if (pct >= 100 && !S.user.badges.includes('course_master')) {
-    S.user.badges.push('course_master');
-    await fbUpdate('users/' + S.ukey, { badges: S.user.badges });
-    setTimeout(() => { launchConfetti(); showToast('🏆', 'حصلت على شارة "خبير كورس"!', 'var(--xp)'); }, 500);
-  }
+ if (pct >= 100 && !S.user.badges.includes('course_master')) {
+   S.user.badges.push('course_master');
+   await fbUpdate('users/' + S.ukey, { badges: S.user.badges });
+   setTimeout(() => { launchConfetti(); showToast('🏆', 'حصلت على شارة "خبير كورس"!', 'var(--xp)'); }, 500);
+ }
 
-  showToast('✅', 'تم إكمال الدرس! +' + (lesson.xp || 0) + ' XP');
-  renderApp();
+ showToast('✅', 'تم إكمال الدرس! +' + (lesson.xp || 0) + ' XP');
+ renderApp();
 }
 
 // ============================================================
 // EXAM
 // ============================================================
 function startExam(courseId, lessonId) {
-  const course = COURSES.find(c => c.id === courseId);
-  const lesson = (course?.lessons || []).find(l => l.id === lessonId);
-  if (!lesson?.exam) return;
-  S.currentExam = { courseId, lessonId, questions: lesson.exam.questions, passScore: lesson.exam.passScore, currentQ: 0, answers: [] };
-  setState({ screen: 'exam' });
+ const course = COURSES.find(c => c.id === courseId);
+ const lesson = (course?.lessons || []).find(l => l.id === lessonId);
+ if (!lesson?.exam) return;
+ S.currentExam = { courseId, lessonId, questions: lesson.exam.questions, passScore: lesson.exam.passScore, currentQ: 0, answers: [] };
+ setState({ screen: 'exam' });
 }
 
 function renderExam() {
-  if (!S.currentExam) return `<div>لا يوجد اختبار حالي.</div>`;
-  const ex = S.currentExam;
-  const q = ex.questions[ex.currentQ];
-  const course = COURSES.find(c => c.id === ex.courseId);
+ if (!S.currentExam) return `<div>لا يوجد اختبار حالي.</div>`;
+ const ex = S.currentExam;
+ const q = ex.questions[ex.currentQ];
+ const course = COURSES.find(c => c.id === ex.courseId);
 
-  return `<div class="fu">
-  <div class="topbar">
-    <div><div class="pg-title">📝 اختبار: ${course?.title || ''}</div>
-    <div class="pg-sub">السؤال ${ex.currentQ + 1} من ${ex.questions.length}</div></div>
-    <button class="btn btn-ghost btn-sm" onclick="setState({screen:'course',courseId:'${ex.courseId}'})">❌ إلغاء</button>
-  </div>
+ return `<div class="fu">
+ <div class="topbar">
+   <div><div class="pg-title">📝 اختبار: ${course?.title || ''}</div>
+   <div class="pg-sub">السؤال ${ex.currentQ + 1} من ${ex.questions.length}</div></div>
+   <button class="btn btn-ghost btn-sm" onclick="setState({screen:'course',courseId:'${ex.courseId}'})">❌ إلغاء</button>
+ </div>
 
-  <div class="exam-wrap">
-    <div style="display:flex;gap:6px;justify-content:center;margin-bottom:20px;flex-wrap:wrap">
-      ${ex.questions.map((_, i) => `
-        <div style="width:34px;height:34px;border-radius:50%;border:2px solid ${i === ex.currentQ ? 'var(--red)' : ex.answers[i] !== undefined ? 'var(--green)' : 'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer;color:${i === ex.currentQ ? 'var(--red)' : ex.answers[i] !== undefined ? 'var(--green)' : 'var(--muted2)'};background:${i === ex.currentQ ? 'var(--reddim)' : ex.answers[i] !== undefined ? 'rgba(0,214,143,.1)' : 'transparent'}" onclick="S.currentExam.currentQ=${i};renderApp()">${i + 1}</div>
-      `).join('')}
-    </div>
+ <div class="exam-wrap">
+   <div style="display:flex;gap:6px;justify-content:center;margin-bottom:20px;flex-wrap:wrap">
+     ${ex.questions.map((_, i) => `
+       <div style="width:34px;height:34px;border-radius:50%;border:2px solid ${i === ex.currentQ ? 'var(--red)' : ex.answers[i] !== undefined ? 'var(--green)' : 'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;cursor:pointer;color:${i === ex.currentQ ? 'var(--red)' : ex.answers[i] !== undefined ? 'var(--green)' : 'var(--muted2)'};background:${i === ex.currentQ ? 'var(--reddim)' : ex.answers[i] !== undefined ? 'rgba(0,214,143,.1)' : 'transparent'}" onclick="S.currentExam.currentQ=${i};renderApp()">${i + 1}</div>
+     `).join('')}
+   </div>
 
-    <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:16px">
-      <div style="font-size:16px;font-weight:800;margin-bottom:18px;line-height:1.5">${ex.currentQ + 1}. ${q.q}</div>
-      ${q.options.map((opt, i) => `
-        <button class="e-opt ${ex.answers[ex.currentQ] === i ? 'selected' : ''}" onclick="pickOpt(${i})">
-          <span style="width:24px;height:24px;border-radius:50%;border:2px solid ${ex.answers[ex.currentQ] === i ? 'var(--red)' : 'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0;background:${ex.answers[ex.currentQ] === i ? 'var(--red)' : 'transparent'};color:${ex.answers[ex.currentQ] === i ? '#fff' : 'var(--muted2)'}">${String.fromCharCode(65 + i)}</span>
-          ${opt}
-        </button>
-      `).join('')}
-    </div>
+   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:22px;margin-bottom:16px">
+     <div style="font-size:16px;font-weight:800;margin-bottom:18px;line-height:1.5">${ex.currentQ + 1}. ${q.q}</div>
+     ${q.options.map((opt, i) => `
+       <button class="e-opt ${ex.answers[ex.currentQ] === i ? 'selected' : ''}" onclick="pickOpt(${i})">
+         <span style="width:24px;height:24px;border-radius:50%;border:2px solid ${ex.answers[ex.currentQ] === i ? 'var(--red)' : 'var(--border)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0;background:${ex.answers[ex.currentQ] === i ? 'var(--red)' : 'transparent'};color:${ex.answers[ex.currentQ] === i ? '#fff' : 'var(--muted2)'}">${String.fromCharCode(65 + i)}</span>
+         ${opt}
+       </button>
+     `).join('')}
+   </div>
 
-    <div style="display:flex;justify-content:space-between;gap:10px">
-      <button class="btn btn-ghost" ${ex.currentQ === 0 ? 'disabled' : ''} onclick="prevQuestion()">← السابق</button>
-      ${ex.currentQ < ex.questions.length - 1
-        ? `<button class="btn btn-red" ${ex.answers[ex.currentQ] === undefined ? 'disabled' : ''} onclick="nextQuestion()">التالي ←</button>`
-        : `<button class="btn btn-green" ${ex.answers[ex.currentQ] === undefined ? 'disabled' : ''} onclick="submitExam()">✅ إنهاء الاختبار</button>`}
-    </div>
-  </div>
-  </div>`;
+   <div style="display:flex;justify-content:space-between;gap:10px">
+     <button class="btn btn-ghost" ${ex.currentQ === 0 ? 'disabled' : ''} onclick="prevQuestion()">← السابق</button>
+     ${ex.currentQ < ex.questions.length - 1
+       ? `<button class="btn btn-red" ${ex.answers[ex.currentQ] === undefined ? 'disabled' : ''} onclick="nextQuestion()">التالي ←</button>`
+       : `<button class="btn btn-green" ${ex.answers[ex.currentQ] === undefined ? 'disabled' : ''} onclick="submitExam()">✅ إنهاء الاختبار</button>`}
+   </div>
+ </div>
+ </div>`;
 }
 
 function pickOpt(i) {
-  S.currentExam.answers[S.currentExam.currentQ] = i;
-  renderApp();
+ S.currentExam.answers[S.currentExam.currentQ] = i;
+ renderApp();
 }
 function nextQuestion() { S.currentExam.currentQ++; renderApp(); }
 function prevQuestion() { S.currentExam.currentQ--; renderApp(); }
 
 async function submitExam() {
-  const ex = S.currentExam;
-  if (!ex) return;
-  let correct = 0;
-  ex.questions.forEach((q, i) => { if (ex.answers[i] === q.ans) correct++; });
-  ex.score = Math.round((correct / ex.questions.length) * 100);
+ const ex = S.currentExam;
+ if (!ex) return;
+ let correct = 0;
+ ex.questions.forEach((q, i) => { if (ex.answers[i] === q.ans) correct++; });
+ ex.score = Math.round((correct / ex.questions.length) * 100);
 
-  if (!S.user.scores) S.user.scores = {};
-  S.user.scores[ex.courseId] = ex.score;
+ if (!S.user.scores) S.user.scores = {};
+ S.user.scores[ex.courseId] = ex.score;
 
-  if (ex.score >= ex.passScore) {
-    if (!S.user.progress[ex.courseId]) S.user.progress[ex.courseId] = {};
-    S.user.progress[ex.courseId][ex.lessonId] = 100;
+ if (ex.score >= ex.passScore) {
+   if (!S.user.progress[ex.courseId]) S.user.progress[ex.courseId] = {};
+   S.user.progress[ex.courseId][ex.lessonId] = 100;
 
-    const course = COURSES.find(c => c.id === ex.courseId);
-    const lesson = (course?.lessons || []).find(l => l.id === ex.lessonId);
-    await gainXP(lesson?.xp || 20);
-    launchConfetti();
+   const course = COURSES.find(c => c.id === ex.courseId);
+   const lesson = (course?.lessons || []).find(l => l.id === ex.lessonId);
+   await gainXP(lesson?.xp || 20);
+   launchConfetti();
 
-    if (ex.score === 100 && !S.user.badges.includes('exam_ace')) {
-      S.user.badges.push('exam_ace');
-      setTimeout(() => showToast('🎯', 'شارة جديدة: "متفوق في الامتحانات"!', 'var(--xp)'), 800);
-    }
-  }
+   if (ex.score === 100 && !S.user.badges.includes('exam_ace')) {
+     S.user.badges.push('exam_ace');
+     setTimeout(() => showToast('🎯', 'شارة جديدة: "متفوق في الامتحانات"!', 'var(--xp)'), 800);
+   }
+ }
 
-  await fbUpdate('users/' + S.ukey, { scores: S.user.scores, progress: S.user.progress, badges: S.user.badges });
-  setState({ screen: 'result', examResult: { ...ex } });
+ await fbUpdate('users/' + S.ukey, { scores: S.user.scores, progress: S.user.progress, badges: S.user.badges });
+ setState({ screen: 'result', examResult: { ...ex } });
 }
 
 function renderResult() {
-  const res = S.examResult;
-  if (!res) return `<div>لا توجد نتائج.</div>`;
-  const course = COURSES.find(c => c.id === res.courseId);
-  const passed = res.score >= (res.passScore || 0);
-  const correct = res.questions.filter((q, i) => res.answers[i] === q.ans).length;
+ const res = S.examResult;
+ if (!res) return `<div>لا توجد نتائج.</div>`;
+ const course = COURSES.find(c => c.id === res.courseId);
+ const passed = res.score >= (res.passScore || 0);
+ const correct = res.questions.filter((q, i) => res.answers[i] === q.ans).length;
 
-  return `<div class="fu" style="max-width:600px;margin:0 auto">
-  <div style="text-align:center;margin-bottom:24px">
-    <div style="font-size:64px;margin-bottom:12px;animation:pop .5s ease">${passed ? '🎉' : '😔'}</div>
-    <div style="font-size:24px;font-weight:900;margin-bottom:6px">${passed ? 'تهانينا! لقد نجحت!' : 'لم تنجح هذه المرة'}</div>
-    <div style="font-size:48px;font-weight:900;color:${passed ? 'var(--green)' : 'var(--red)'};margin:10px 0">${res.score}%</div>
-    <div style="font-size:13px;color:var(--muted2)">${correct} إجابة صحيحة من ${res.questions.length} · حد النجاح ${res.passScore || 0}%</div>
-  </div>
+ return `<div class="fu" style="max-width:600px;margin:0 auto">
+ <div style="text-align:center;margin-bottom:24px">
+   <div style="font-size:64px;margin-bottom:12px;animation:pop .5s ease">${passed ? '🎉' : '😔'}</div>
+   <div style="font-size:24px;font-weight:900;margin-bottom:6px">${passed ? 'تهانينا! لقد نجحت!' : 'لم تنجح هذه المرة'}</div>
+   <div style="font-size:48px;font-weight:900;color:${passed ? 'var(--green)' : 'var(--red)'};margin:10px 0">${res.score}%</div>
+   <div style="font-size:13px;color:var(--muted2)">${correct} إجابة صحيحة من ${res.questions.length} · حد النجاح ${res.passScore || 0}%</div>
+ </div>
 
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:20px">
-    <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:800">مراجعة الإجابات</div>
-    ${res.questions.map((q, i) => {
-      const isCorrect = res.answers[i] === q.ans;
-      return `<div style="padding:14px 16px;border-bottom:1px solid var(--border)">
-        <div style="font-size:12px;font-weight:700;margin-bottom:8px">${i + 1}. ${q.q}</div>
-        ${q.options.map((opt, oi) => `
-          <div style="font-size:11px;padding:6px 10px;border-radius:8px;margin-bottom:4px;background:${oi === q.ans ? 'rgba(0,214,143,.12)' : oi === res.answers[i] && !isCorrect ? 'rgba(228,0,43,.1)' : 'transparent'};color:${oi === q.ans ? 'var(--green)' : oi === res.answers[i] && !isCorrect ? 'var(--red)' : 'var(--muted2)'}">
-            ${oi === q.ans ? '✅' : oi === res.answers[i] ? '❌' : '○'} ${opt}
-          </div>`).join('')}
-      </div>`;
-    }).join('')}
-  </div>
+ <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:20px">
+   <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:800">مراجعة الإجابات</div>
+   ${res.questions.map((q, i) => {
+     const isCorrect = res.answers[i] === q.ans;
+     return `<div style="padding:14px 16px;border-bottom:1px solid var(--border)">
+       <div style="font-size:12px;font-weight:700;margin-bottom:8px">${i + 1}. ${q.q}</div>
+       ${q.options.map((opt, oi) => `
+         <div style="font-size:11px;padding:6px 10px;border-radius:8px;margin-bottom:4px;background:${oi === q.ans ? 'rgba(0,214,143,.12)' : oi === res.answers[i] && !isCorrect ? 'rgba(228,0,43,.1)' : 'transparent'};color:${oi === q.ans ? 'var(--green)' : oi === res.answers[i] && !isCorrect ? 'var(--red)' : 'var(--muted2)'}">
+           ${oi === q.ans ? '✅' : oi === res.answers[i] ? '❌' : '○'} ${opt}
+         </div>`).join('')}
+     </div>`;
+   }).join('')}
+ </div>
 
-  <div style="display:flex;gap:10px">
-    <button class="btn btn-red" style="flex:1" onclick="setState({screen:'course',courseId:'${res.courseId}'})">العودة للكورس</button>
-    ${!passed ? `<button class="btn btn-ghost" style="flex:1" onclick="startExam('${res.courseId}','${res.lessonId}')">🔄 إعادة المحاولة</button>` : ''}
-  </div>
-  </div>`;
+ <div style="display:flex;gap:10px">
+   <button class="btn btn-red" style="flex:1" onclick="setState({screen:'course',courseId:'${res.courseId}'})">العودة للكورس</button>
+   ${!passed ? `<button class="btn btn-ghost" style="flex:1" onclick="startExam('${res.courseId}','${res.lessonId}')">🔄 إعادة المحاولة</button>` : ''}
+ </div>
+ </div>`;
 }
 
 // ============================================================
 // LEADERBOARD
 // ============================================================
 async function renderLeaderboard() {
-  const allUsers = await fbGet('users') || {};
-  const emps = Object.entries(allUsers)
-    .filter(([, v]) => v.role === 'employee')
-    .sort(([, a], [, b]) => (b.xp || 0) - (a.xp || 0));
+ const allUsers = await fbGet('users') || {};
+ const emps = Object.entries(allUsers)
+   .filter(([, v]) => v.role === 'employee')
+   .sort(([, a], [, b]) => (b.xp || 0) - (a.xp || 0));
 
-  const medals = ['🥇', '🥈', '🥉'];
-  const html = `<div class="fu">
-  <div class="topbar">
-    <div><div class="pg-title">🏆 leaderboard</div><div class="pg-sub">أفضل الTraineeين أداءً</div></div>
-  </div>
-  <div style="display:grid;gap:10px">
-    ${emps.length === 0 ? `<div style="padding:40px;text-align:center;color:var(--muted2)">لا يوجد Traineeون بعد.</div>` :
-    emps.map(([key, u], i) => {
-      const isMe = key === S.ukey;
-      return `<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:${isMe ? 'var(--reddim)' : i === 0 ? 'rgba(255,215,0,.07)' : 'var(--card)'};border:1px solid ${isMe ? 'rgba(228,0,43,.25)' : i === 0 ? 'rgba(255,215,0,.2)' : 'var(--border)'};border-radius:16px;animation:fadeUp .4s ease ${i * .05}s both">
-        <div style="font-size:${i < 3 ? 24 : 16}px;width:32px;text-align:center;flex-shrink:0">${i < 3 ? medals[i] : '#' + (i + 1)}</div>
-        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0">${(u.name || '?').charAt(0)}</div>
-        <div style="flex:1">
-          <div style="font-size:13px;font-weight:800">${u.name || 'غير معروف'}${isMe ? ' <span style="color:var(--red);font-size:11px">(أنت)</span>' : ''}</div>
-          <div style="font-size:10px;color:#7a8aaa">المستوى ${u.level || 1} · ${(u.badges || []).length} شارات · 🔥 ${u.streak || 0}</div>
-        </div>
-        <div style="text-align:center">
-          <div style="font-size:18px;font-weight:900;color:var(--xp)">${u.xp || 0}</div>
-          <div style="font-size:9px;color:#7a8aaa">XP</div>
-        </div>
-      </div>`;
-    }).join('')}
-  </div></div>`;
-  document.getElementById('mainArea').innerHTML = html;
+ const medals = ['🥇', '🥈', '🥉'];
+ const html = `<div class="fu">
+ <div class="topbar">
+   <div><div class="pg-title">🏆 لوحة الشرف</div><div class="pg-sub">أفضل الTraineeين أداءً</div></div>
+ </div>
+ <div style="display:grid;gap:10px">
+   ${emps.length === 0 ? `<div style="padding:40px;text-align:center;color:var(--muted2)">لا يوجد Traineeون بعد.</div>` :
+   emps.map(([key, u], i) => {
+     const isMe = key === S.ukey;
+     return `<div style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:${isMe ? 'var(--reddim)' : i === 0 ? 'rgba(255,215,0,.07)' : 'var(--card)'};border:1px solid ${isMe ? 'rgba(228,0,43,.25)' : i === 0 ? 'rgba(255,215,0,.2)' : 'var(--border)'};border-radius:16px;animation:fadeUp .4s ease ${i * .05}s both">
+       <div style="font-size:${i < 3 ? 24 : 16}px;width:32px;text-align:center;flex-shrink:0">${i < 3 ? medals[i] : '#' + (i + 1)}</div>
+       <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;flex-shrink:0">${(u.name || '?').charAt(0)}</div>
+       <div style="flex:1">
+         <div style="font-size:13px;font-weight:800">${u.name || 'غير معروف'}${isMe ? ' <span style="color:var(--red);font-size:11px">(أنت)</span>' : ''}</div>
+         <div style="font-size:10px;color:#7a8aaa">المستوى ${u.level || 1} · ${(u.badges || []).length} شارات · 🔥 ${u.streak || 0}</div>
+       </div>
+       <div style="text-align:center">
+         <div style="font-size:18px;font-weight:900;color:var(--xp)">${u.xp || 0}</div>
+         <div style="font-size:9px;color:#7a8aaa">XP</div>
+       </div>
+     </div>`;
+   }).join('')}
+ </div></div>`;
+ document.getElementById('mainArea').innerHTML = html;
 }
 
 // ============================================================
 // TRACKING (manager)
 // ============================================================
 async function renderTracking() {
-  const allUsers = await fbGet('users') || {};
-  const emps = Object.entries(allUsers).filter(([, v]) => v.role === 'employee');
-  const filter = S.trackFilter || '';
-  const status = S.trackStatus || 'all';
+ const allUsers = await fbGet('users') || {};
+ const emps = Object.entries(allUsers).filter(([, v]) => v.role === 'employee');
+ const filter = S.trackFilter || '';
+ const status = S.trackStatus || 'all';
 
-  const getProgPct = (u) => COURSES.length > 0 ? Math.round(COURSES.reduce((a, c) => a + ((u.progress || {})[c.id] || 0), 0) / COURSES.length) : 0;
-  const getAvgScore = (u) => {
-    const vals = Object.values(u.scores || {});
-    return vals.length > 0 ? Math.round(vals.reduce((a, v) => a + v, 0) / vals.length) : 0;
-  };
+ const getProgPct = (u) => COURSES.length > 0 ? Math.round(COURSES.reduce((a, c) => a + ((u.progress || {})[c.id] || 0), 0) / COURSES.length) : 0;
+ const getAvgScore = (u) => {
+   const vals = Object.values(u.scores || {});
+   return vals.length > 0 ? Math.round(vals.reduce((a, v) => a + v, 0) / vals.length) : 0;
+ };
 
-  let filtered = emps.filter(([key, u]) => {
-    const matchText = !filter || (u.name || '').toLowerCase().includes(filter.toLowerCase()) || key.includes(filter.toLowerCase());
-    const pct = getProgPct(u);
-    const matchStatus = status === 'all' ? true : status === 'done' ? pct >= 100 : status === 'late' ? pct < 30 : status === 'active' ? pct >= 30 && pct < 100 : true;
-    return matchText && matchStatus;
-  });
+ let filtered = emps.filter(([key, u]) => {
+   const matchText = !filter || (u.name || '').toLowerCase().includes(filter.toLowerCase()) || key.includes(filter.toLowerCase());
+   const pct = getProgPct(u);
+   const matchStatus = status === 'all' ? true : status === 'done' ? pct >= 100 : status === 'late' ? pct < 30 : status === 'active' ? pct >= 30 && pct < 100 : true;
+   return matchText && matchStatus;
+ });
 
-  const lateCount = emps.filter(([, u]) => getProgPct(u) < 30).length;
+ const lateCount = emps.filter(([, u]) => getProgPct(u) < 30).length;
 
-  const html = `<div class="fu">
-  <div class="topbar">
-    <div><div class="pg-title">📊 Dashboard</div><div class="pg-sub">تقدم الTrainee في الوقت الحقيقي</div></div>
-    ${S.role === 'content' ? `<button class="btn btn-red btn-sm" onclick="exportExcel()">📥 Excel</button>` : ''}
-  </div>
+ const html = `<div class="fu">
+ <div class="topbar">
+   <div><div class="pg-title">📊 لوحة المتابعة</div><div class="pg-sub">تقدم الTraineeين في الوقت الحقيقي</div></div>
+   ${S.role === 'content' ? `<button class="btn btn-red btn-sm" onclick="exportExcel()">📥 Excel</button>` : ''}
+ </div>
 
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
-    ${[
-      ['var(--red)', emps.length, '👥 الTraineeون'],
-      ['var(--green)', emps.filter(([, u]) => getProgPct(u) >= 100).length, '✅ أتموا الكل'],
-      ['var(--xp)', emps.length > 0 ? Math.round(emps.reduce((a, [, u]) => a + (u.xp || 0), 0) / emps.length) : 0, '⭐ متوسط XP'],
-      ['var(--red)', lateCount, '⚠️ متأخرون'],
-    ].map(s => `<div class="stat-card" style="border-color:${s[0]}33;background:${s[0]}0d">
-      <div style="font-size:26px;font-weight:900;color:${s[0]}">${s[1]}</div>
-      <div style="font-size:10px;color:#7a8aaa;margin-top:4px">${s[2]}</div>
-    </div>`).join('')}
-  </div>
+ <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px">
+   ${[
+     ['var(--red)', emps.length, '👥 الTraineeون'],
+     ['var(--green)', emps.filter(([, u]) => getProgPct(u) >= 100).length, '✅ أتموا الكل'],
+     ['var(--xp)', emps.length > 0 ? Math.round(emps.reduce((a, [, u]) => a + (u.xp || 0), 0) / emps.length) : 0, '⭐ متوسط XP'],
+     ['var(--red)', lateCount, '⚠️ متأخرون'],
+   ].map(s => `<div class="stat-card" style="border-color:${s[0]}33;background:${s[0]}0d">
+     <div style="font-size:26px;font-weight:900;color:${s[0]}">${s[1]}</div>
+     <div style="font-size:10px;color:#7a8aaa;margin-top:4px">${s[2]}</div>
+   </div>`).join('')}
+ </div>
 
-  <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-    <input type="text" placeholder="🔍 ابحث باسم الTrainee..." value="${filter}"
-      oninput="S.trackFilter=this.value;renderTracking()"
-      style="flex:1;min-width:180px;padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none"/>
-    <select onchange="S.trackStatus=this.value;renderTracking()"
-      style="padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px">
-      <option value="all" ${status === 'all' ? 'selected' : ''}>الكل</option>
-      <option value="done" ${status === 'done' ? 'selected' : ''}>✅ أتموا الكل</option>
-      <option value="active" ${status === 'active' ? 'selected' : ''}>🔥 نشطون</option>
-      <option value="late" ${status === 'late' ? 'selected' : ''}>⚠️ متأخرون</option>
-    </select>
-    ${lateCount > 0 ? `<button class="btn btn-sm" style="background:#ff444422;color:#ff4444;border:1px solid #ff444433;white-space:nowrap" onclick="notifyLate()">🔔 تنبيه المتأخرين (${lateCount})</button>` : ''}
-  </div>
+ <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+   <input type="text" placeholder="🔍 ابحث باسم الTrainee..." value="${filter}"
+     oninput="S.trackFilter=this.value;renderTracking()"
+     style="flex:1;min-width:180px;padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px;outline:none"/>
+   <select onchange="S.trackStatus=this.value;renderTracking()"
+     style="padding:9px 14px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-family:'Cairo',sans-serif;font-size:13px">
+     <option value="all" ${status === 'all' ? 'selected' : ''}>الكل</option>
+     <option value="done" ${status === 'done' ? 'selected' : ''}>✅ أتموا الكل</option>
+     <option value="active" ${status === 'active' ? 'selected' : ''}>🔥 نشطون</option>
+     <option value="late" ${status === 'late' ? 'selected' : ''}>⚠️ متأخرون</option>
+   </select>
+   ${lateCount > 0 ? `<button class="btn btn-sm" style="background:#ff444422;color:#ff4444;border:1px solid #ff444433;white-space:nowrap" onclick="notifyLate()">🔔 تنبيه المتأخرين (${lateCount})</button>` : ''}
+ </div>
 
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden">
-    <div style="display:grid;grid-template-columns:1fr 70px 70px 90px 80px;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);font-weight:700;color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
-      <div>الTrainee</div><div style="text-align:center">XP</div><div style="text-align:center">النتيجة</div><div style="text-align:center">التقدم</div><div style="text-align:center">عرض</div>
-    </div>
-    ${filtered.length === 0 ? `<div style="padding:30px;text-align:center;color:var(--muted2)">لا توجد نتائج</div>` :
-    filtered.map(([key, u]) => {
-      const pct = getProgPct(u);
-      const avg = getAvgScore(u);
-      const isLate = pct < 30;
-      return `<div style="display:grid;grid-template-columns:1fr 70px 70px 90px 80px;gap:10px;padding:12px 16px;border-top:1px solid var(--border);align-items:center;${isLate ? 'border-right:3px solid #ff4444' : ''}">
-        <div style="display:flex;align-items:center;gap:9px">
-          <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0">${(u.name || '?').charAt(0)}</div>
-          <div>
-            <div style="font-weight:700;font-size:13px">${u.name || 'غير معروف'}</div>
-            <div style="font-size:9px;color:#7a8aaa">Lv${u.level || 1} 🔥${u.streak || 0}${isLate ? ' · <span style="color:#ff4444">متأخر ⚠️</span>' : ''}</div>
-          </div>
-        </div>
-        <div style="text-align:center;color:var(--xp);font-weight:800;font-size:13px">${u.xp || 0}</div>
-        <div style="text-align:center;font-weight:800;font-size:13px;color:${avg >= 80 ? 'var(--green)' : avg > 0 ? 'var(--amber)' : 'var(--muted)'}">${avg || '—'}${avg ? '%' : ''}</div>
-        <div>
-          <div class="pbar"><div class="pfill" style="width:${pct}%"></div></div>
-          <div style="font-size:9px;color:var(--muted2);margin-top:2px">${pct}%</div>
-        </div>
-        <div style="text-align:center">
-          <button class="btn btn-ghost btn-sm" onclick='showUserModal(${JSON.stringify(u).replace(/'/g, "&#39;")})'>عرض</button>
-        </div>
-      </div>`;
-    }).join('')}
-  </div>
-  </div>`;
-  document.getElementById('mainArea').innerHTML = html;
+ <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+   <div style="display:grid;grid-template-columns:1fr 70px 70px 90px 80px;gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);font-weight:700;color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
+     <div>الTrainee</div><div style="text-align:center">XP</div><div style="text-align:center">النتيجة</div><div style="text-align:center">التقدم</div><div style="text-align:center">عرض</div>
+   </div>
+   ${filtered.length === 0 ? `<div style="padding:30px;text-align:center;color:var(--muted2)">لا توجد نتائج</div>` :
+   filtered.map(([key, u]) => {
+     const pct = getProgPct(u);
+     const avg = getAvgScore(u);
+     const isLate = pct < 30;
+     return `<div style="display:grid;grid-template-columns:1fr 70px 70px 90px 80px;gap:10px;padding:12px 16px;border-top:1px solid var(--border);align-items:center;${isLate ? 'border-right:3px solid #ff4444' : ''}">
+       <div style="display:flex;align-items:center;gap:9px">
+         <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0">${(u.name || '?').charAt(0)}</div>
+         <div>
+           <div style="font-weight:700;font-size:13px">${u.name || 'غير معروف'}</div>
+           <div style="font-size:9px;color:#7a8aaa">Lv${u.level || 1} 🔥${u.streak || 0}${isLate ? ' · <span style="color:#ff4444">متأخر ⚠️</span>' : ''}</div>
+         </div>
+       </div>
+       <div style="text-align:center;color:var(--xp);font-weight:800;font-size:13px">${u.xp || 0}</div>
+       <div style="text-align:center;font-weight:800;font-size:13px;color:${avg >= 80 ? 'var(--green)' : avg > 0 ? 'var(--amber)' : 'var(--muted)'}">${avg || '—'}${avg ? '%' : ''}</div>
+       <div>
+         <div class="pbar"><div class="pfill" style="width:${pct}%"></div></div>
+         <div style="font-size:9px;color:var(--muted2);margin-top:2px">${pct}%</div>
+       </div>
+       <div style="text-align:center">
+         <button class="btn btn-ghost btn-sm" onclick='showUserModal(${JSON.stringify(u).replace(/'/g, "&#39;")})'>عرض</button>
+       </div>
+     </div>`;
+   }).join('')}
+ </div>
+ </div>`;
+ document.getElementById('mainArea').innerHTML = html;
 }
 
 function showUserModal(u) {
-  document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
-    <div class="modal-box">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)">
-        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff">${(u.name || '?').charAt(0)}</div>
-        <div style="flex:1">
-          <div style="font-size:15px;font-weight:900">${u.name || 'غير معروف'}</div>
-          <div style="font-size:11px;color:var(--muted2)">Lv${u.level || 1} · ${u.xp || 0} XP · 🔥 ${u.streak || 0} يوم · آخر دخول: ${u.lastLogin || '—'}</div>
-        </div>
-        <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
-      </div>
-      ${COURSES.map(c => {
-        const p = (u.progress || {})[c.id] || 0;
-        const sc = (u.scores || {})[c.id];
-        return `<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-            <span style="font-size:12px;font-weight:700">${c.icon} ${c.title}</span>
-            ${sc !== undefined ? `<span class="tag" style="background:${sc >= 80 ? 'rgba(0,214,143,.12)' : 'rgba(255,179,0,.12)'};color:${sc >= 80 ? 'var(--green)' : 'var(--amber)'}">${sc}%</span>` :
-            `<span class="tag" style="background:rgba(255,255,255,.05);color:var(--muted)">لم يختبر</span>`}
-          </div>
-          <div class="pbar"><div class="pfill" style="width:${p}%"></div></div>
-          <div style="font-size:9px;color:var(--muted2);margin-top:3px">${Math.round(p)}%</div>
-        </div>`;
-      }).join('')}
-      <div style="display:flex;flex-wrap:wrap;gap:6px">
-        ${(u.badges || []).map(bid => {
-          const bd = BADGES.find(x => x.id === bid);
-          return bd ? `<span class="tag" style="background:rgba(255,215,0,.1);color:var(--xp)">${bd.icon} ${bd.name}</span>` : '';
-        }).join('')}
-      </div>
-    </div>
-  </div>`;
+ document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+   <div class="modal-box">
+     <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border)">
+       <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#fff">${(u.name || '?').charAt(0)}</div>
+       <div style="flex:1">
+         <div style="font-size:15px;font-weight:900">${u.name || 'غير معروف'}</div>
+         <div style="font-size:11px;color:var(--muted2)">Lv${u.level || 1} · ${u.xp || 0} XP · 🔥 ${u.streak || 0} يوم · آخر دخول: ${u.lastLogin || '—'}</div>
+       </div>
+       <button class="btn btn-ghost btn-sm" onclick="closeModal()">✕</button>
+     </div>
+     ${COURSES.map(c => {
+       const p = (u.progress || {})[c.id] || 0;
+       const sc = (u.scores || {})[c.id];
+       return `<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+           <span style="font-size:12px;font-weight:700">${c.icon} ${c.title}</span>
+           ${sc !== undefined ? `<span class="tag" style="background:${sc >= 80 ? 'rgba(0,214,143,.12)' : 'rgba(255,179,0,.12)'};color:${sc >= 80 ? 'var(--green)' : 'var(--amber)'}">${sc}%</span>` :
+           `<span class="tag" style="background:rgba(255,255,255,.05);color:var(--muted)">لم يختبر</span>`}
+         </div>
+         <div class="pbar"><div class="pfill" style="width:${p}%"></div></div>
+         <div style="font-size:9px;color:var(--muted2);margin-top:3px">${Math.round(p)}%</div>
+       </div>`;
+     }).join('')}
+     <div style="display:flex;flex-wrap:wrap;gap:6px">
+       ${(u.badges || []).map(bid => {
+         const bd = BADGES.find(x => x.id === bid);
+         return bd ? `<span class="tag" style="background:rgba(255,215,0,.1);color:var(--xp)">${bd.icon} ${bd.name}</span>` : '';
+       }).join('')}
+     </div>
+   </div>
+ </div>`;
 }
 
 // ============================================================
 // CONTENT MANAGER
 // ============================================================
 function renderContent() {
-  return `<div class="fu">
-  <div class="topbar">
-    <div><div class="pg-title">📚 Content Management</div><div class="pg-sub">أضف وعدّل البرامج تدريبية والدروس</div></div>
-    <button class="btn btn-red btn-sm" onclick="addCourseModal()">➕ كورس جديد</button>
-  </div>
-  ${COURSES.map((c, ci) => `
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:10px;animation:fadeUp .4s ease ${ci * .06}s both">
-    <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-      <div style="font-size:14px;font-weight:800">${c.icon} ${c.title}</div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-ghost btn-sm" onclick="S.addingLesson=S.addingLesson==='${c.id}'?null:'${c.id}';renderApp()">➕ درس</button>
-        <button class="btn btn-ghost btn-sm" onclick="editCourseModal('${c.id}')">✏️</button>
-        <button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteCourse('${c.id}')">🗑️</button>
-      </div>
-    </div>
-    ${S.addingLesson === c.id ? renderAddLessonForm(c.id) : ''}
-    <div>
-      ${(c.lessons || []).length === 0 ? `<div style="padding:20px;text-align:center;color:var(--muted2);font-size:12px">لا توجد دروس بعد.</div>` :
-      (c.lessons || []).map((l, li) => `
-        <div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:1px solid var(--border)">
-          <div style="flex:1">
-            <div style="font-weight:700;font-size:13px">${l.title}</div>
-            <div style="font-size:10px;color:var(--muted2)">${l.type} · ${l.duration || '—'} · ${l.xp || 0} XP</div>
-          </div>
-          <div style="display:flex;gap:6px">
-            <button class="btn btn-ghost btn-sm" onclick="editLessonModal('${c.id}','${l.id}')">✏️</button>
-            <button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteLesson('${c.id}','${l.id}')">🗑️</button>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  </div>`).join('')}
-  </div>`;
+ return `<div class="fu">
+ <div class="topbar">
+   <div><div class="pg-title">📚 إدارة المحتوى</div><div class="pg-sub">أضف وعدّل البرامج تدريبية والدروس</div></div>
+   <button class="btn btn-red btn-sm" onclick="addCourseModal()">➕ كورس جديد</button>
+ </div>
+ ${COURSES.map((c, ci) => `
+ <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:10px;animation:fadeUp .4s ease ${ci * .06}s both">
+   <div style="padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+     <div style="font-size:14px;font-weight:800">${c.icon} ${c.title}</div>
+     <div style="display:flex;gap:8px">
+       <button class="btn btn-ghost btn-sm" onclick="S.addingLesson=S.addingLesson==='${c.id}'?null:'${c.id}';renderApp()">➕ درس</button>
+       <button class="btn btn-ghost btn-sm" onclick="editCourseModal('${c.id}')">✏️</button>
+       <button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteCourse('${c.id}')">🗑️</button>
+     </div>
+   </div>
+   ${S.addingLesson === c.id ? renderAddLessonForm(c.id) : ''}
+   <div>
+     ${(c.lessons || []).length === 0 ? `<div style="padding:20px;text-align:center;color:var(--muted2);font-size:12px">لا توجد دروس بعد.</div>` :
+     (c.lessons || []).map((l, li) => `
+       <div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border-top:1px solid var(--border)">
+         <div style="flex:1">
+           <div style="font-weight:700;font-size:13px">${l.title}</div>
+           <div style="font-size:10px;color:var(--muted2)">${l.type} · ${l.duration || '—'} · ${l.xp || 0} XP</div>
+         </div>
+         <div style="display:flex;gap:6px">
+           <button class="btn btn-ghost btn-sm" onclick="editLessonModal('${c.id}','${l.id}')">✏️</button>
+           <button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteLesson('${c.id}','${l.id}')">🗑️</button>
+         </div>
+       </div>
+     `).join('')}
+   </div>
+ </div>`).join('')}
+ </div>`;
 }
 
 function renderAddLessonForm(cid) {
-  return `<div style="background:rgba(255,255,255,.03);border-top:1px solid var(--border);padding:16px">
-    <div style="font-size:12px;font-weight:800;color:var(--muted2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">➕ درس جديد</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <div class="fgroup"><label>عنوان الدرس *</label><input class="inp" id="nl_t" placeholder="عنوان الدرس"/></div>
-      <div class="fgroup"><label>النوع</label>
-        <select class="inp" id="nl_type" onchange="toggleLessonFields('nl')">
-          <option value="فيديو">🎬 فيديو</option>
-          <option value="نص">📄 ملف PDF</option>
-          <option value="صورة">🖼️ صورة</option>
-          <option value="امتحان">📝 امتحان</option>
-        </select>
-      </div>
-    </div>
-    <div id="nl_yt_section" class="fgroup">
-      <label>🎬 رابط يوتيوب <span style="color:var(--muted2);font-size:10px">(أو ارفع فيديو)</span></label>
-      <input class="inp" id="nl_yt" placeholder="https://www.youtube.com/embed/..." style="margin-bottom:8px"/>
-      <div style="text-align:center;color:var(--muted2);font-size:11px;font-weight:700;margin-bottom:8px">— أو ارفع مباشرة —</div>
-      <div class="upload-area" onclick="document.getElementById('nl_vid_file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleFileDrop(event,'nl_vid_file','nl_vid_preview','video')">
-        <input type="file" id="nl_vid_file" accept="video/*" onchange="previewFile(this,'nl_vid_preview','video')"/>
-        <div style="font-size:24px;margin-bottom:6px">🎬</div>
-        <div style="font-size:12px;font-weight:700">اسحب فيديو هنا أو اضغط للاختيار</div>
-        <div style="font-size:10px;color:var(--muted2);margin-top:4px">MP4, MOV — حد أقصى 500MB</div>
-        <video id="nl_vid_preview" style="display:none;max-width:100%;max-height:140px;margin-top:10px;border-radius:10px" controls></video>
-      </div>
-      <div class="upload-progress" style="display:none;margin-top:8px" id="nl_vid_prog_wrap"><div class="upload-progress-fill" id="nl_vid_prog" style="width:0%"></div></div>
-      <div id="nl_vid_prog_label" style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center"></div>
-    </div>
-    <div id="nl_pdf_section" class="fgroup" style="display:none">
-      <label>📄 رابط PDF <span style="color:var(--muted2);font-size:10px">(أو ارفع ملف)</span></label>
-      <input class="inp" id="nl_pdf" placeholder="https://drive.google.com/file/d/.../preview" style="margin-bottom:8px"/>
-      <div style="text-align:center;color:var(--muted2);font-size:11px;font-weight:700;margin-bottom:8px">— أو ارفع مباشرة —</div>
-      <div class="upload-area" onclick="document.getElementById('nl_pdf_file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleFileDrop(event,'nl_pdf_file','nl_pdf_prev','pdf')">
-        <input type="file" id="nl_pdf_file" accept=".pdf" onchange="previewFile(this,'nl_pdf_prev','pdf')"/>
-        <div style="font-size:24px;margin-bottom:6px">📄</div>
-        <div style="font-size:12px;font-weight:700">اسحب ملف PDF هنا أو اضغط للاختيار</div>
-        <div style="font-size:10px;color:var(--muted2);margin-top:4px">PDF فقط — حد أقصى 50MB</div>
-        <div id="nl_pdf_prev" style="display:none;margin-top:8px;font-size:12px;color:var(--green);font-weight:700"></div>
-      </div>
-      <div class="upload-progress" style="display:none;margin-top:8px" id="nl_pdf_prog_wrap"><div class="upload-progress-fill" id="nl_pdf_prog" style="width:0%"></div></div>
-      <div id="nl_pdf_prog_label" style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center"></div>
-    </div>
-    <div id="nl_img_section" class="fgroup" style="display:none">
-      <label>🖼️ ارفع صورة</label>
-      <div class="upload-area" onclick="document.getElementById('nl_img_file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleFileDrop(event,'nl_img_file','nl_img_prev','image')">
-        <input type="file" id="nl_img_file" accept="image/*" onchange="previewFile(this,'nl_img_prev','image')"/>
-        <div style="font-size:24px;margin-bottom:6px">🖼️</div>
-        <div style="font-size:12px;font-weight:700">اسحب صورة هنا أو اضغط للاختيار</div>
-        <div style="font-size:10px;color:var(--muted2);margin-top:4px">JPG, PNG, GIF — حد أقصى 10MB</div>
-        <img id="nl_img_prev" style="display:none;max-width:100%;max-height:140px;margin-top:10px;border-radius:10px;object-fit:cover"/>
-      </div>
-      <div class="upload-progress" style="display:none;margin-top:8px" id="nl_img_prog_wrap"><div class="upload-progress-fill" id="nl_img_prog" style="width:0%"></div></div>
-      <div id="nl_img_prog_label" style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center"></div>
-    </div>
-    <div class="fgroup"><label>الشرح</label><textarea class="inp" id="nl_d" placeholder="وصف الدرس..."></textarea></div>
+ return `<div style="background:rgba(255,255,255,.03);border-top:1px solid var(--border);padding:16px">
+   <div style="font-size:12px;font-weight:800;color:var(--muted2);margin-bottom:12px;text-transform:uppercase;letter-spacing:.05em">➕ درس جديد</div>
+   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+     <div class="fgroup"><label>عنوان الدرس *</label><input class="inp" id="nl_t" placeholder="عنوان الدرس"/></div>
+     <div class="fgroup"><label>النوع</label>
+       <select class="inp" id="nl_type" onchange="toggleLessonFields('nl')">
+         <option value="فيديو">🎬 فيديو</option>
+         <option value="نص">📄 ملف PDF</option>
+         <option value="صورة">🖼️ صورة</option>
+         <option value="امتحان">📝 امتحان</option>
+       </select>
+     </div>
+   </div>
+   <div id="nl_yt_section" class="fgroup" style="display:none">
+     <label>🎬 رابط يوتيوب <span style="color:var(--muted2);font-size:10px">(أو ارفع فيديو)</span></label>
+     <input class="inp" id="nl_yt" placeholder="https://www.youtube.com/embed/..." style="margin-bottom:8px"/>
+     <div style="text-align:center;color:var(--muted2);font-size:11px;font-weight:700;margin-bottom:8px">— أو ارفع مباشرة —</div>
+     <div class="upload-area" onclick="document.getElementById('nl_vid_file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleFileDrop(event,'nl_vid_file','nl_vid_preview','video')">
+       <input type="file" id="nl_vid_file" accept="video/*" onchange="previewFile(this,'nl_vid_preview','video')"/>
+       <div style="font-size:24px;margin-bottom:6px">🎬</div>
+       <div style="font-size:12px;font-weight:700">اسحب فيديو هنا أو اضغط للاختيار</div>
+       <div style="font-size:10px;color:var(--muted2);margin-top:4px">MP4, MOV — حد أقصى 500MB</div>
+       <video id="nl_vid_preview" style="display:none;max-width:100%;max-height:140px;margin-top:10px;border-radius:10px" controls></video>
+     </div>
+     <div class="upload-progress" style="display:none;margin-top:8px" id="nl_vid_prog_wrap"><div class="upload-progress-fill" id="nl_vid_prog" style="width:0%"></div></div>
+     <div id="nl_vid_prog_label" style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center"></div>
+   </div>
+   <div id="nl_pdf_section" class="fgroup" style="display:none">
+     <label>📄 رابط PDF <span style="color:var(--muted2);font-size:10px">(أو ارفع ملف)</span></label>
+     <input class="inp" id="nl_pdf" placeholder="https://drive.google.com/file/d/.../preview" style="margin-bottom:8px"/>
+     <div style="text-align:center;color:var(--muted2);font-size:11px;font-weight:700;margin-bottom:8px">— أو ارفع مباشرة —</div>
+     <div class="upload-area" onclick="document.getElementById('nl_pdf_file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleFileDrop(event,'nl_pdf_file','nl_pdf_prev','pdf')">
+       <input type="file" id="nl_pdf_file" accept=".pdf" onchange="previewFile(this,'nl_pdf_prev','pdf')"/>
+       <div style="font-size:24px;margin-bottom:6px">📄</div>
+       <div style="font-size:12px;font-weight:700">اسحب ملف PDF هنا أو اضغط للاختيار</div>
+       <div style="font-size:10px;color:var(--muted2);margin-top:4px">PDF فقط — حد أقصى 50MB</div>
+       <div id="nl_pdf_prev" style="display:none;margin-top:8px;font-size:12px;color:var(--green);font-weight:700"></div>
+     </div>
+     <div class="upload-progress" style="display:none;margin-top:8px" id="nl_pdf_prog_wrap"><div class="upload-progress-fill" id="nl_pdf_prog" style="width:0%"></div></div>
+     <div id="nl_pdf_prog_label" style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center"></div>
+   </div>
+   <div id="nl_img_section" class="fgroup" style="display:none">
+     <label>🖼️ ارفع صورة</label>
+     <div class="upload-area" onclick="document.getElementById('nl_img_file').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="event.preventDefault();this.classList.remove('drag');handleFileDrop(event,'nl_img_file','nl_img_prev','image')">
+       <input type="file" id="nl_img_file" accept="image/*" onchange="previewFile(this,'nl_img_prev','image')"/>
+       <div style="font-size:24px;margin-bottom:6px">🖼️</div>
+       <div style="font-size:12px;font-weight:700">اسحب صورة هنا أو اضغط للاختيار</div>
+       <div style="font-size:10px;color:var(--muted2);margin-top:4px">JPG, PNG, GIF — حد أقصى 10MB</div>
+       <img id="nl_img_prev" style="display:none;max-width:100%;max-height:140px;margin-top:10px;border-radius:10px;object-fit:cover"/>
+     </div>
+     <div class="upload-progress" style="display:none;margin-top:8px" id="nl_img_prog_wrap"><div class="upload-progress-fill" id="nl_img_prog" style="width:0%"></div></div>
+     <div id="nl_img_prog_label" style="font-size:11px;color:var(--muted2);margin-top:4px;text-align:center"></div>
+   </div>
+   <div class="fgroup"><label>الشرح</label><textarea class="inp" id="nl_d" placeholder="وصف الدرس..."></textarea></div>
 
 
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-  <div class="fgroup"><label>المدة *</label><input class="inp" id="nl_dur" placeholder="15 د"/></div>
-  <div class="fgroup"><label>XP</label><input class="inp" id="nl_xp" type="number" placeholder="10"/></div>
+ <div class="fgroup"><label>المدة *</label><input class="inp" id="nl_dur" placeholder="15 د"/></div>
+ <div class="fgroup"><label>XP</label><input class="inp" id="nl_xp" type="number" placeholder="10"/></div>
 </div>
 <div style="display:flex;gap:8px">
-  <button class="btn btn-red btn-sm" id="nl_save_btn" onclick="saveNewLesson('${cid}')">💾 حفظ الدرس</button>
-  <button class="btn btn-ghost btn-sm" onclick="S.addingLesson=null;renderApp()">إلغاء</button>
+ <button class="btn btn-red btn-sm" id="nl_save_btn" onclick="saveNewLesson('${cid}')">💾 حفظ الدرس</button>
+ <button class="btn btn-ghost btn-sm" onclick="S.addingLesson=null;renderApp()">إلغاء</button>
 </div>
 
 
-  </div>`;
+ </div>`;
 }
 
-// بعد ما الفورم يظهر في الصفحة، شغّل الـ toggle أوتوماتيك
-setTimeout(() => toggleLessonFields('nl'), 50);
+// شغّل الـ toggle بعد ما الـ DOM يتحدث
+setTimeout(() => { toggleLessonFields('nl'); }, 10);
 
 function toggleLessonFields(prefix) {
-const type = document.getElementById(prefix + '*type')?.value;
-const map = { 'فيديو': 'yt', 'نص': 'pdf', 'صورة': 'img' };
-['yt','pdf','img'].forEach(s => {
-const el = document.getElementById(prefix + '*' + s + '*section');
-if (el) el.style.display = map[type] === s ? 'block' : 'none';
-});
-// لو امتحان: اخفي كل حاجة
-if (type === 'امتحان') {
-['yt','pdf','img'].forEach(s => {
-const el = document.getElementById(prefix + '*' + s + '_section');
+const type = document.getElementById(prefix + '_type')?.value;
+const map = { 'فيديو': prefix+'_yt_section', 'نص': prefix+'_pdf_section', 'صورة': prefix+'_img_section' };
+// اخفي كل الـ sections
+[prefix+'_yt_section', prefix+'_pdf_section', prefix+'_img_section'].forEach(id => {
+const el = document.getElementById(id);
 if (el) el.style.display = 'none';
 });
+// فقط ظهّر اللي المفروض يظهر
+const target = map[type];
+if (target) {
+const el = document.getElementById(target);
+if (el) el.style.display = 'block';
 }
 }
 
@@ -1518,7 +1518,7 @@ document.getElementById('overlay').innerHTML = `<div class="modal-overlay" oncli
 </div>
 </div>
 
-  </div>`;
+ </div>`;
 }
 
 async function saveEditLesson() {
@@ -1572,7 +1572,7 @@ document.getElementById('overlay').innerHTML = `<div class="modal-overlay" oncli
 </div>
 </div>
 
-  </div>`;
+ </div>`;
 }
 
 async function saveNewCourse() {
@@ -1604,7 +1604,7 @@ document.getElementById('overlay').innerHTML = `<div class="modal-overlay" oncli
 </div>
 </div>
 
-  </div>`;
+ </div>`;
 }
 
 async function saveEditCourse(courseId) {
@@ -1642,36 +1642,36 @@ const isTrainer = S.role === 'tracker';
 const users = Object.entries(allUsers)
 .filter(([, v]) => isTrainer ? v.role === 'employee' : true)
 .map(([key, val]) => ({ ...val, ukey: key }));
-const addBtnLabel = isTrainer ? '➕ New Trainee' : '➕ New User';
-const pageTitle   = isTrainer ? 'Trainee Management' : 'User Management';
+const addBtnLabel = isTrainer ? '➕ متدرب جديد' : '➕ مستخدم جديد';
+const pageTitle   = isTrainer ? 'إدارة المتدربين' : 'إدارة المستخدمين';
 const pageSub     = isTrainer ? 'إضافة وحذف المتدربين' : 'إضافة وتعديل وحذف الحسابات';
 const cols        = isAdmin ? '1fr 100px 120px 100px' : '1fr 100px 120px 60px';
 
 const html = `<div class="fu">
 
-  <div class="topbar">
-    <div><div class="pg-title">🧑‍💼 ${pageTitle}</div><div class="pg-sub">${pageSub}</div></div>
-    <button class="btn btn-red btn-sm" onclick="showAddUserModal()">${addBtnLabel}</button>
-  </div>
-  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden">
-    <div style="display:grid;grid-template-columns:${cols};gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);font-weight:700;color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
-      <div>الاسم</div><div>الدور</div><div>اسم الدخول</div><div>إجراء</div>
-    </div>
-    ${users.length === 0 ? `<div style="padding:30px;text-align:center;color:var(--muted2)">لا يوجد مستخدمون.</div>` :
-    users.map(u => `
-      <div style="display:grid;grid-template-columns:${cols};gap:10px;padding:12px 16px;border-top:1px solid var(--border);align-items:center">
-        <div><div style="font-weight:700">${u.name || '—'}</div><div style="font-size:10px;color:var(--muted2)">Lv${u.level||1} · ${u.xp||0} XP</div></div>
-        <div><span class="tag" style="background:${u.role==='content'?'rgba(124,58,237,.15)':u.role==='tracker'?'rgba(0,180,216,.15)':'rgba(0,214,143,.1)'};color:${u.role==='content'?'var(--purple)':u.role==='tracker'?'var(--blue)':'var(--green)'}">${ROLE_LABELS[u.role]||u.role}</span></div>
-        <div style="font-size:12px;color:var(--muted2)">${u.ukey}</div>
-        <div style="display:flex;gap:4px">
-          ${isAdmin ? `<button class="btn btn-ghost btn-sm" title="تغيير كلمة السر" onclick="resetPassModal('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🔑</button>` : ''}
-          ${u.ukey !== S.ukey ? `<button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteUser('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🗑️</button>` : ''}
-        </div>
-      </div>
-    `).join('')}
-  </div>
-  </div>`;
-  document.getElementById('mainArea').innerHTML = html;
+ <div class="topbar">
+   <div><div class="pg-title">🧑‍💼 ${pageTitle}</div><div class="pg-sub">${pageSub}</div></div>
+   <button class="btn btn-red btn-sm" onclick="showAddUserModal()">${addBtnLabel}</button>
+ </div>
+ <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden">
+   <div style="display:grid;grid-template-columns:${cols};gap:10px;padding:12px 16px;background:rgba(255,255,255,.03);font-weight:700;color:var(--muted2);font-size:11px;text-transform:uppercase;letter-spacing:.05em">
+     <div>الاسم</div><div>الدور</div><div>اسم الدخول</div><div>إجراء</div>
+   </div>
+   ${users.length === 0 ? `<div style="padding:30px;text-align:center;color:var(--muted2)">لا يوجد مستخدمون.</div>` :
+   users.map(u => `
+     <div style="display:grid;grid-template-columns:${cols};gap:10px;padding:12px 16px;border-top:1px solid var(--border);align-items:center">
+       <div><div style="font-weight:700">${u.name || '—'}</div><div style="font-size:10px;color:var(--muted2)">Lv${u.level||1} · ${u.xp||0} XP</div></div>
+       <div><span class="tag" style="background:${u.role==='content'?'rgba(124,58,237,.15)':u.role==='tracker'?'rgba(0,180,216,.15)':'rgba(0,214,143,.1)'};color:${u.role==='content'?'var(--purple)':u.role==='tracker'?'var(--blue)':'var(--green)'}">${ROLE_LABELS[u.role]||u.role}</span></div>
+       <div style="font-size:12px;color:var(--muted2)">${u.ukey}</div>
+       <div style="display:flex;gap:4px">
+         ${isAdmin ? `<button class="btn btn-ghost btn-sm" title="تغيير كلمة السر" onclick="resetPassModal('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🔑</button>` : ''}
+         ${u.ukey !== S.ukey ? `<button class="btn btn-ghost btn-sm" style="color:#ff4444" onclick="deleteUser('${u.ukey}','${(u.name||u.ukey).replace(/'/g,"\\'")}')">🗑️</button>` : ''}
+       </div>
+     </div>
+   `).join('')}
+ </div>
+ </div>`;
+ document.getElementById('mainArea').innerHTML = html;
 }
 
 function showAddUserModal() {
@@ -1681,7 +1681,7 @@ const roleField = isTrainer
 : `<div class="fgroup"><label>الدور</label><select class="inp" id="nu_r"> <option value="employee">متدرب</option> <option value="tracker">مدرب</option> <option value="content">مدير</option> </select></div>`;
 document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
 <div class="modal-box">
-<div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ ${isTrainer ? 'New Trainee' : 'New User'}</div>
+<div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ ${isTrainer ? 'متدرب جديد' : 'مستخدم جديد'}</div>
 <div class="fgroup"><label>الاسم الكامل</label><input class="inp" id="nu_n" placeholder="الاسم الكامل"/></div>
 <div class="fgroup"><label>اسم الدخول (فريد)</label><input class="inp" id="nu_u" placeholder="مثال: ahmed123"/></div>
 <div class="fgroup"><label>كلمة المرور</label><input class="inp" id="nu_p" type="password" placeholder="6 أحرف على الأقل"/></div>
@@ -1693,7 +1693,7 @@ ${roleField}
 </div>
 </div>
 
-  </div>`;
+ </div>`;
 }
 
 async function saveNewUser() {
@@ -1743,7 +1743,7 @@ document.getElementById('overlay').innerHTML = `<div class="modal-overlay" oncli
 </div>
 </div>
 
-  </div>`;
+ </div>`;
 }
 
 async function doResetPass(ukey) {
@@ -1789,7 +1789,7 @@ document.getElementById('overlay').innerHTML = `<div class="modal-overlay" oncli
 </div>
 </div>
 
-  </div>`;
+ </div>`;
 }
 
 async function saveChangePass() {
@@ -1921,11 +1921,11 @@ sb.classList.remove('mob-open');
 // ============================================================
 async function createFirstAdmin() {
 try {
-const existing = await fbGet('users/admin1');
+const existing = await fbGet('users/admin');
 if (existing) return; // موجود بالفعل
-await auth.createUserWithEmailAndPassword('admin1@lms.internal', 'Admin@123');
-await fbSet('users/admin1', {
-name: 'المدير', role: 'content', email: 'admin1@lms.internal',
+await auth.createUserWithEmailAndPassword('admin@lms.internal', 'a123456');
+await fbSet('users/admin', {
+name: 'المدير', role: 'content', email: 'admin@lms.internal',
 xp: 0, level: 1, streak: 0, badges: [], progress: {}, scores: {}
 });
 console.log('✅ تم إنشاء حساب المدير تلقائياً');
@@ -1960,3 +1960,5 @@ renderApp();
 
 </body>
 </html>
+
+Sent from my iPhone
