@@ -69,7 +69,8 @@ body{font-family:'Cairo',sans-serif;background:var(--dark);color:var(--text);min
 .inp:focus{border-color:var(--red);background:rgba(228,0,43,.05);box-shadow:0 0 0 3px rgba(228,0,43,.08)}
 .inp::placeholder{color:#3a4560}
 textarea.inp{resize:vertical;min-height:80px}
-select.inp{cursor:pointer}
+select.inp{cursor:pointer;color-scheme:dark}
+select.inp option{background:var(--dark2);color:var(--text);padding:10px}
 .fgroup{margin-bottom:13px}
 .fgroup label{display:block;color:var(--muted2);font-size:11px;font-weight:800;margin-bottom:7px}
 
@@ -644,25 +645,25 @@ function renderNav() {
   if (role === 'employee') {
     // متدرب: يشوف كورساته وإنجازاته وترتيبه فقط
     items = [
-      { icon: '🏠', label: 'الرئيسية',   screen: 'home' },
-      { icon: '🏆', label: 'إنجازاتي',   screen: 'achievements' },
-      { icon: '📊', label: 'لوحة الشرف', screen: 'leaderboard' },
+      { icon: '🏠', label: 'Home',   screen: 'home' },
+      { icon: '🏆', label: 'achievements',   screen: 'achievements' },
+      { icon: '📊', label: 'leaderboard', screen: 'leaderboard' },
     ];
   } else if (role === 'tracker') {
     // مدرب: يشوف تقدم المتدربين + يضيف/يحذف متدربين فقط
     items = [
       { icon: '📊', label: 'تقدم المتدربين',  screen: 'tracking'    },
-      { icon: '🧑‍💼', label: 'إدارة المتدربين', screen: 'manageusers' },
+      { icon: '🧑‍💼', label: 'Trainee Management', screen: 'manageusers' },
     ];
   } else if (role === 'content') {
     // مدير: كل الصلاحيات
     items = [
-      { icon: '📊', label: 'لوحة المتابعة',   screen: 'tracking'    },
-      { icon: '📚', label: 'إدارة المحتوى',   screen: 'content'     },
-      { icon: '👥', label: 'إدارة المستخدمين', screen: 'manageusers' },
+      { icon: '📊', label: 'Dashboard',   screen: 'tracking'    },
+      { icon: '📚', label: 'Content Management',   screen: 'content'     },
+      { icon: '👥', label: 'User Management', screen: 'manageusers' },
     ];
   } else {
-    items = [{ icon: '🏠', label: 'الرئيسية', screen: 'home' }];
+    items = [{ icon: '🏠', label: 'Home', screen: 'home' }];
   }
 
   const nav = document.getElementById('navItems');
@@ -836,11 +837,11 @@ function renderHome() {
 
   <div style="background:var(--card);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:18px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div style="font-size:13px;font-weight:900">🔥 السلسلة اليومية</div>
+      <div style="font-size:13px;font-weight:900">🔥 Daily Streak</div>
       <span class="tag" style="background:rgba(255,179,0,.15);color:var(--amber)">${u.streak || 0} يوم</span>
     </div>
     <div style="display:flex;gap:6px;justify-content:center">
-      ${['س', 'ح', 'ث', 'أ', 'خ', 'ج', 'ش'].map((d, i) => {
+      ${['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((d, i) => {
         const streak = u.streak || 0;
         const isDone = i < streak % 7 || (streak >= 7 && i < 7);
         const isToday = i === streak % 7 && streak % 7 !== 0 || (streak === 0 && i === 0);
@@ -884,7 +885,7 @@ function renderAchievements() {
   const userBadges = S.user?.badges || [];
   return `<div class="fu">
   <div class="topbar">
-    <div><div class="pg-title">🏆 إنجازاتي</div><div class="pg-sub">الشارات التي حصلت عليها</div></div>
+    <div><div class="pg-title">🏆 achievements</div><div class="pg-sub">الشارات التي حصلت عليها</div></div>
   </div>
   <div class="courses-grid">
     ${BADGES.map((b, i) => {
@@ -1168,7 +1169,7 @@ async function renderLeaderboard() {
   const medals = ['🥇', '🥈', '🥉'];
   const html = `<div class="fu">
   <div class="topbar">
-    <div><div class="pg-title">🏆 لوحة الشرف</div><div class="pg-sub">أفضل الTraineeين أداءً</div></div>
+    <div><div class="pg-title">🏆 leaderboard</div><div class="pg-sub">أفضل الTraineeين أداءً</div></div>
   </div>
   <div style="display:grid;gap:10px">
     ${emps.length === 0 ? `<div style="padding:40px;text-align:center;color:var(--muted2)">لا يوجد Traineeون بعد.</div>` :
@@ -1217,7 +1218,7 @@ async function renderTracking() {
 
   const html = `<div class="fu">
   <div class="topbar">
-    <div><div class="pg-title">📊 لوحة المتابعة</div><div class="pg-sub">تقدم الTraineeين في الوقت الحقيقي</div></div>
+    <div><div class="pg-title">📊 Dashboard</div><div class="pg-sub">تقدم الTrainee في الوقت الحقيقي</div></div>
     ${S.role === 'content' ? `<button class="btn btn-red btn-sm" onclick="exportExcel()">📥 Excel</button>` : ''}
   </div>
 
@@ -1320,7 +1321,7 @@ function showUserModal(u) {
 function renderContent() {
   return `<div class="fu">
   <div class="topbar">
-    <div><div class="pg-title">📚 إدارة المحتوى</div><div class="pg-sub">أضف وعدّل البرامج تدريبية والدروس</div></div>
+    <div><div class="pg-title">📚 Content Management</div><div class="pg-sub">أضف وعدّل البرامج تدريبية والدروس</div></div>
     <button class="btn btn-red btn-sm" onclick="addCourseModal()">➕ كورس جديد</button>
   </div>
   ${COURSES.map((c, ci) => `
@@ -1423,13 +1424,23 @@ function renderAddLessonForm(cid) {
   </div>`;
 }
 
+// بعد ما الفورم يظهر في الصفحة، شغّل الـ toggle أوتوماتيك
+setTimeout(() => toggleLessonFields('nl'), 50);
+
 function toggleLessonFields(prefix) {
 const type = document.getElementById(prefix + '*type')?.value;
 const map = { 'فيديو': 'yt', 'نص': 'pdf', 'صورة': 'img' };
 ['yt','pdf','img'].forEach(s => {
-const el = document.getElementById(prefix + '*' + s + '_section');
+const el = document.getElementById(prefix + '*' + s + '*section');
 if (el) el.style.display = map[type] === s ? 'block' : 'none';
 });
+// لو امتحان: اخفي كل حاجة
+if (type === 'امتحان') {
+['yt','pdf','img'].forEach(s => {
+const el = document.getElementById(prefix + '*' + s + '_section');
+if (el) el.style.display = 'none';
+});
+}
 }
 
 function previewFile(input, previewId, type) {
@@ -1631,8 +1642,8 @@ const isTrainer = S.role === 'tracker';
 const users = Object.entries(allUsers)
 .filter(([, v]) => isTrainer ? v.role === 'employee' : true)
 .map(([key, val]) => ({ ...val, ukey: key }));
-const addBtnLabel = isTrainer ? '➕ متدرب جديد' : '➕ مستخدم جديد';
-const pageTitle   = isTrainer ? 'إدارة المتدربين' : 'إدارة المستخدمين';
+const addBtnLabel = isTrainer ? '➕ New Trainee' : '➕ New User';
+const pageTitle   = isTrainer ? 'Trainee Management' : 'User Management';
 const pageSub     = isTrainer ? 'إضافة وحذف المتدربين' : 'إضافة وتعديل وحذف الحسابات';
 const cols        = isAdmin ? '1fr 100px 120px 100px' : '1fr 100px 120px 60px';
 
@@ -1670,7 +1681,7 @@ const roleField = isTrainer
 : `<div class="fgroup"><label>الدور</label><select class="inp" id="nu_r"> <option value="employee">متدرب</option> <option value="tracker">مدرب</option> <option value="content">مدير</option> </select></div>`;
 document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
 <div class="modal-box">
-<div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ ${isTrainer ? 'متدرب جديد' : 'مستخدم جديد'}</div>
+<div style="font-weight:800;font-size:15px;margin-bottom:16px">➕ ${isTrainer ? 'New Trainee' : 'New User'}</div>
 <div class="fgroup"><label>الاسم الكامل</label><input class="inp" id="nu_n" placeholder="الاسم الكامل"/></div>
 <div class="fgroup"><label>اسم الدخول (فريد)</label><input class="inp" id="nu_u" placeholder="مثال: ahmed123"/></div>
 <div class="fgroup"><label>كلمة المرور</label><input class="inp" id="nu_p" type="password" placeholder="6 أحرف على الأقل"/></div>
@@ -1910,11 +1921,11 @@ sb.classList.remove('mob-open');
 // ============================================================
 async function createFirstAdmin() {
 try {
-const existing = await fbGet('users/admin');
+const existing = await fbGet('users/admin1');
 if (existing) return; // موجود بالفعل
-await auth.createUserWithEmailAndPassword('admin@lms.internal', 'a123456');
-await fbSet('users/admin', {
-name: 'المدير', role: 'content', email: 'admin@lms.internal',
+await auth.createUserWithEmailAndPassword('admin1@lms.internal', 'Admin@123');
+await fbSet('users/admin1', {
+name: 'المدير', role: 'content', email: 'admin1@lms.internal',
 xp: 0, level: 1, streak: 0, badges: [], progress: {}, scores: {}
 });
 console.log('✅ تم إنشاء حساب المدير تلقائياً');
