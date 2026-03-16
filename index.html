@@ -1526,40 +1526,68 @@ async function downloadCertificate(courseId) {
 
  showToast('⏳','جاري إنشاء الشهادة...','var(--blue)');
  try {
-   // Load image into canvas
+   // Try loading with CORS first, then without
    const img = new Image();
-   img.crossOrigin = 'anonymous';
-   await new Promise((res, rej) => { img.onload = res; img.onerror = rej; img.src = cfg.imageUrl; });
+   let loaded = false;
+   // Attempt 1: with crossOrigin (needed for canvas export)
+   await new Promise((res) => {
+     img.crossOrigin = 'anonymous';
+     img.onload = () => { loaded = true; res(); };
+     img.onerror = () => res(); // don't reject, try fallback
+     img.src = cfg.imageUrl + (cfg.imageUrl.includes('?') ? '&' : '?') + '_nc=' + Date.now();
+     setTimeout(res, 8000); // timeout 8s
+   });
+   // Attempt 2: without crossOrigin if first failed
+   if (!loaded) {
+     await new Promise((res, rej) => {
+       const img2 = new Image();
+       img2.onload = () => { img.src = img2.src; loaded = true; res(); };
+       img2.onerror = rej;
+       img2.src = cfg.imageUrl;
+       setTimeout(() => rej(new Error('timeout')), 8000);
+     });
+   }
+   if (!loaded || !img.naturalWidth) throw new Error('فشل تحميل صورة القالب');
 
    const canvas = document.createElement('canvas');
-   canvas.width  = img.naturalWidth;
-   canvas.height = img.naturalHeight;
+   canvas.width  = img.naturalWidth  || 1200;
+   canvas.height = img.naturalHeight || 800;
    const ctx = canvas.getContext('2d');
 
    // Draw template
-   ctx.drawImage(img, 0, 0);
+   try { ctx.drawImage(img, 0, 0); } catch(corsErr) {
+     // CORS tainted — download default instead
+     throw new Error('CORS');
+   }
 
    // Draw name
-   const fontSize = cfg.fontSize || 48;
+   const fontSize   = cfg.fontSize   || 48;
    const fontFamily = cfg.fontFamily || 'Cairo';
-   ctx.font = `bold ${fontSize}px "${fontFamily}", Cairo, sans-serif`;
-   ctx.fillStyle = cfg.fontColor || '#1a1a1a';
-   ctx.textAlign = 'center';
+   ctx.font         = `bold ${fontSize}px "${fontFamily}", Cairo, sans-serif`;
+   ctx.fillStyle    = cfg.fontColor  || '#1a1a1a';
+   ctx.textAlign    = 'center';
    ctx.textBaseline = 'middle';
    const x = canvas.width  * ((cfg.nameX ?? 50) / 100);
    const y = canvas.height * ((cfg.nameY ?? 58) / 100);
    ctx.fillText(S.user.name || 'المتدرب', x, y);
 
    // Download as PNG
+   let dataUrl;
+   try { dataUrl = canvas.toDataURL('image/png'); }
+   catch(e) { throw new Error('CORS'); }
+
    const link = document.createElement('a');
    link.download = 'Certificate_' + (S.user.name||'user').replace(/\s+/g,'_') + '_' + courseId + '.png';
-   link.href = canvas.toDataURL('image/png');
+   link.href = dataUrl;
    link.click();
    showToast('🎓','تم تنزيل الشهادة!','var(--xp)');
  } catch(e) {
-   console.error(e);
-   // If CORS issue with image, fall back to default PDF
-   showToast('⚠️','مشكلة في تحميل قالب الشهادة، يتم إنشاء شهادة افتراضية...','var(--amber)');
+   console.error('Certificate error:', e);
+   if (e.message === 'CORS') {
+     showToast('⚠️','الصورة لا تدعم CORS — يتم إنشاء شهادة افتراضية...','var(--amber)');
+   } else {
+     showToast('⚠️','مشكلة في قالب الشهادة، يتم إنشاء شهادة افتراضية...','var(--amber)');
+   }
    await downloadDefaultCertificate(course);
  }
 }
@@ -1911,18 +1939,20 @@ async function renderScoresPage() {
      <div style="font-size:11px;font-weight:800;color:var(--green)">${Math.round((ex.passCount/ex.attempts)*100)}%</div>
    </div>` : ''}
    <div>
-     <div style="display:grid;grid-template-columns:1fr 80px 80px 80px 90px 80px;gap:8px;padding:10px 18px;background:rgba(255,255,255,.02);font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)">
-       <div>المتدرب</div><div style="text-align:center">الدرجة</div><div style="text-align:center">صح/كل</div><div style="text-align:center">الحالة</div><div style="text-align:center">التاريخ</div><div style="text-align:center">المحاولات</div>
+     <div style="display:grid;grid-template-columns:1fr 120px 80px 80px 80px 90px 80px;gap:8px;padding:10px 18px;background:rgba(255,255,255,.02);font-size:10px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border)">
+       <div>المتدرب</div><div style="text-align:center">المدرب</div><div style="text-align:center">الدرجة</div><div style="text-align:center">صح/كل</div><div style="text-align:center">الحالة</div><div style="text-align:center">التاريخ</div><div style="text-align:center">المحاولات</div>
      </div>
      ${emps.map(([key,u]) => {
        const res = (u.examResults||{})[ex.lessonId];
        const allAttempts = ((u.examAttempts||{})[ex.lessonId] || []).length;
        const passed = res && res.score >= ex.passScore;
-       return `<div style="display:grid;grid-template-columns:1fr 80px 80px 80px 90px 80px;gap:8px;padding:10px 18px;border-bottom:1px solid var(--border);align-items:center">
-         <div style="display:flex;align-items:center;gap:8px">
+       const trainerName = u.trainerId ? ((allUsers[u.trainerId]||{}).name || u.trainerId) : '—';
+       return `<div style="display:grid;grid-template-columns:1fr 120px 80px 80px 80px 90px 80px;gap:8px;padding:10px 18px;border-bottom:1px solid var(--border);align-items:center">
+         <div style="display:flex;align-items:center;gap:8px;min-width:0">
            <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--red),#c8001f);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0">${(u.name||'?').charAt(0)}</div>
-           <div style="font-size:12px;font-weight:700;word-break:break-word">${u.name||key}</div>
+           <div style="font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${u.name||key}</div>
          </div>
+         <div style="text-align:center;font-size:11px;color:var(--blue);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${trainerName}</div>
          <div style="text-align:center"><span class="score-pill ${res?passed?'pass':'fail':'none'}">${res ? res.score+'%' : '—'}</span></div>
          <div style="text-align:center;font-size:12px;color:var(--muted2)">${res ? res.correct+'/'+res.total : '—'}</div>
          <div style="text-align:center">
@@ -2063,7 +2093,7 @@ async function renderTracking() {
            <div class="status-dot ${isOnline?'online':'offline'}" style="position:absolute;bottom:0;right:-2px;border:2px solid var(--card-bg)"></div>
          </div>
          <div>
-           <div style="font-weight:700;font-size:13px;word-break:break-word">${u.name||'غير معروف'}</div>
+           <div style="font-weight:700;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px">${u.name||'غير معروف'}</div>
            <div style="font-size:9px;color:var(--muted2)">Lv${u.level||1} 🔥${u.streak||0}${isLate?' · <span style="color:#ff4444">متأخر ⚠️</span>':''}</div>
          </div>
        </div>
@@ -2197,28 +2227,52 @@ async function renderStats() {
  </div>`;
  document.getElementById('mainArea').innerHTML = html;
 
- // Render charts
+ // Render charts — wait for DOM then init
  try {
    await ensureChartJs();
+   // Destroy any existing charts first to prevent "canvas already in use" error
+   ['visitorsChart','scoresChart','levelsChart'].forEach(id => {
+     const el = document.getElementById(id);
+     if (el && el._chartInstance) { el._chartInstance.destroy(); el._chartInstance = null; }
+     if (el && Chart.getChart(el)) Chart.getChart(el).destroy();
+   });
+   await new Promise(r => requestAnimationFrame(r)); // wait one frame for DOM
+
+   const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text').trim() || '#f1f5f9';
+   const mutedColor = '#6b7a99';
+   const gridColor = 'rgba(255,255,255,.05)';
    const chartDefaults = {
-     plugins: { legend: { labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text') || '#f1f5f9', font: { family: 'Cairo', size: 11 } } } },
-     scales: { x: { ticks: { color: '#6b7a99', font: { family: 'Cairo' } }, grid: { color: 'rgba(255,255,255,.05)' } }, y: { ticks: { color: '#6b7a99', font: { family: 'Cairo' } }, grid: { color: 'rgba(255,255,255,.05)' }, beginAtZero: true } },
+     plugins: { legend: { labels: { color: textColor, font: { family: 'Cairo', size: 11 } } } },
+     scales: {
+       x: { ticks: { color: mutedColor, font: { family: 'Cairo' } }, grid: { color: gridColor } },
+       y: { ticks: { color: mutedColor, font: { family: 'Cairo' } }, grid: { color: gridColor }, beginAtZero: true }
+     },
    };
-   new Chart(document.getElementById('visitorsChart'), {
+
+   const vcEl = document.getElementById('visitorsChart');
+   if (vcEl) new Chart(vcEl, {
      type: 'bar',
-     data: { labels: monthLabels, datasets: [{ label: 'زوار', data: monthCounts, backgroundColor: 'rgba(228,0,43,.7)', borderColor: 'var(--red)', borderWidth: 2, borderRadius: 6 }] },
+     data: { labels: monthLabels.length ? monthLabels : ['لا توجد بيانات'], datasets: [{ label: 'زوار', data: monthCounts.length ? monthCounts : [0], backgroundColor: 'rgba(228,0,43,.7)', borderColor: '#e4002b', borderWidth: 2, borderRadius: 6 }] },
      options: { responsive: true, maintainAspectRatio: false, ...chartDefaults },
    });
-   new Chart(document.getElementById('scoresChart'), {
+
+   const scEl = document.getElementById('scoresChart');
+   const hasScores = scoreRanges.some(r => r.count > 0);
+   if (scEl) new Chart(scEl, {
      type: 'doughnut',
-     data: { labels: scoreRanges.map(r=>r.label), datasets: [{ data: scoreRanges.map(r=>r.count), backgroundColor: scoreRanges.map(r=>r.color+'cc'), borderColor: scoreRanges.map(r=>r.color), borderWidth: 2 }] },
+     data: {
+       labels: hasScores ? scoreRanges.map(r=>r.label) : ['لا توجد درجات'],
+       datasets: [{ data: hasScores ? scoreRanges.map(r=>r.count) : [1], backgroundColor: hasScores ? scoreRanges.map(r=>r.color+'cc') : ['rgba(107,122,153,.3)'], borderColor: hasScores ? scoreRanges.map(r=>r.color) : ['rgba(107,122,153,.5)'], borderWidth: 2 }]
+     },
      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { labels: { color: '#9aa5b8', font: { family: 'Cairo' } } } } },
    });
-   new Chart(document.getElementById('levelsChart'), {
+
+   const lvEl = document.getElementById('levelsChart');
+   if (lvEl) new Chart(lvEl, {
      type: 'bar',
      data: {
-       labels: levelKeys.map(k => 'مستوى '+k),
-       datasets: [{ label: 'متدربون', data: levelKeys.map(k => levels[k]), backgroundColor: 'rgba(255,215,0,.7)', borderColor: 'var(--xp)', borderWidth: 2, borderRadius: 6 }]
+       labels: levelKeys.length ? levelKeys.map(k => 'مستوى '+k) : ['لا توجد بيانات'],
+       datasets: [{ label: 'متدربون', data: levelKeys.length ? levelKeys.map(k => levels[k]) : [0], backgroundColor: 'rgba(255,215,0,.7)', borderColor: '#ffd700', borderWidth: 2, borderRadius: 6 }]
      },
      options: { responsive: true, maintainAspectRatio: false, ...chartDefaults },
    });
