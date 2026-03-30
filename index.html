@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet"/>
 <!-- Firebase SDKs -->
-<script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=YsU7tFXZBg7OThGgXCUafa5Q9cbB2Y_60FEzzF_2ZFUWQeTZk9uwCvyHhQ2EPuxJ71MNVftfO64x-GBzxmLh8SqgtkEiIgFAdFCM570WC4Qnfit7vmuPfbGO0_ZI14dgmIAk-copCnkzT7T2IWD2EyK2JsORMIarbUXSmK9GmuSib1_VQOzInkgAUljxtEp9uEZWHe_zfU2JaSDyKCw7ty7w6RctRdLICFgRyFHJdp9N5fd5dHMnyI1CjfEwaQiwjCfT7hm-I9Q9llWWc9IiA7DJC2uk3E05DxQFDW2afiOb9803VqH6lJmKrY6ic1cy" charset="UTF-8"></script><script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
@@ -410,7 +410,7 @@ function applyTranslations() {
  document.documentElement.lang = LANG;
  document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
  const lb = document.getElementById('langBtn');
- if (lb) lb.textContent = LANG === 'ar' ? 'EN' : 'AR';
+ if (lb) lb.textContent = LANG === 'ar' ? 'EN' : 'عر';
 }
 function toggleLang() {
  LANG = LANG === 'ar' ? 'en' : 'ar';
@@ -600,7 +600,7 @@ const BADGES = [
 ];
 
 const MASCOT_MSGS = {
- home: ['أهلاً بك! ابدأ رحلتك هتبدأ دلوقتي.', 'كل درس تتعلمه هيخليك تتقدم اكتر في رحلتك!'],
+ home: ['أهلاً بك! ابدأ رحلتك نحو خدمة عملاء متميزة.', 'كل درس تتعلمه يجعلك أقرب لإرضاء عملائك!'],
  course: ['ابدأ الدرس الأول لتكتشف أسرار خدمة العملاء!', 'التدريب الجيد يصنع الفرق مع كل عميل.'],
  exam: ['حظاً موفقاً في الاختبار!', 'ثق بما تعلمته، أنت مستعد!'],
 };
@@ -3051,6 +3051,19 @@ document.addEventListener('click',(e)=>{
 const sb=document.getElementById('sidebar');
 if (sb?.classList.contains('mob-open')&&!sb.contains(e.target)&&!e.target.classList.contains('mob-burger')) sb.classList.remove('mob-open');
 });
+
+// ============================================================
+// CREATE FIRST ADMIN
+// ============================================================
+async function createFirstAdmin() {
+try {
+const existing=await fbGet('users/admin'); if (existing) return;
+await auth.createUserWithEmailAndPassword('admin@lms.internal','a123456');
+await fbSet('users/admin',{name:'المدير',role:'content',email:'admin@lms.internal',xp:0,level:1,streak:0,badges:[],progress:{},scores:{},examResults:{},examAttempts:{}});
+console.log('✅ تم إنشاء حساب المدير');
+} catch(e) { if (e.code!=='auth/email-already-in-use') console.error('createFirstAdmin:',e); }
+}
+createFirstAdmin();
 
 // ============================================================
 // onAuthStateChanged
