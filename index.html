@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet"/>
 <!-- Firebase SDKs -->
-<script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=zWHYkjUfv0QYLLut7fnY8BoW5GprkTaV5-mI1wvz3J-g_IcGteksvKNt_6PFqbGBswQH7CfSAjhSGhWGKr2DkLYnc12FLzgbNos_n3PYE8Dh36yOf9AqtO4AUABbN2XnROOTbiBVI55LVX_sUgxkVloiWHX5U1S8du9kOgciGn-zEQDnq-SHvqyR-fVcS3E9od_UkY30QXf3oiU3TfVWRW0sbyDIutu3VP055jwlUWrGT90SgHEnHDn6cuaR0fSoFD4N1xj0484gJfve1wHmKl2xky-b9vdbIXJG1pABWGcDAiT4WUdrz9M5y1A2MZAH" charset="UTF-8"></script><script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=YsU7tFXZBg7OThGgXCUafa5Q9cbB2Y_60FEzzF_2ZFUWQeTZk9uwCvyHhQ2EPuxJ71MNVftfO64x-GBzxmLh8SqgtkEiIgFAdFCM570WC4Qnfit7vmuPfbGO0_ZI14dgmIAk-copCnkzT7T2IWD2EyK2JsORMIarbUXSmK9GmuSib1_VQOzInkgAUljxtEp9uEZWHe_zfU2JaSDyKCw7ty7w6RctRdLICFgRyFHJdp9N5fd5dHMnyI1CjfEwaQiwjCfT7hm-I9Q9llWWc9IiA7DJC2uk3E05DxQFDW2afiOb9803VqH6lJmKrY6ic1cy" charset="UTF-8"></script><script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
@@ -269,7 +269,8 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
 
  <div class="sidebar" id="sidebar">
    <div class="sb-logo" style="padding:10px 16px 14px">
-     <span style="margin-right:auto;font-size:11px;font-weight:800;color:var(--muted2);letter-spacing:.04em">e& Academy 🚀</span>
+     <img src="" class="eand-logo-img" style="height:36px;width:auto;object-fit:contain" alt="e& logo"/>
+     <span style="margin-right:auto;font-size:11px;font-weight:800;color:var(--muted2);letter-spacing:.04em">Academy 🚀</span>
    </div>
    <div class="nav-lbl" id="navLabel">القائمة</div>
    <div id="navItems"></div>
@@ -312,7 +313,8 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
 
 <div id="loginScreen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;max-width:420px;margin:0 auto;text-align:center">
  <div style="margin-bottom:8px;display:flex;flex-direction:column;align-items:center;gap:6px">
-  <div style="font-size:18px;font-weight:900;color:var(--text);letter-spacing:.04em">e& Academy 🚀</div>
+  <img src="" class="eand-logo-img" style="height:70px;width:auto;object-fit:contain" alt="e& logo"/>
+  <div style="font-size:18px;font-weight:900;color:var(--text);letter-spacing:.04em">Academy 🚀</div>
 </div>
  <div style="font-size:12px;color:var(--muted2);margin-bottom:24px" class="t" data-k="loginSub">منصة تدريب خدمة العملاء</div>
 
@@ -575,6 +577,16 @@ const COURSES_DEFAULT = [
      { q: 'ماذا تعني "الاستماع الفعّال"؟', options: ['الانتظار حتى ينتهي العميل من الكلام فقط', 'فهم المشاعر والمحتوى والرد بشكل مناسب', 'تدوين ملاحظات فقط', 'الرد السريع دون تفكير'], ans: 1 },
    ], passScore: 60, examTime: 10, maxAttempts: 0 }, duration: '10 د', xp: 25 },
  ]},
+ { id: 'cs2', title: 'التعامل مع الشكاوى والعملاء الصعبين', icon: '🛡️', color: '#e4002b', lessons: [
+   { id: 'cs2l1', title: 'أنواع شكاوى العملاء', type: 'فيديو', yt: 'https://www.youtube.com/embed/kG5mRV7zj5I', desc: 'تعرّف على الأنواع الشائعة.', duration: '14 د', xp: 15 },
+   { id: 'cs2l2', title: 'تقنية LEAP', type: 'نص', pdf: '', desc: 'تعلّم تقنية LEAP.', duration: '20 د', xp: 20 },
+   { id: 'cs2l3', title: 'سيناريوهات عملية', type: 'نص', pdf: '', desc: 'تدرّب على سيناريوهات حقيقية.', duration: '25 د', xp: 20 },
+   { id: 'cs2l4', title: 'اختبار التعامل مع الشكاوى', type: 'امتحان', exam: { questions: [
+     { q: 'ماذا تفعل إذا كان العميل يصرخ ويتحدث بعدوانية؟', options: ['الرد بنفس الأسلوب', 'إغلاق الخط فوراً', 'الحفاظ على الهدوء والتعاطف معه', 'تحويله لمشرف مباشرة'], ans: 2 },
+     { q: 'ما هي الخطوة الأولى في تقنية LEAP؟', options: ['الاعتذار', 'الاستماع (Listen)', 'حل المشكلة', 'التعاطف'], ans: 1 },
+     { q: 'ما هو الوقت المثالي لحل شكوى العميل؟', options: ['أسبوع كامل', 'شهر', 'أقصر وقت ممكن مع الجودة', 'لا يهم الوقت'], ans: 2 },
+   ], passScore: 60, examTime: 10, maxAttempts: 0 }, duration: '10 د', xp: 30 },
+ ]},
 ];
 
 let COURSES = JSON.parse(JSON.stringify(COURSES_DEFAULT));
@@ -588,7 +600,7 @@ const BADGES = [
 ];
 
 const MASCOT_MSGS = {
- home: ['أهلاً بك! ابدأ رحلتك الان.', 'كل درس تتعلمه يجعلك مما سبق!'],
+ home: ['أهلاً بك! ابدأ رحلتك هتبدأ دلوقتي.', 'كل درس تتعلمه هيخليك تتقدم اكتر في رحلتك!'],
  course: ['ابدأ الدرس الأول لتكتشف أسرار خدمة العملاء!', 'التدريب الجيد يصنع الفرق مع كل عميل.'],
  exam: ['حظاً موفقاً في الاختبار!', 'ثق بما تعلمته، أنت مستعد!'],
 };
@@ -1311,7 +1323,7 @@ function showCertSettingsModal() {
    document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
      <div class="modal-box" style="max-width:520px">
        <div style="font-weight:900;font-size:16px;margin-bottom:6px">🎓 إعدادات الشهادة</div>
-       <div style="font-size:11px;color:var(--muted2);margin-bottom:18px">ارفع صورة الشهادة الجاهزة (Canva / أي مصمم) وحدد مكان الاسم</div>
+       <div style="font-size:11px;color:var(--muted2);margin-bottom:18px">ارفع صورة الشهادة الجاهزة (Canva / أي مصمم) وحدد موضع الاسم</div>
 
        <!-- Image source tabs -->
        <div style="display:flex;gap:8px;margin-bottom:14px">
@@ -1348,14 +1360,14 @@ function showCertSettingsModal() {
        </div>
 
        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
-         <div style="font-size:12px;font-weight:800;color:var(--muted2);margin-bottom:10px">📍 مكان الاسم على الشهادة</div>
+         <div style="font-size:12px;font-weight:800;color:var(--muted2);margin-bottom:10px">📍 موضع الاسم على الشهادة</div>
          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
            <div class="fgroup">
-             <label>المكان الأفقي من اليسار (%)</label>
+             <label>الموضع الأفقي من اليسار (%)</label>
              <input class="inp" id="cert_name_x" type="number" min="0" max="100" value="${cfg.nameX ?? 50}" placeholder="50"/>
            </div>
            <div class="fgroup">
-             <label>المكان العمودي من الأعلى (%)</label>
+             <label>الموضع العمودي من الأعلى (%)</label>
              <input class="inp" id="cert_name_y" type="number" min="0" max="100" value="${cfg.nameY ?? 58}" placeholder="58"/>
            </div>
            <div class="fgroup">
@@ -1522,7 +1534,7 @@ async function downloadCertificate(courseId) {
      img.crossOrigin = 'anonymous';
      img.onload = () => { loaded = true; res(); };
      img.onerror = () => res(); // don't reject, try fallback
-     img.src = cfg.imageUrl;
+     img.src = cfg.imageUrl + (cfg.imageUrl.includes('?') ? '&' : '?') + '_nc=' + Date.now();
      setTimeout(res, 8000); // timeout 8s
    });
    // Attempt 2: without crossOrigin if first failed
@@ -3039,6 +3051,7 @@ document.addEventListener('click',(e)=>{
 const sb=document.getElementById('sidebar');
 if (sb?.classList.contains('mob-open')&&!sb.contains(e.target)&&!e.target.classList.contains('mob-burger')) sb.classList.remove('mob-open');
 });
+
 // ============================================================
 // onAuthStateChanged
 // ============================================================
