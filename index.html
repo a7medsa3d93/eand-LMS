@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet"/>
 <!-- Firebase SDKs -->
-<script type="text/javascript" src="https://gc.kes.v2.scr.kaspersky-labs.com/7EA5E9BB-55E1-4C31-9C21-4943DDFED2E4/main.js?attr=1GbyFwt0y_hv2aWXZa7HMOFw8N2ixtM6j_nxe3PmgxhKMoM2l8td8oxRaaAMTguDP8SpmdY_B38ghU3ar--ZFEq3N3_-MfcVClEorzry1xmldt9fqWXz3vdz_d74ul2RM9dOB7VxT8i3P3KoMChpNTMMlBuTyJR4XKaxfI_nov2VEl6QV8u0TzWVgcwwZSkLm5vFBRiYvf_-D3R1yd23EnHhHocO32VUe1l5FQF3VaDQ3xXn7-1fQASk3-wf7vtXuEzhZmGyKf8gq319LhbGlLYxjt9KpBggUdheIGooW3NLJi5cZpnUGahxtKgMkpeH" charset="UTF-8"></script><script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-storage-compat.js"></script>
@@ -269,7 +269,8 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
 
  <div class="sidebar" id="sidebar">
    <div class="sb-logo" style="padding:10px 16px 14px">
-     <span style="margin-right:auto;font-size:11px;font-weight:800;color:var(--muted2);letter-spacing:.04em">e& Academy 🚀</span>
+     <img src="" class="eand-logo-img" style="height:36px;width:auto;object-fit:contain" alt="e& logo"/>
+     <span style="margin-right:auto;font-size:11px;font-weight:800;color:var(--muted2);letter-spacing:.04em">Academy 🚀</span>
    </div>
    <div class="nav-lbl" id="navLabel">القائمة</div>
    <div id="navItems"></div>
@@ -312,7 +313,8 @@ select.inp option{background:var(--dark2);color:var(--text);padding:10px}
 
 <div id="loginScreen" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;max-width:420px;margin:0 auto;text-align:center">
  <div style="margin-bottom:8px;display:flex;flex-direction:column;align-items:center;gap:6px">
-  <div style="font-size:18px;font-weight:900;color:var(--text);letter-spacing:.04em">e& Academy 🚀</div>
+  <img src="" class="eand-logo-img" style="height:70px;width:auto;object-fit:contain" alt="e& logo"/>
+  <div style="font-size:18px;font-weight:900;color:var(--text);letter-spacing:.04em">Academy 🚀</div>
 </div>
  <div style="font-size:12px;color:var(--muted2);margin-bottom:24px" class="t" data-k="loginSub">منصة تدريب خدمة العملاء</div>
 
@@ -408,7 +410,7 @@ function applyTranslations() {
  document.documentElement.lang = LANG;
  document.documentElement.dir = LANG === 'ar' ? 'rtl' : 'ltr';
  const lb = document.getElementById('langBtn');
- if (lb) lb.textContent = LANG === 'ar' ? 'EN' : 'AR';
+ if (lb) lb.textContent = LANG === 'ar' ? 'EN' : 'عر';
 }
 function toggleLang() {
  LANG = LANG === 'ar' ? 'en' : 'ar';
@@ -575,6 +577,16 @@ const COURSES_DEFAULT = [
      { q: 'ماذا تعني "الاستماع الفعّال"؟', options: ['الانتظار حتى ينتهي العميل من الكلام فقط', 'فهم المشاعر والمحتوى والرد بشكل مناسب', 'تدوين ملاحظات فقط', 'الرد السريع دون تفكير'], ans: 1 },
    ], passScore: 60, examTime: 10, maxAttempts: 0 }, duration: '10 د', xp: 25 },
  ]},
+ { id: 'cs2', title: 'التعامل مع الشكاوى والعملاء الصعبين', icon: '🛡️', color: '#e4002b', lessons: [
+   { id: 'cs2l1', title: 'أنواع شكاوى العملاء', type: 'فيديو', yt: 'https://www.youtube.com/embed/kG5mRV7zj5I', desc: 'تعرّف على الأنواع الشائعة.', duration: '14 د', xp: 15 },
+   { id: 'cs2l2', title: 'تقنية LEAP', type: 'نص', pdf: '', desc: 'تعلّم تقنية LEAP.', duration: '20 د', xp: 20 },
+   { id: 'cs2l3', title: 'سيناريوهات عملية', type: 'نص', pdf: '', desc: 'تدرّب على سيناريوهات حقيقية.', duration: '25 د', xp: 20 },
+   { id: 'cs2l4', title: 'اختبار التعامل مع الشكاوى', type: 'امتحان', exam: { questions: [
+     { q: 'ماذا تفعل إذا كان العميل يصرخ ويتحدث بعدوانية؟', options: ['الرد بنفس الأسلوب', 'إغلاق الخط فوراً', 'الحفاظ على الهدوء والتعاطف معه', 'تحويله لمشرف مباشرة'], ans: 2 },
+     { q: 'ما هي الخطوة الأولى في تقنية LEAP؟', options: ['الاعتذار', 'الاستماع (Listen)', 'حل المشكلة', 'التعاطف'], ans: 1 },
+     { q: 'ما هو الوقت المثالي لحل شكوى العميل؟', options: ['أسبوع كامل', 'شهر', 'أقصر وقت ممكن مع الجودة', 'لا يهم الوقت'], ans: 2 },
+   ], passScore: 60, examTime: 10, maxAttempts: 0 }, duration: '10 د', xp: 30 },
+ ]},
 ];
 
 let COURSES = JSON.parse(JSON.stringify(COURSES_DEFAULT));
@@ -588,7 +600,7 @@ const BADGES = [
 ];
 
 const MASCOT_MSGS = {
- home: ['أهلاً بك! ابدأ رحلتك دلوقتي.', 'كل درس تتعلمه هيخليك تتقدم اكتر في رحلتك!'],
+ home: ['أهلاً بك! ابدأ رحلتك نحو خدمة عملاء متميزة.', 'كل درس تتعلمه يجعلك أقرب لإرضاء عملائك!'],
  course: ['ابدأ الدرس الأول لتكتشف أسرار خدمة العملاء!', 'التدريب الجيد يصنع الفرق مع كل عميل.'],
  exam: ['حظاً موفقاً في الاختبار!', 'ثق بما تعلمته، أنت مستعد!'],
 };
@@ -698,34 +710,24 @@ async function doLogin() {
  const passwordEl = document.getElementById('password');
  const loginBtn   = document.getElementById('loginBtn');
  const errEl      = document.getElementById('loginErr');
- const username   = usernameEl.value.trim().toLowerCase(); // عشان يطابق admin و saad في الداتابيز
+ const username   = usernameEl.value.trim();
  const password   = passwordEl.value.trim();
- 
  errEl.style.display = 'none';
  if (!username || !password) { showErr('أكمل اسم المستخدم وكلمة المرور.', errEl); return; }
- 
  loginBtn.disabled = true;
  loginBtn.textContent = 'جاري الدخول...';
  S._loginInProgress = true;
-
  try {
    await auth.signOut().catch(() => {});
    const email = username + '@lms.internal';
-   
-   // 1. تسجيل الدخول أولاً عشان نفتح صلاحية القراءة للقواعد (Rules)
    await auth.signInWithEmailAndPassword(email, password);
-   
-   // 2. قراءة بيانات المستخدم (استخدمنا db.ref().once لضمان السرعة)
-   const snap = await db.ref('users/' + username).once('value');
-   const userData = snap.val();
-   
+   const userData = await fbGet('users/' + username);
    if (!userData) {
      await auth.signOut();
      showErr('المستخدم غير موجود في النظام.', errEl);
      loginBtn.disabled = false; loginBtn.innerHTML = '<span class="t" data-k="login">دخول</span> 🚀';
      S._loginInProgress = false; return;
    }
-   
    const expectedRole = ROLE_INFO[S.selectedLoginRole].dbRole;
    if (userData.role !== expectedRole) {
      await auth.signOut();
@@ -733,12 +735,9 @@ async function doLogin() {
      loginBtn.disabled = false; loginBtn.innerHTML = '<span class="t" data-k="login">دخول</span> 🚀';
      S._loginInProgress = false; return;
    }
-   
    S._loggedIn = true;
    await afterLogin(username, userData);
-
  } catch (e) {
-   // رجعتلك رسايل الخطأ الأصلية بتاعتك بالظبط
    const msgs = {
      'auth/wrong-password': 'كلمة المرور غلط.',
      'auth/user-not-found': 'المستخدم غير موجود.',
@@ -1042,7 +1041,7 @@ function renderHome() {
  </div>` : ''}
 
  <div class="topbar">
-   <div><div class="pg-title">أهلاً، ${getFirstName(u.name)}! 👋</div><div class="pg-sub">رحلتك هتبدأ دلوقتي</div></div>
+   <div><div class="pg-title">أهلاً، ${getFirstName(u.name)}! 👋</div><div class="pg-sub">رحلتك نحو خدمة عملاء متميزة</div></div>
    <div style="display:flex;align-items:center;gap:10px">
      <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--xp)">${xp}</div><div style="font-size:9px;color:var(--muted2)">⭐ XP</div></div>
      <div style="width:1px;height:28px;background:var(--border)"></div>
@@ -1324,7 +1323,7 @@ function showCertSettingsModal() {
    document.getElementById('overlay').innerHTML = `<div class="modal-overlay" onclick="if(event.target===this)closeModal()">
      <div class="modal-box" style="max-width:520px">
        <div style="font-weight:900;font-size:16px;margin-bottom:6px">🎓 إعدادات الشهادة</div>
-       <div style="font-size:11px;color:var(--muted2);margin-bottom:18px">ارفع صورة الشهادة الجاهزة (Canva / أي مصمم) وحدد مكان الاسم</div>
+       <div style="font-size:11px;color:var(--muted2);margin-bottom:18px">ارفع صورة الشهادة الجاهزة (Canva / أي مصمم) وحدد موضع الاسم</div>
 
        <!-- Image source tabs -->
        <div style="display:flex;gap:8px;margin-bottom:14px">
@@ -1361,7 +1360,7 @@ function showCertSettingsModal() {
        </div>
 
        <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
-         <div style="font-size:12px;font-weight:800;color:var(--muted2);margin-bottom:10px">📍 مكان الاسم على الشهادة</div>
+         <div style="font-size:12px;font-weight:800;color:var(--muted2);margin-bottom:10px">📍 موضع الاسم على الشهادة</div>
          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
            <div class="fgroup">
              <label>الموضع الأفقي من اليسار (%)</label>
@@ -1535,7 +1534,7 @@ async function downloadCertificate(courseId) {
      img.crossOrigin = 'anonymous';
      img.onload = () => { loaded = true; res(); };
      img.onerror = () => res(); // don't reject, try fallback
-     img.src = cfg.imageUrl;
+     img.src = cfg.imageUrl + (cfg.imageUrl.includes('?') ? '&' : '?') + '_nc=' + Date.now();
      setTimeout(res, 8000); // timeout 8s
    });
    // Attempt 2: without crossOrigin if first failed
@@ -3054,6 +3053,18 @@ if (sb?.classList.contains('mob-open')&&!sb.contains(e.target)&&!e.target.classL
 });
 
 // ============================================================
+// CREATE FIRST ADMIN
+// ============================================================
+async function createFirstAdmin() {
+try {
+const existing=await fbGet('users/admin'); if (existing) return;
+await auth.createUserWithEmailAndPassword('admin@lms.internal','a123456');
+await fbSet('users/admin',{name:'المدير',role:'content',email:'admin@lms.internal',xp:0,level:1,streak:0,badges:[],progress:{},scores:{},examResults:{},examAttempts:{}});
+console.log('✅ تم إنشاء حساب المدير');
+} catch(e) { if (e.code!=='auth/email-already-in-use') console.error('createFirstAdmin:',e); }
+}
+createFirstAdmin();
+
 // ============================================================
 // onAuthStateChanged
 // ============================================================
