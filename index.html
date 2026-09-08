@@ -188,12 +188,23 @@ async function saveContentItem(){
     if(file){
       const token=await auth.currentUser?.getIdToken();
       if(!token)throw new Error('Not authenticated');
-      const qs=new URLSearchParams({action:'upload',name:file.name,type:file.type||'application/octet-stream',dept,topic,id});
-      const r=await fetch('/api/b2?'+qs.toString(),{headers:{Authorization:'Bearer '+token}});
-      const d=await r.json();
-      if(!r.ok||!d.uploadUrl||!d.storageKey)throw new Error(d.error||'Could not prepare B2 upload');
-      const put=await fetch(d.uploadUrl,{method:'PUT',headers:{'Content-Type':file.type||'application/octet-stream'},body:file});
-      if(!put.ok)throw new Error('B2 upload failed ('+put.status+')');
+      const safeType=file.type||'application/octet-stream';
+      const qs=new URLSearchParams();
+      qs.set('action','upload');
+      qs.set('name',String(file.name||'file'));
+      qs.set('type',safeType);
+      qs.set('dept',String(dept));
+      qs.set('topic',String(topic));
+      qs.set('id',String(id));
+      const apiUrl=window.location.origin+'/api/b2?'+qs.toString();
+      let r;
+      try{r=await fetch(apiUrl,{method:'GET',headers:{Authorization:'Bearer '+token}})}catch(fetchErr){throw new Error('Could not reach B2 upload service: '+(fetchErr?.message||fetchErr));}
+      const raw=await r.text();
+      let d={};try{d=raw?JSON.parse(raw):{}}catch(parseErr){throw new Error('B2 service returned an invalid response ('+r.status+').');}
+      if(!r.ok||!d.uploadUrl||!d.storageKey)throw new Error(d.error||('Could not prepare B2 upload ('+r.status+')'));
+      let put;
+      try{put=await fetch(d.uploadUrl,{method:'PUT',headers:{'Content-Type':safeType},body:file})}catch(uploadErr){throw new Error('Could not upload file to Backblaze B2: '+(uploadErr?.message||uploadErr));}
+      if(!put.ok){const putText=await put.text().catch(()=> '');throw new Error('B2 upload failed ('+put.status+')'+(putText?' — '+putText.slice(0,180):''));}
       storageKey=d.storageKey;
     }
     const existing=cmsEditId?await fbGet(contentPath(dept,topic,id)).catch(()=>null):null;
