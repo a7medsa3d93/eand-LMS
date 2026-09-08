@@ -1,7 +1,7 @@
 {
   "name": "eand-lms",
   "private": true,
-  "version": "2.4.0",
+  "version": "2.5.0",
   "type": "module",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.862.0",

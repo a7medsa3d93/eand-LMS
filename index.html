@@ -145,6 +145,7 @@ async function openContentItem(id,topic){
   const completed=!!saved?.completed;
   let media='';
   if(url && (type==='video'||/\.(mp4|webm|mov)(\?|$)/i.test(url))) media=`<div class="viewer-media"><video controls playsinline preload="metadata" src="${esc(url)}"></video></div>`;
+  else if(url && (type==='image'||/\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(url))) media=`<div class="viewer-media" style="padding:18px;display:flex;align-items:center;justify-content:center;min-height:360px"><img src="${esc(url)}" alt="${esc(title)}" style="max-width:100%;max-height:70vh;object-fit:contain;border-radius:16px;display:block"></div>`;
   else if(url && (type==='pdf'||/\.pdf(\?|$)/i.test(url))) media=`<div class="viewer-media" style="min-height:520px"><iframe src="${esc(url)}" title="${esc(title)}"></iframe></div>`;
   else if(url) media=`<div class="viewer-media"><div class="viewer-placeholder">🔗<br>المحتوى الخارجي جاهز<br><a href="${esc(url)}" target="_blank" rel="noopener" style="color:#ff6f86">Open Content →</a></div></div>`;
   else media='<div class="viewer-media"><div class="viewer-placeholder">📚<br>المحتوى هيظهر هنا بمجرد إضافته من الـ Admin.</div></div>';
@@ -165,7 +166,7 @@ function cmsSlug(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9_
 async function renderContentManager(){
   if(!(S.role==='content'||S.role==='admin')){renderSimple('🔒','Access denied','Content Manager is available to Admin and Content roles only.');return;}
   const topics=[['rateplan','Rateplan'],['service','Service'],['process','Process'],['tnps','tNPS']];
-  $('mainArea').innerHTML=`<div class="content"><section class="hero-panel" style="margin-bottom:14px"><div style="font-size:32px">🗂️</div><h2>Content Manager</h2><p>أضف وعدّل محتوى التدريب حسب القسم والمجال. المتدرب سيشاهده تلقائيًا من نفس المسار.</p></section><div class="cms-wrap"><section class="cms-card"><h3>${cmsEditId?'Edit Learning Item':'Add Learning Item'}</h3><div class="cms-sub">Department → Topic → Content. للملفات والفيديو استخدم رابط الملف حاليًا، وهنربط B2 في الخطوة التالية.</div><div class="cms-form"><div class="cms-field"><label>Department</label><select id="cmsDept"><option value="corporate">Corporate</option><option value="consumer">Consumer</option><option value="technical">Technical</option><option value="non-telecom">Non-Telecom</option></select></div><div class="cms-field"><label>Topic</label><select id="cmsTopic">${topics.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select></div><div class="cms-field"><label>Title</label><input id="cmsTitle" placeholder="e.g. Rateplan Basics"></div><div class="cms-field"><label>Type</label><select id="cmsType"><option value="video">Video</option><option value="pdf">PDF</option><option value="link">External Link</option><option value="text">Text</option></select></div><div class="cms-field"><label>Upload File (Video / PDF)</label><input id="cmsFile" type="file" accept="video/*,.pdf,application/pdf"><small style="color:var(--muted);display:block;margin-top:5px">الملف هيروح مباشرة لـ Backblaze B2. الـ Application Key مش موجود في الـ HTML.</small></div><div class="cms-field"><label>External URL (optional)</label><input id="cmsUrl" placeholder="https://…"></div><div class="cms-field"><label>Duration</label><input id="cmsDuration" placeholder="e.g. 8 min"></div><div class="cms-field"><label>Description / Text</label><textarea id="cmsDescription" placeholder="Short description or learning text…"></textarea></div><div class="cms-actions"><button class="cms-save" onclick="saveContentItem()">${cmsEditId?'Update Content':'Add Content'}</button>${cmsEditId?'<button class="cms-cancel" onclick="cancelCmsEdit()">Cancel</button>':''}</div></div><div class="cms-note">🔐 الملفات الخاصة بتترفع على Backblaze B2 مباشرة من المتصفح باستخدام رابط مؤقت (presigned URL)، ومفاتيح التخزين لا تظهر للمتدربين.</div></section><section class="cms-card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px"><div><h3>Learning Content</h3><div class="cms-sub" style="margin:0">Filter and manage published items.</div></div><button class="cms-cancel" style="padding:8px 10px" onclick="renderContentManager()">↻ Refresh</button></div><div class="cms-form" style="grid-template-columns:1fr 1fr;margin-bottom:12px"><div class="cms-field"><label>Department</label><select id="cmsFilterDept" onchange="loadCmsItems()"><option value="all">All Departments</option><option value="corporate">Corporate</option><option value="consumer">Consumer</option><option value="technical">Technical</option><option value="non-telecom">Non-Telecom</option></select></div><div class="cms-field"><label>Topic</label><select id="cmsFilterTopic" onchange="loadCmsItems()"><option value="all">All Topics</option>${topics.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select></div></div><div id="cmsList" class="cms-list"><div class="cms-empty">Loading content…</div></div></section></div></div>`;
+  $('mainArea').innerHTML=`<div class="content"><section class="hero-panel" style="margin-bottom:14px"><div style="font-size:32px">🗂️</div><h2>Content Manager</h2><p>أضف وعدّل محتوى التدريب حسب القسم والمجال. المتدرب سيشاهده تلقائيًا من نفس المسار.</p></section><div class="cms-wrap"><section class="cms-card"><h3>${cmsEditId?'Edit Learning Item':'Add Learning Item'}</h3><div class="cms-sub">Department → Topic → Content. للملفات والفيديو استخدم رابط الملف حاليًا، وهنربط B2 في الخطوة التالية.</div><div class="cms-form"><div class="cms-field"><label>Department</label><select id="cmsDept"><option value="corporate">Corporate</option><option value="consumer">Consumer</option><option value="technical">Technical</option><option value="non-telecom">Non-Telecom</option></select></div><div class="cms-field"><label>Topic</label><select id="cmsTopic">${topics.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select></div><div class="cms-field"><label>Title</label><input id="cmsTitle" placeholder="e.g. Rateplan Basics"></div><div class="cms-field"><label>Type</label><select id="cmsType" onchange="updateCmsFileAccept()"><option value="video">Video</option><option value="image">Image</option><option value="pdf">PDF</option><option value="link">External Link</option><option value="text">Text</option></select></div><div class="cms-field"><label>Upload File (Video / Image / PDF)</label><input id="cmsFile" type="file" accept="video/*,image/*,.pdf,application/pdf"><small style="color:var(--muted);display:block;margin-top:5px">الفيديو والصور والـ PDF هيتخزنوا على Backblaze B2 بشكل خاص، ومفتاح التخزين مش موجود في الـ HTML.</small></div><div class="cms-field"><label>External URL (optional)</label><input id="cmsUrl" placeholder="https://…"></div><div class="cms-field"><label>Duration</label><input id="cmsDuration" placeholder="e.g. 8 min"></div><div class="cms-field"><label>Description / Text</label><textarea id="cmsDescription" placeholder="Short description or learning text…"></textarea></div><div class="cms-actions"><button class="cms-save" onclick="saveContentItem()">${cmsEditId?'Update Content':'Add Content'}</button>${cmsEditId?'<button class="cms-cancel" onclick="cancelCmsEdit()">Cancel</button>':''}</div></div><div class="cms-note">🔐 الملفات الخاصة بتترفع على Backblaze B2 مباشرة من المتصفح باستخدام رابط مؤقت (presigned URL)، ومفاتيح التخزين لا تظهر للمتدربين.</div></section><section class="cms-card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px"><div><h3>Learning Content</h3><div class="cms-sub" style="margin:0">Filter and manage published items.</div></div><button class="cms-cancel" style="padding:8px 10px" onclick="renderContentManager()">↻ Refresh</button></div><div class="cms-form" style="grid-template-columns:1fr 1fr;margin-bottom:12px"><div class="cms-field"><label>Department</label><select id="cmsFilterDept" onchange="loadCmsItems()"><option value="all">All Departments</option><option value="corporate">Corporate</option><option value="consumer">Consumer</option><option value="technical">Technical</option><option value="non-telecom">Non-Telecom</option></select></div><div class="cms-field"><label>Topic</label><select id="cmsFilterTopic" onchange="loadCmsItems()"><option value="all">All Topics</option>${topics.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select></div></div><div id="cmsList" class="cms-list"><div class="cms-empty">Loading content…</div></div></section></div></div>`;
   await loadCmsItems();
 }
 async function loadCmsItems(){
@@ -177,10 +178,22 @@ async function loadCmsItems(){
   if(!items.length){list.innerHTML='<div class="cms-empty">No learning content yet.<br>ابدأ بإضافة أول محتوى من النموذج.</div>';return;}
   list.innerHTML=items.map(x=>`<article class="cms-item"><div class="cms-item-head"><div><h4>${esc(x.title||x.name||'Untitled')}</h4><div class="cms-meta">${esc(x.dept)} · ${esc(topicNames[x.topic]||x.topic)} · ${esc(x.type||'text')}${x.duration?' · '+esc(x.duration):''}</div></div><span class="cms-pill">${x.published===false?'DRAFT':'LIVE'}</span></div><div class="cms-item-actions"><button onclick="editContentItem('${esc(x.dept)}','${esc(x.topic)}','${esc(x.id)}')">Edit</button><button class="danger" onclick="deleteContentItem('${esc(x.dept)}','${esc(x.topic)}','${esc(x.id)}')">Delete</button></div></article>`).join('');
 }
+function updateCmsFileAccept(){
+  const type=$('cmsType')?.value;
+  const file=$('cmsFile');
+  if(!file)return;
+  const accepts={video:'video/*',image:'image/*',pdf:'.pdf,application/pdf',link:'',text:''};
+  file.accept=accepts[type]||'video/*,image/*,.pdf,application/pdf';
+  if(['link','text'].includes(type))file.value='';
+}
 async function saveContentItem(){
   const dept=$('cmsDept')?.value,topic=$('cmsTopic')?.value,title=$('cmsTitle')?.value.trim(),type=$('cmsType')?.value,url=$('cmsUrl')?.value.trim(),duration=$('cmsDuration')?.value.trim(),description=$('cmsDescription')?.value.trim(),file=$('cmsFile')?.files?.[0]||null;
   if(!dept||!topic||!title){alert('Please select Department, Topic and enter a Title.');return;}
-  if(file && !['video','pdf'].includes(type)){alert('Upload files is available for Video or PDF. For Link/Text, use the URL or description.');return;}
+  if(file && !['video','image','pdf'].includes(type)){alert('Upload files is available for Video, Image or PDF. For Link/Text, use the URL or description.');return;}
+  if(file){
+    const matches=type==='video'?file.type.startsWith('video/'):type==='image'?file.type.startsWith('image/'):file.type==='application/pdf'||/\.pdf$/i.test(file.name);
+    if(!matches){alert('The selected file does not match the selected content type.');return;}
+  }
   const btn=document.querySelector('.cms-save');if(btn){btn.disabled=true;btn.textContent=cmsEditId?'Updating…':'Saving…';}
   try{
     const id=cmsEditId||cmsSlug(title);
@@ -203,24 +216,40 @@ async function saveContentItem(){
       let d={};try{d=raw?JSON.parse(raw):{}}catch(parseErr){throw new Error('B2 service returned an invalid response ('+r.status+').');}
       if(!r.ok||!d.uploadUrl||!d.storageKey)throw new Error(d.error||('Could not prepare B2 upload ('+r.status+')'));
       if(!d.uploadUrl||!d.storageKey)throw new Error('Backblaze upload service did not return an upload target.');
-      let put;
+      let put=null;
+      const uploadOnce=()=>new Promise((resolve,reject)=>{
+        const xhr=new XMLHttpRequest();
+        xhr.open('POST',d.uploadUrl,true);
+        xhr.timeout=0;
+        xhr.responseType='text';
+        xhr.setRequestHeader('Authorization',String(d.authorizationToken||''));
+        xhr.setRequestHeader('X-Bz-File-Name',encodeURIComponent(String(d.storageKey)));
+        xhr.setRequestHeader('Content-Type',safeType);
+        xhr.setRequestHeader('X-Bz-Content-Sha1','do_not_verify');
+        xhr.onload=()=>resolve(xhr);
+        xhr.onerror=()=>reject(new Error('Network/CORS error while connecting to Backblaze B2.'));
+        xhr.onabort=()=>reject(new Error('Upload was cancelled.'));
+        xhr.ontimeout=()=>reject(new Error('Upload timed out.'));
+        xhr.send(file);
+      });
       try{
-        put=await new Promise((resolve,reject)=>{
-          const xhr=new XMLHttpRequest();
-          xhr.open('POST',d.uploadUrl,true);
-          xhr.timeout=0;
-          xhr.setRequestHeader('Authorization',String(d.authorizationToken||''));
-          xhr.setRequestHeader('X-Bz-File-Name',encodeURIComponent(String(d.storageKey)));
-          xhr.setRequestHeader('Content-Type',safeType);
-          xhr.setRequestHeader('X-Bz-Content-Sha1','do_not_verify');
-          xhr.onload=()=>resolve(xhr);
-          xhr.onerror=()=>reject(new Error('Browser could not connect to Backblaze B2 Native Upload API.'));
-          xhr.onabort=()=>reject(new Error('Upload was cancelled.'));
-          xhr.ontimeout=()=>reject(new Error('Upload timed out.'));
-          xhr.send(file);
-        });
+        for(let attempt=1;attempt<=5;attempt++){
+          try{put=await uploadOnce();}
+          catch(uploadErr){
+            if(attempt===5)throw uploadErr;
+            await new Promise(r=>setTimeout(r,800*attempt));
+            continue;
+          }
+          if(put.status>=200&&put.status<300)break;
+          if(put.status>=500&&attempt<5){await new Promise(r=>setTimeout(r,800*attempt));continue;}
+          break;
+        }
       }catch(uploadErr){throw new Error('Could not upload file to Backblaze B2: '+(uploadErr?.message||uploadErr));}
-      if(put.status<200||put.status>=300){throw new Error('B2 upload failed ('+put.status+')'+(put.responseText?' — '+String(put.responseText).slice(0,220):''));}
+      if(!put){throw new Error('Backblaze upload did not return a response.');}
+      if(put.status<200||put.status>=300){
+        let detail=String(put.responseText||'').slice(0,500);
+        throw new Error('B2 upload failed ('+put.status+')'+(detail?' — '+detail:''));
+      }
       storageKey=d.storageKey;
     }
     const existing=cmsEditId?await fbGet(contentPath(dept,topic,id)).catch(()=>null):null;
@@ -230,7 +259,7 @@ async function saveContentItem(){
 }
 
 async function editContentItem(dept,topic,id){
-  let x=null;try{x=await fbGet(contentPath(dept,topic,id));}catch(e){}if(!x){alert('Content item not found.');return;}cmsEditId=id;await renderContentManager();$('cmsDept').value=dept;$('cmsTopic').value=topic;$('cmsTitle').value=x.title||x.name||'';$('cmsType').value=x.type||'text';$('cmsUrl').value=x.url||x.videoUrl||x.fileUrl||'';$('cmsDuration').value=x.duration||'';$('cmsDescription').value=x.description||x.content||'';if($('cmsFile'))$('cmsFile').value='';}
+  let x=null;try{x=await fbGet(contentPath(dept,topic,id));}catch(e){}if(!x){alert('Content item not found.');return;}cmsEditId=id;await renderContentManager();$('cmsDept').value=dept;$('cmsTopic').value=topic;$('cmsTitle').value=x.title||x.name||'';$('cmsType').value=x.type||'text';updateCmsFileAccept();$('cmsUrl').value=x.url||x.videoUrl||x.fileUrl||'';$('cmsDuration').value=x.duration||'';$('cmsDescription').value=x.description||x.content||'';if($('cmsFile'))$('cmsFile').value='';}
 function cancelCmsEdit(){cmsEditId=null;renderContentManager()}
 async function deleteContentItem(dept,topic,id){if(!confirm('Delete this learning item?'))return;try{await fbSet(contentPath(dept,topic,id),null);await renderContentManager();}catch(e){console.error('Delete content error',e);alert('Could not delete content.');}}
 
