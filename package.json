@@ -1,0 +1,10 @@
+{
+  "name": "eand-lms",
+  "private": true,
+  "version": "2.3.0",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.862.0",
+    "@aws-sdk/s3-request-presigner": "^3.862.0",
+    "jose": "^6.0.11"
+  }
+}
