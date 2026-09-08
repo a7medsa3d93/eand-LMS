@@ -202,22 +202,25 @@ async function saveContentItem(){
       const raw=await r.text();
       let d={};try{d=raw?JSON.parse(raw):{}}catch(parseErr){throw new Error('B2 service returned an invalid response ('+r.status+').');}
       if(!r.ok||!d.uploadUrl||!d.storageKey)throw new Error(d.error||('Could not prepare B2 upload ('+r.status+')'));
-      const uploadHeaders=(d.uploadHeaders&&typeof d.uploadHeaders==='object')?d.uploadHeaders:{'Content-Type':safeType};
+      if(!d.uploadUrl||!d.storageKey)throw new Error('Backblaze upload service did not return an upload target.');
       let put;
       try{
         put=await new Promise((resolve,reject)=>{
           const xhr=new XMLHttpRequest();
-          xhr.open('PUT',d.uploadUrl,true);
+          xhr.open('POST',d.uploadUrl,true);
           xhr.timeout=0;
-          Object.entries(uploadHeaders).forEach(([k,v])=>xhr.setRequestHeader(k,String(v)));
+          xhr.setRequestHeader('Authorization',String(d.authorizationToken||''));
+          xhr.setRequestHeader('X-Bz-File-Name',encodeURIComponent(String(d.storageKey)));
+          xhr.setRequestHeader('Content-Type',safeType);
+          xhr.setRequestHeader('X-Bz-Content-Sha1','do_not_verify');
           xhr.onload=()=>resolve(xhr);
-          xhr.onerror=()=>reject(new Error('Browser could not connect to Backblaze B2.'));
+          xhr.onerror=()=>reject(new Error('Browser could not connect to Backblaze B2 Native Upload API.'));
           xhr.onabort=()=>reject(new Error('Upload was cancelled.'));
           xhr.ontimeout=()=>reject(new Error('Upload timed out.'));
           xhr.send(file);
         });
       }catch(uploadErr){throw new Error('Could not upload file to Backblaze B2: '+(uploadErr?.message||uploadErr));}
-      if(put.status<200||put.status>=300){throw new Error('B2 upload failed ('+put.status+')'+(put.responseText?' — '+String(put.responseText).slice(0,180):''));}
+      if(put.status<200||put.status>=300){throw new Error('B2 upload failed ('+put.status+')'+(put.responseText?' — '+String(put.responseText).slice(0,220):''));}
       storageKey=d.storageKey;
     }
     const existing=cmsEditId?await fbGet(contentPath(dept,topic,id)).catch(()=>null):null;
