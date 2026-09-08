@@ -227,9 +227,10 @@ async function saveContentItem(){
         xhr.setRequestHeader('Content-Type',safeType);
         xhr.setRequestHeader('X-Bz-Content-Sha1','do_not_verify');
         xhr.onload=()=>resolve(xhr);
-        xhr.onerror=()=>reject(new Error('Network/CORS error while connecting to Backblaze B2.'));
+        xhr.onerror=()=>reject(new Error('Browser blocked the Backblaze upload before receiving a response (likely CORS/preflight). status='+xhr.status+', readyState='+xhr.readyState+', uploadHost='+(()=>{try{return new URL(d.uploadUrl).host}catch{return 'invalid-url'}})()));
         xhr.onabort=()=>reject(new Error('Upload was cancelled.'));
         xhr.ontimeout=()=>reject(new Error('Upload timed out.'));
+        xhr.onprogress=()=>{};
         xhr.send(file);
       });
       try{
