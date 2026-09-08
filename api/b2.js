@@ -66,7 +66,7 @@ export default async function handler(req,res){
       if(!['corporate','consumer','technical','non-telecom'].includes(dept)||!['rateplan','service','process','tnps'].includes(topic)||!id)return json(res,400,{error:'Invalid content path'});
       const name=cleanName(req.query.name);
       const contentType=String(req.query.type||'application/octet-stream');
-      if(!contentType.startsWith('video/') && contentType!=='application/pdf')return json(res,400,{error:'Only video and PDF uploads are supported'});
+      if(!contentType.startsWith('video/') && !contentType.startsWith('image/') && contentType!=='application/pdf')return json(res,400,{error:'Only video, image, and PDF uploads are supported'});
       const storageKey=`content/${dept}/${topic}/${id}/${Date.now()}-${name}`;
       const upload=await b2GetUploadUrl();
       return json(res,200,{uploadUrl:upload.uploadUrl,authorizationToken:upload.authorizationToken,storageKey,bucket});
