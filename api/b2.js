@@ -36,9 +36,7 @@ async function b2Authorize(){
   const text=await r.text();
   let d={};try{d=text?JSON.parse(text):{};}catch{d={};}
   if(!r.ok)throw new Error(d.message||d.code||`Backblaze authorization failed (${r.status})`);
-  const apiUrl=d?.apiInfo?.storageApi?.apiUrl || d?.apiUrl;
-  if(!apiUrl) throw new Error('Backblaze authorization response did not include apiInfo.storageApi.apiUrl.');
-  b2AuthCache={apiUrl,authorizationToken:d.authorizationToken,expiresAt:Date.now()+23*60*60*1000};
+  b2AuthCache={apiUrl:d.apiUrl,authorizationToken:d.authorizationToken,expiresAt:Date.now()+23*60*60*1000};
   return b2AuthCache;
 }
 
