@@ -219,15 +219,12 @@ async function saveContentItem(){
       let put=null;
       const uploadOnce=()=>new Promise((resolve,reject)=>{
         const xhr=new XMLHttpRequest();
-        xhr.open('POST',d.uploadUrl,true);
+        xhr.open('PUT',d.uploadUrl,true);
         xhr.timeout=0;
         xhr.responseType='text';
-        xhr.setRequestHeader('Authorization',String(d.authorizationToken||''));
-        xhr.setRequestHeader('X-Bz-File-Name',encodeURIComponent(String(d.storageKey)));
-        xhr.setRequestHeader('Content-Type',safeType);
-        xhr.setRequestHeader('X-Bz-Content-Sha1','do_not_verify');
+        xhr.setRequestHeader('Content-Type',d.contentType||safeType);
         xhr.onload=()=>resolve(xhr);
-        xhr.onerror=()=>reject(new Error('Browser blocked the Backblaze upload before receiving a response (likely CORS/preflight). status='+xhr.status+', readyState='+xhr.readyState+', uploadHost='+(()=>{try{return new URL(d.uploadUrl).host}catch{return 'invalid-url'}})()));
+        xhr.onerror=()=>reject(new Error('Browser blocked the Backblaze upload before receiving a response (likely CORS). status='+xhr.status+', readyState='+xhr.readyState+', uploadHost='+(()=>{try{return new URL(d.uploadUrl).host}catch{return 'invalid-url'}})()));
         xhr.onabort=()=>reject(new Error('Upload was cancelled.'));
         xhr.ontimeout=()=>reject(new Error('Upload timed out.'));
         xhr.onprogress=()=>{};
