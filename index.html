@@ -166,7 +166,7 @@ function cmsSlug(v){return String(v||'').trim().toLowerCase().replace(/[^a-z0-9_
 async function renderContentManager(){
   if(!(S.role==='content'||S.role==='admin')){renderSimple('🔒','Access denied','Content Manager is available to Admin and Content roles only.');return;}
   const topics=[['rateplan','Rateplan'],['service','Service'],['process','Process'],['tnps','tNPS']];
-  $('mainArea').innerHTML=`<div class="content"><section class="hero-panel" style="margin-bottom:14px"><div style="font-size:32px">🗂️</div><h2>Content Manager</h2><p>أضف وعدّل محتوى التدريب حسب القسم والمجال. المتدرب سيشاهده تلقائيًا من نفس المسار.</p></section><div class="cms-wrap"><section class="cms-card"><h3>${cmsEditId?'Edit Learning Item':'Add Learning Item'}</h3><div class="cms-sub">Department → Topic → Content. للملفات والفيديو استخدم رابط الملف حاليًا، وهنربط B2 في الخطوة التالية.</div><div class="cms-form"><div class="cms-field"><label>Department</label><select id="cmsDept"><option value="corporate">Corporate</option><option value="consumer">Consumer</option><option value="technical">Technical</option><option value="non-telecom">Non-Telecom</option></select></div><div class="cms-field"><label>Topic</label><select id="cmsTopic">${topics.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select></div><div class="cms-field"><label>Title</label><input id="cmsTitle" placeholder="e.g. Rateplan Basics"></div><div class="cms-field"><label>Type</label><select id="cmsType" onchange="updateCmsFileAccept()"><option value="video">Video</option><option value="image">Image</option><option value="pdf">PDF</option><option value="link">External Link</option><option value="text">Text</option></select></div><div class="cms-field"><label>Upload File (Video / Image / PDF)</label><input id="cmsFile" type="file" accept="video/*,image/*,.pdf,application/pdf"><small style="color:var(--muted);display:block;margin-top:5px">الفيديو والصور والـ PDF هيتخزنوا على Backblaze B2 بشكل خاص، ومفتاح التخزين مش موجود في الـ HTML.</small></div><div class="cms-field"><label>External URL (optional)</label><input id="cmsUrl" placeholder="https://…"></div><div class="cms-field"><label>Duration</label><input id="cmsDuration" placeholder="e.g. 8 min"></div><div class="cms-field"><label>Description / Text</label><textarea id="cmsDescription" placeholder="Short description or learning text…"></textarea></div><div class="cms-actions"><button class="cms-save" onclick="saveContentItem()">${cmsEditId?'Update Content':'Add Content'}</button>${cmsEditId?'<button class="cms-cancel" onclick="cancelCmsEdit()">Cancel</button>':''}</div></div><div class="cms-note">🔐 الملفات الخاصة بتترفع على Backblaze B2 مباشرة من المتصفح باستخدام رابط مؤقت (presigned URL)، ومفاتيح التخزين لا تظهر للمتدربين.</div></section><section class="cms-card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px"><div><h3>Learning Content</h3><div class="cms-sub" style="margin:0">Filter and manage published items.</div></div><button class="cms-cancel" style="padding:8px 10px" onclick="renderContentManager()">↻ Refresh</button></div><div class="cms-form" style="grid-template-columns:1fr 1fr;margin-bottom:12px"><div class="cms-field"><label>Department</label><select id="cmsFilterDept" onchange="loadCmsItems()"><option value="all">All Departments</option><option value="corporate">Corporate</option><option value="consumer">Consumer</option><option value="technical">Technical</option><option value="non-telecom">Non-Telecom</option></select></div><div class="cms-field"><label>Topic</label><select id="cmsFilterTopic" onchange="loadCmsItems()"><option value="all">All Topics</option>${topics.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select></div></div><div id="cmsList" class="cms-list"><div class="cms-empty">Loading content…</div></div></section></div></div>`;
+  $('mainArea').innerHTML=`<div class="content"><section class="hero-panel" style="margin-bottom:14px"><div style="font-size:32px">🗂️</div><h2>Content Manager</h2><p>أضف وعدّل محتوى التدريب حسب القسم والمجال. المتدرب سيشاهده تلقائيًا من نفس المسار.</p></section><div class="cms-wrap"><section class="cms-card"><h3>${cmsEditId?'Edit Learning Item':'Add Learning Item'}</h3><div class="cms-sub">Department → Topic → Content. للملفات والفيديو استخدم رابط الملف حاليًا، وهنربط B2 في الخطوة التالية.</div><div class="cms-form"><div class="cms-field"><label>Department</label><select id="cmsDept"><option value="corporate">Corporate</option><option value="consumer">Consumer</option><option value="technical">Technical</option><option value="non-telecom">Non-Telecom</option></select></div><div class="cms-field"><label>Topic</label><select id="cmsTopic">${topics.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select></div><div class="cms-field"><label>Title</label><input id="cmsTitle" placeholder="e.g. Rateplan Basics"></div><div class="cms-field"><label>Type</label><select id="cmsType" onchange="updateCmsFileAccept()"><option value="video">Video</option><option value="image">Image</option><option value="pdf">PDF</option><option value="link">External Link</option><option value="text">Text</option></select></div><div class="cms-field"><label>Upload File (Video / Image / PDF)</label><input id="cmsFile" type="file" accept="video/*,image/*,.pdf,application/pdf"><small style="color:var(--muted);display:block;margin-top:5px">الفيديو والصور والـ PDF هيتخزنوا على Backblaze B2 بشكل خاص من خلال Upload Relay آمن، ومفاتيح B2 لا تظهر في الـ HTML.</small></div><div class="cms-field"><label>External URL (optional)</label><input id="cmsUrl" placeholder="https://…"></div><div class="cms-field"><label>Duration</label><input id="cmsDuration" placeholder="e.g. 8 min"></div><div class="cms-field"><label>Description / Text</label><textarea id="cmsDescription" placeholder="Short description or learning text…"></textarea></div><div class="cms-actions"><button class="cms-save" onclick="saveContentItem()">${cmsEditId?'Update Content':'Add Content'}</button>${cmsEditId?'<button class="cms-cancel" onclick="cancelCmsEdit()">Cancel</button>':''}</div></div><div class="cms-note">🔐 الملفات الخاصة بتترفع إلى Backblaze B2 من خلال Upload Relay آمن؛ مفتاح B2 لا يظهر في المتصفح أو للمتدربين.</div></section><section class="cms-card"><div style="display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px"><div><h3>Learning Content</h3><div class="cms-sub" style="margin:0">Filter and manage published items.</div></div><button class="cms-cancel" style="padding:8px 10px" onclick="renderContentManager()">↻ Refresh</button></div><div class="cms-form" style="grid-template-columns:1fr 1fr;margin-bottom:12px"><div class="cms-field"><label>Department</label><select id="cmsFilterDept" onchange="loadCmsItems()"><option value="all">All Departments</option><option value="corporate">Corporate</option><option value="consumer">Consumer</option><option value="technical">Technical</option><option value="non-telecom">Non-Telecom</option></select></div><div class="cms-field"><label>Topic</label><select id="cmsFilterTopic" onchange="loadCmsItems()"><option value="all">All Topics</option>${topics.map(t=>`<option value="${t[0]}">${t[1]}</option>`).join('')}</select></div></div><div id="cmsList" class="cms-list"><div class="cms-empty">Loading content…</div></div></section></div></div>`;
   await loadCmsItems();
 }
 async function loadCmsItems(){
@@ -186,6 +186,52 @@ function updateCmsFileAccept(){
   file.accept=accepts[type]||'video/*,image/*,.pdf,application/pdf';
   if(['link','text'].includes(type))file.value='';
 }
+async function sha1Hex(blob){
+  const buf=await blob.arrayBuffer();
+  const hash=await crypto.subtle.digest('SHA-1',buf);
+  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function relayXhrUpload(url,file,token,headers={},label='Uploading…'){
+  return new Promise((resolve,reject)=>{
+    const xhr=new XMLHttpRequest();
+    xhr.open('POST',url,true);xhr.timeout=0;xhr.responseType='text';
+    xhr.setRequestHeader('Authorization','Bearer '+token);
+    Object.entries(headers).forEach(([k,v])=>xhr.setRequestHeader(k,String(v)));
+    xhr.upload.onprogress=e=>{if(e.lengthComputable){const pct=Math.round((e.loaded/e.total)*100);const btn=document.querySelector('.cms-save');if(btn)btn.textContent=label+' '+pct+'%';}};
+    xhr.onload=()=>{let d={};try{d=xhr.responseText?JSON.parse(xhr.responseText):{}}catch{};if(xhr.status>=200&&xhr.status<300)resolve(d);else reject(new Error(d.error||('Upload relay failed ('+xhr.status+')')))};
+    xhr.onerror=()=>reject(new Error('Upload relay connection failed.'));
+    xhr.onabort=()=>reject(new Error('Upload was cancelled.'));
+    xhr.ontimeout=()=>reject(new Error('Upload timed out.'));
+    xhr.send(file);
+  });
+}
+async function relayUploadFile(file,meta,token){
+  const base=String(meta.relayUrl||'').replace(/\/$/,'');
+  if(!base)throw new Error('Upload relay URL is missing.');
+  const SINGLE_LIMIT=90*1024*1024;
+  if(file.size<=SINGLE_LIMIT){
+    const q=new URLSearchParams({dept:meta.dept,topic:meta.topic,id:meta.id,name:file.name,type:file.type||'application/octet-stream'});
+    return await relayXhrUpload(base+'/upload?'+q.toString(),file,token,{'Content-Type':file.type||'application/octet-stream'},'Uploading…');
+  }
+  const q=new URLSearchParams({dept:meta.dept,topic:meta.topic,id:meta.id,name:file.name,type:file.type||'application/octet-stream'});
+  const init=await fetch(base+'/multipart/init?'+q.toString(),{method:'POST',headers:{Authorization:'Bearer '+token}});
+  const initData=await init.json().catch(()=>({}));
+  if(!init.ok)throw new Error(initData.error||('Could not start multipart upload ('+init.status+')'));
+  const partSize=10*1024*1024;
+  const parts=[];
+  let partNumber=1;
+  for(let offset=0;offset<file.size;offset+=partSize){
+    const chunk=file.slice(offset,Math.min(offset+partSize,file.size));
+    const sha1=await sha1Hex(chunk);
+    const pq=new URLSearchParams({fileId:initData.fileId,partNumber:String(partNumber)});
+    const d=await relayXhrUpload(base+'/multipart/part?'+pq.toString(),chunk,token,{'Content-Type':file.type||'application/octet-stream','X-Part-Sha1':sha1},`Part ${partNumber}…`);
+    parts.push(d.sha1||sha1);partNumber++;
+  }
+  const finish=await fetch(base+'/multipart/finish',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({fileId:initData.fileId,partSha1Array:parts,storageKey:initData.storageKey})});
+  const fd=await finish.json().catch(()=>({}));
+  if(!finish.ok)throw new Error(fd.error||('Could not finish multipart upload ('+finish.status+')'));
+  return {ok:true,storageKey:initData.storageKey,fileName:file.name,b2:fd.b2};
+}
 async function saveContentItem(){
   const dept=$('cmsDept')?.value,topic=$('cmsTopic')?.value,title=$('cmsTitle')?.value.trim(),type=$('cmsType')?.value,url=$('cmsUrl')?.value.trim(),duration=$('cmsDuration')?.value.trim(),description=$('cmsDescription')?.value.trim(),file=$('cmsFile')?.files?.[0]||null;
   if(!dept||!topic||!title){alert('Please select Department, Topic and enter a Title.');return;}
@@ -202,53 +248,14 @@ async function saveContentItem(){
       const token=await auth.currentUser?.getIdToken();
       if(!token)throw new Error('Not authenticated');
       const safeType=file.type||'application/octet-stream';
-      const qs=new URLSearchParams();
-      qs.set('action','upload');
-      qs.set('name',String(file.name||'file'));
-      qs.set('type',safeType);
-      qs.set('dept',String(dept));
-      qs.set('topic',String(topic));
-      qs.set('id',String(id));
+      const qs=new URLSearchParams();qs.set('action','upload');qs.set('name',String(file.name||'file'));qs.set('type',safeType);qs.set('dept',String(dept));qs.set('topic',String(topic));qs.set('id',String(id));
       const apiUrl=window.location.origin+'/api/b2?'+qs.toString();
-      let r;
-      try{r=await fetch(apiUrl,{method:'GET',headers:{Authorization:'Bearer '+token}})}catch(fetchErr){throw new Error('Could not reach B2 upload service: '+(fetchErr?.message||fetchErr));}
-      const raw=await r.text();
-      let d={};try{d=raw?JSON.parse(raw):{}}catch(parseErr){throw new Error('B2 service returned an invalid response ('+r.status+').');}
-      if(!r.ok||!d.uploadUrl||!d.storageKey)throw new Error(d.error||('Could not prepare B2 upload ('+r.status+')'));
-      if(!d.uploadUrl||!d.storageKey)throw new Error('Backblaze upload service did not return an upload target.');
-      let put=null;
-      const uploadOnce=()=>new Promise((resolve,reject)=>{
-        const xhr=new XMLHttpRequest();
-        xhr.open('PUT',d.uploadUrl,true);
-        xhr.timeout=0;
-        xhr.responseType='text';
-        xhr.setRequestHeader('Content-Type',d.contentType||safeType);
-        xhr.onload=()=>resolve(xhr);
-        xhr.onerror=()=>reject(new Error('Browser blocked the Backblaze upload before receiving a response (likely CORS). status='+xhr.status+', readyState='+xhr.readyState+', uploadHost='+(()=>{try{return new URL(d.uploadUrl).host}catch{return 'invalid-url'}})()));
-        xhr.onabort=()=>reject(new Error('Upload was cancelled.'));
-        xhr.ontimeout=()=>reject(new Error('Upload timed out.'));
-        xhr.onprogress=()=>{};
-        xhr.send(file);
-      });
-      try{
-        for(let attempt=1;attempt<=5;attempt++){
-          try{put=await uploadOnce();}
-          catch(uploadErr){
-            if(attempt===5)throw uploadErr;
-            await new Promise(r=>setTimeout(r,800*attempt));
-            continue;
-          }
-          if(put.status>=200&&put.status<300)break;
-          if(put.status>=500&&attempt<5){await new Promise(r=>setTimeout(r,800*attempt));continue;}
-          break;
-        }
-      }catch(uploadErr){throw new Error('Could not upload file to Backblaze B2: '+(uploadErr?.message||uploadErr));}
-      if(!put){throw new Error('Backblaze upload did not return a response.');}
-      if(put.status<200||put.status>=300){
-        let detail=String(put.responseText||'').slice(0,500);
-        throw new Error('B2 upload failed ('+put.status+')'+(detail?' — '+detail:''));
-      }
-      storageKey=d.storageKey;
+      let r;try{r=await fetch(apiUrl,{method:'GET',headers:{Authorization:'Bearer '+token}})}catch(fetchErr){throw new Error('Could not reach upload service: '+(fetchErr?.message||fetchErr));}
+      const raw=await r.text();let d={};try{d=raw?JSON.parse(raw):{}}catch{throw new Error('Upload service returned an invalid response ('+r.status+').')}
+      if(!r.ok||!d.relayUrl||!d.storageKey)throw new Error(d.error||('Could not prepare upload ('+r.status+')'));
+      const result=await relayUploadFile(file,{relayUrl:d.relayUrl,dept,topic,id},token);
+      if(!result?.ok||!result.storageKey)throw new Error('Upload relay did not confirm the file upload.');
+      storageKey=result.storageKey;
     }
     const existing=cmsEditId?await fbGet(contentPath(dept,topic,id)).catch(()=>null):null;
     const item={...(existing&&typeof existing==='object'?existing:{}),id,title,type,url:storageKey?'':url,videoUrl:storageKey&&type==='video'?'':'',fileUrl:storageKey&&type==='pdf'?'':'',storageKey:storageKey||existing?.storageKey||'',fileName:storageKey?(file?.name||existing?.fileName||''):(existing?.fileName||''),description,duration,published:true,updatedAt:new Date().toISOString()};
