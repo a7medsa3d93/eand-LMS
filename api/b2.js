@@ -1,89 +1,123 @@
-import { createRemoteJWKSet, jwtVerify } from 'jose';
+const {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
+const admin = require('firebase-admin');
 
-const projectId = process.env.FIREBASE_PROJECT_ID || 'lms-demo-e0348';
-const databaseUrl = process.env.FIREBASE_DATABASE_URL || 'https://lms-demo-e0348-default-rtdb.firebaseio.com';
-const bucket = process.env.B2_BUCKET || 'eandadvocate';
-const bucketId = process.env.B2_BUCKET_ID || '2cb9b63849f87ac5aa0f041d';
-const keyId = process.env.B2_KEY_ID || '';
-const applicationKey = process.env.B2_APPLICATION_KEY || '';
-const jwks = createRemoteJWKSet(new URL('https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com'));
-
-let b2AuthCache = null;
-
-async function authUser(req){
-  const h=req.headers.authorization||'';
-  if(!h.startsWith('Bearer ')) throw new Error('Authentication required');
-  const token=h.slice(7);
-  const {payload}=await jwtVerify(token,jwks,{issuer:`https://securetoken.google.com/${projectId}`,audience:projectId});
-  if(!payload.sub)throw new Error('Invalid token');
-  const username=String(payload.email||'').split('@')[0];
-  if(!username)throw new Error('Invalid LMS account');
-  const r=await fetch(`${databaseUrl}/users/${encodeURIComponent(username)}.json?auth=${encodeURIComponent(token)}`);
-  if(!r.ok)throw new Error('Could not verify LMS profile');
-  const user=await r.json();
-  if(!user)throw new Error('LMS profile not found');
-  return {username,user};
+function json(res,status,body){
+  res.status(status).setHeader('Content-Type','application/json; charset=utf-8');
+  res.end(JSON.stringify(body));
 }
 
-function cleanName(name){return String(name||'file').replace(/[^a-zA-Z0-9._-]/g,'_').slice(-120);}
-function json(res,status,data){res.status(status).setHeader('Content-Type','application/json');res.end(JSON.stringify(data));}
-
-async function b2Authorize(){
-  if(!keyId||!applicationKey)throw new Error('Backblaze credentials are not configured on Vercel.');
-  if(b2AuthCache && b2AuthCache.expiresAt>Date.now()+60000)return b2AuthCache;
-  const basic=Buffer.from(`${keyId}:${applicationKey}`).toString('base64');
-  const r=await fetch('https://api.backblazeb2.com/b2api/v4/b2_authorize_account',{headers:{Authorization:`Basic ${basic}`}});
-  const text=await r.text();
-  let d={};try{d=text?JSON.parse(text):{};}catch{d={};}
-  if(!r.ok)throw new Error(d.message||d.code||`Backblaze authorization failed (${r.status})`);
-  b2AuthCache={apiUrl:d.apiUrl,authorizationToken:d.authorizationToken,expiresAt:Date.now()+23*60*60*1000};
-  return b2AuthCache;
+function env(name, fallback=''){
+  return process.env[name] || fallback;
 }
 
-async function b2GetUploadUrl(){
-  let auth=await b2Authorize();
-  let r=await fetch(`${auth.apiUrl}/b2api/v4/b2_get_upload_url?bucketId=${encodeURIComponent(bucketId)}`,{headers:{Authorization:auth.authorizationToken}});
-  let text=await r.text();let d={};try{d=text?JSON.parse(text):{};}catch{}
-  if(!r.ok){
-    b2AuthCache=null;
-    auth=await b2Authorize();
-    r=await fetch(`${auth.apiUrl}/b2api/v4/b2_get_upload_url?bucketId=${encodeURIComponent(bucketId)}`,{headers:{Authorization:auth.authorizationToken}});
-    text=await r.text();d={};try{d=text?JSON.parse(text):{};}catch{}
+function initFirebase(){
+  if(admin.apps.length) return admin.app();
+  let service;
+  if(process.env.FIREBASE_SERVICE_ACCOUNT_JSON){
+    service=JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
+  }else if(process.env.FIREBASE_CLIENT_EMAIL && process.env.FIREBASE_PRIVATE_KEY){
+    service={
+      projectId:process.env.FIREBASE_PROJECT_ID,
+      clientEmail:process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey:process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g,'\n')
+    };
+  }else{
+    throw new Error('Firebase Admin credentials are not configured.');
   }
-  if(!r.ok)throw new Error(d.message||d.code||`Could not get Backblaze upload URL (${r.status})`);
-  return d;
+  return admin.initializeApp({credential:admin.credential.cert(service),databaseURL:env('FIREBASE_DATABASE_URL')});
 }
 
-export default async function handler(req,res){
+function s3(){
+  const endpoint=env('B2_ENDPOINT');
+  const region=env('B2_REGION','us-east-005');
+  const bucket=env('B2_BUCKET');
+  const keyId=env('B2_KEY_ID');
+  const applicationKey=env('B2_APPLICATION_KEY');
+  if(!endpoint||!bucket||!keyId||!applicationKey) throw new Error('Backblaze B2 environment variables are not configured.');
+  return {
+    client:new S3Client({region,endpoint,forcePathStyle:false,credentials:{accessKeyId:keyId,secretAccessKey:applicationKey}}),
+    bucket
+  };
+}
+
+function cleanPart(value,max=120){
+  return String(value||'').trim().replace(/[^a-zA-Z0-9._-]/g,'-').replace(/-+/g,'-').slice(0,max);
+}
+
+function safeStorageKey({dept,topic,id,name}){
+  const d=cleanPart(dept,40), t=cleanPart(topic,40), i=cleanPart(id,100);
+  const original=cleanPart(name,180) || 'file';
+  const stamp=Date.now();
+  return `lms/${d}/${t}/${i}/${stamp}-${original}`;
+}
+
+async function requireAuth(req,requiredRole){
+  const header=String(req.headers.authorization||'');
+  if(!header.startsWith('Bearer ')) throw Object.assign(new Error('Authentication required.'),{status:401});
+  const token=header.slice(7).trim();
+  if(!token) throw Object.assign(new Error('Authentication required.'),{status:401});
+  const app=initFirebase();
+  const decoded=await admin.auth(app).verifyIdToken(token);
+  if(requiredRole){
+    const username=String(decoded.email||'').split('@')[0];
+    if(!username) throw Object.assign(new Error('Could not determine LMS user.'),{status:403});
+    const snap=await admin.database(app).ref(`users/${username}/role`).once('value');
+    const role=String(snap.val()||'');
+    if(!(role==='admin'||role==='content')) throw Object.assign(new Error('Admin/content permissions required.'),{status:403});
+  }
+  return decoded;
+}
+
+function assertStorageKey(key){
+  if(!key || typeof key!=='string' || !key.startsWith('lms/') || key.includes('..') || key.includes('\\')){
+    throw Object.assign(new Error('Invalid storage key.'),{status:400});
+  }
+}
+
+module.exports=async function handler(req,res){
   try{
-    const {user}=await authUser(req);
-    const action=req.query.action;
-    if(action==='upload'){
-      if(!['admin','content'].includes(user.role))return json(res,403,{error:'Admin/Content access required'});
+    const action=String(req.query.action||'');
+    if(req.method==='OPTIONS') return res.status(204).end();
+
+    if(action==='prepareUpload'){
+      await requireAuth(req,true);
+      if(req.method!=='GET') return json(res,405,{error:'Method not allowed.'});
+      const name=String(req.query.name||'file');
+      const type=String(req.query.type||'application/octet-stream');
       const dept=String(req.query.dept||'');
       const topic=String(req.query.topic||'');
       const id=String(req.query.id||'');
-      if(!['corporate','consumer','technical','non-telecom'].includes(dept)||!['rateplan','service','process','tnps'].includes(topic)||!id)return json(res,400,{error:'Invalid content path'});
-      const name=cleanName(req.query.name);
-      const contentType=String(req.query.type||'application/octet-stream');
-      if(!contentType.startsWith('video/') && !contentType.startsWith('image/') && contentType!=='application/pdf')return json(res,400,{error:'Only video, image, and PDF uploads are supported'});
-      const storageKey=`content/${dept}/${topic}/${id}/${Date.now()}-${name}`;
-      const relayUrl=process.env.B2_UPLOAD_RELAY_URL||'';
-      if(!relayUrl) return json(res,500,{error:'B2_UPLOAD_RELAY_URL is not configured on Vercel.'});
-      return json(res,200,{relayUrl:relayUrl.replace(/\/$/,''),storageKey,bucket});
+      if(!dept||!topic||!id) return json(res,400,{error:'dept, topic and id are required.'});
+      if(!['video/','image/'].some(x=>type.startsWith(x)) && type!=='application/pdf'){
+        return json(res,400,{error:'Only video, image and PDF uploads are allowed.'});
+      }
+      const {client,bucket}=s3();
+      const key=safeStorageKey({dept,topic,id,name});
+      const command=new PutObjectCommand({Bucket:bucket,Key:key,ContentType:type,Metadata:{originalname:name.slice(0,500)}});
+      const uploadUrl=await getSignedUrl(client,command,{expiresIn:Number(env('B2_SIGNED_URL_TTL','900'))});
+      return json(res,200,{ok:true,uploadUrl,storageKey:key,expiresIn:Number(env('B2_SIGNED_URL_TTL','900'))});
     }
+
     if(action==='download'){
+      await requireAuth(req,false);
+      if(req.method!=='GET') return json(res,405,{error:'Method not allowed.'});
       const key=String(req.query.key||'');
-      const prefix=`content/${user.department||''}/`;
-      if(!key.startsWith(prefix))return json(res,403,{error:'Content access denied'});
-      // Downloads stay on the existing private S3 path for now; upload flow is Native API.
-      const { S3Client, GetObjectCommand } = await import('@aws-sdk/client-s3');
-      const { getSignedUrl } = await import('@aws-sdk/s3-request-presigner');
-      const s3=new S3Client({region:'us-east-005',endpoint:process.env.B2_ENDPOINT||'https://s3.us-east-005.backblazeb2.com',credentials:{accessKeyId:keyId,secretAccessKey:applicationKey}});
+      assertStorageKey(key);
+      const {client,bucket}=s3();
       const command=new GetObjectCommand({Bucket:bucket,Key:key});
-      const url=await getSignedUrl(s3,command,{expiresIn:900});
-      return json(res,200,{url});
+      const url=await getSignedUrl(client,command,{expiresIn:Number(env('B2_DOWNLOAD_TTL','900'))});
+      return json(res,200,{ok:true,url,expiresIn:Number(env('B2_DOWNLOAD_TTL','900'))});
     }
-    return json(res,400,{error:'Unknown action'});
-  }catch(e){console.error(e);return json(res,401,{error:e.message||'Unauthorized'});}
-}
+
+    return json(res,400,{error:'Unknown action.'});
+  }catch(err){
+    console.error('B2 API error',err);
+    const status=Number(err.status)||500;
+    return json(res,status,{error:status===500?'Server configuration or storage error.':(err.message||'Request failed.')});
+  }
+};
